@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Salário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Calculadora de Salário</h1>
+    <form id="salario-form">
+        <label for="salario-base">Salário Base:</label>
+        <input type="number" id="salario-base" required>
+
+        <label for="auxilio-alimentacao">Auxílio Alimentação:</label>
+        <input type="number" id="auxilio-alimentacao" required>
+
+        <label for="auxilio-transporte">Auxílio Transporte:</label>
+        <input type="number" id="auxilio-transporte" required>
+
+        <label for="auxilio-saude">Auxílio Saúde:</label>
+        <input type="number" id="auxilio-saude" required>
+
+        <label for="desconto-ir">Desconto IR (%):</label>
+        <input type="number" id="desconto-ir" value="7.5" required>
+
+        <label for="desconto-previdencia">Desconto Previdência (%):</label>
+        <input type="number" id="desconto-previdencia" value="11" required>
+
+        <button id="calcular-btn">Calcular</button>
+    </form>
+
+    <div id="resultado"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
