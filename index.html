@@ -1,129 +1,222 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>CÁLCULO DE SALÁRIO COM DESCONTOS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .campo {
-            margin-bottom: 20px;
-        }
-        .campo input {
-            width: 50px;
-            text-align: center;
-        }
-        .botao {
-            padding: 10px 20px;
-            margin: 10px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            flex: 1;
-            text-align: center;
-        }
-        .botao:hover {
-            opacity: 0.8;
-        }
-        .resultado {
-            margin-top: 20px;
-            text-align: center;
-        }
-    </style>
+ <meta charset="UTF-8">
+ <title>CARGO E SALÁRIO</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <style>
+ body {
+   font-family: Arial, sans-serif;
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+ }
+ .container {
+   max-width: 960px;
+   margin: 0 auto;
+   padding: 20px;
+ }
+ h1 {
+   text-align: center;
+   margin-bottom: 20px;
+ }
+ .botao {
+   padding: 10px 20px;
+   margin: 10px;
+   border: 2px solid #ccc;
+   border-radius: 5px;
+   cursor: pointer;
+   font-weight: bold;
+   flex: 1;
+   text-align: center;
+ }
+ .botao:hover {
+   opacity: 0.8;
+ }
+ .ajudiciario {
+   background-color: #3498db;
+   color: #fff;
+   border-color: #2980b9;
+ }
+ .tecnico {
+   background-color: #f1c40f;
+   color: #333;
+   border-color: #d4ac0d;
+ }
+ .oficial {
+   background-color: #e74c3c;
+   color: #fff;
+   border-color: #c0392b;
+ }
+ .analista {
+   background-color: #2ecc71;
+   color: #333;
+   border-color: #27ae60;
+ }
+ .nivel-botao {
+   padding: 5px 10px;
+   margin: 5px;
+   border: 1px solid #ccc;
+   border-radius: 3px;
+   flex: 1;
+   flex: 1;
+ }
+ .botoes-container {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+ }
+ #niveis, #resultado {
+   margin-top: 20px;
+   text-align: center;
+ }
+ @media (max-width: 768px) {
+   .botao {
+     flex: none;
+     width: 90%;
+     margin: 10px auto;
+   }
+   .nivel-botao {
+     flex: none;
+     width: calc(33.33% - 10px);
+     margin: 5px;
+   }
+ }
+ @media (max-width: 480px) {
+   .nivel-botao {
+     width: calc(50% - 10px);
+   }
+ }
+ </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Cálculo de Salário com Descontos</h1>
-        <div class="campo">
-            <label for="salarioBruto">Salário Bruto (R$): </label>
-            <input type="number" id="salarioBruto" value="8383.60" onchange="calcularDescontos()" step="0.01">
-        </div>
-        <div class="campo">
-            <label for="dependentes">Número de Dependentes: </label>
-            <button class="botao" onclick="alterarDependentes(-1)">-</button>
-            <input type="number" id="dependentes" value="5" min="0" onchange="calcularDescontos()">
-            <button class="botao" onclick="alterarDependentes(1)">+</button>
-        </div>
-        <div id="resultado" class="resultado"></div>
-    </div>
+ <div class="container">
+   <h1>SELECIONE SEU CARGO:</h1>
+   <div class="botoes-container">
+     <button class="botao ajudiciario" onclick="selecionarCargo('AJUDICIARIO')">AUXILIAR JUDICIÁRIO</button>
+     <button class="botao tecnico" onclick="selecionarCargo('TECNICO')">TÉCNICO JUDICIÁRIO</button>
+     <button class="botao oficial" onclick="selecionarCargo('OFICIAL')">OFICIAL DE JUSTIÇA</button>
+     <button class="botao analista" onclick="selecionarCargo('ANALISTA')">ANALISTA JUDICIÁRIO</button>
+   </div>
 
-    <script>
-        // Função para calcular os descontos com base no FUNAFIN e IRRF
-        function calcularDescontos() {
-            let salarioBruto = parseFloat(document.getElementById("salarioBruto").value);
-            let dependentes = parseInt(document.getElementById("dependentes").value);
+   <!-- Nova seção para dependentes -->
+   <div id="dependentes-container">
+     <p><strong>Dependentes:</strong></p>
+     <button onclick="alterarDependentes(-1)">-</button>
+     <span id="num-dependentes">0</span>
+     <button onclick="alterarDependentes(1)">+</button>
+   </div>
 
-            const descontoPorDependente = 189.59;  // Valor por dependente
-            const aliquotaFUNAFIN = 0.14; // Alíquota de 14% para FUNAFIN
-            const faixasIRRF = [
-                { limite: 2260.00, aliquota: 0, deducao: 0 },
-                { limite: 2826.65, aliquota: 0.075, deducao: 169.44 },
-                { limite: 3751.05, aliquota: 0.15, deducao: 381.44 },
-                { limite: 4664.68, aliquota: 0.225, deducao: 662.77 },
-                { limite: Infinity, aliquota: 0.275, deducao: 896.00 }
-            ];
+   <div id="niveis"></div>
+   <div id="resultado"></div>
+ </div>
 
-            // Cálculo do desconto do FUNAFIN (14% do salário bruto)
-            let descontoFUNAFIN = salarioBruto * aliquotaFUNAFIN;
+ <script>
+ const salariosTabela = {
+   AJUDICIARIO: [5285.77, 5417.92, 5561.48, 5717.22, 5885.88, 6068.31, 6265.54, 6478.55, 6708.57, 6956.76, 7224.61, 7513.60, 7964.42, 8521.93, 9203.67, 10032.03, 11035.21, 12249.10, 13718.96, 15502.44, 17672.80, 20323.70],
+   TECNICO: [5563.97, 5703.06, 5854.18, 6018.12, 6195.67, 6387.71, 6595.30, 6819.56, 7061.65, 7322.93, 7604.88, 7909.04, 8383.61, 8970.47, 9688.07, 10560.03, 11616.01, 12893.77, 14441.02, 16318.37, 18602.93, 21393.38],
+   OFICIAL: [6887.67, 7059.86, 7246.95, 7449.88, 7669.64, 7907.40, 8164.40, 8441.99, 8741.68, 9065.13, 9414.12, 9790.68, 10378.14, 11104.59, 11992.97, 13072.32, 14379.57, 15961.33, 17876.68, 20200.65, 23028.76, 26483.08],
+   ANALISTA: [7250.19, 7431.45, 7628.39, 7841.97, 8073.31, 8323.57, 8594.11, 8886.32, 9201.76, 9542.23, 9909.62, 10305.98, 10924.35, 11689.06, 12624.19, 13760.36, 15136.41, 16801.40, 18817.55, 21263.84, 24240.77, 27876.90]
+ };
 
-            // Cálculo do desconto por dependentes
-            let descontoDependentes = dependentes * descontoPorDependente;
+ const cargoNomesCompletos = {
+   AJUDICIARIO: "AUXILIAR JUDICIÁRIO",
+   TECNICO: "TÉCNICO JUDICIÁRIO",
+   OFICIAL: "OFICIAL DE JUSTIÇA",
+   ANALISTA: "ANALISTA JUDICIÁRIO"
+ };
 
-            // Base de cálculo do IRRF
-            let baseCalculoIRRF = salarioBruto - descontoFUNAFIN - descontoDependentes;
+ let cargoSelecionado = '';
+ let dependentes = 0;  // Número de dependentes
 
-            // Aplicando a tabela de IRRF
-            let IRRF = 0;
-            for (let faixa of faixasIRRF) {
-                if (baseCalculoIRRF > faixa.limite) {
-                    IRRF = (baseCalculoIRRF - faixa.limite) * faixa.aliquota - faixa.deducao;
-                } else {
-                    break;
-                }
-            }
+ function selecionarCargo(cargo) {
+   cargoSelecionado = cargo;
+   document.getElementById('resultado').innerHTML = ''; // Limpa o resultado anterior
+   let niveis = '';
+   for (let i = 0; i < 22; i++) {
+     niveis += `<button class="nivel-botao ${cargo.toLowerCase()}" onclick="calcularSalario(${i})">PADRÃO ${i}</button>`;
+   }
+   document.getElementById('niveis').innerHTML = niveis;
+ }
 
-            // Cálculo do salário líquido
-            let salarioLiquido = salarioBruto - descontoFUNAFIN - descontoDependentes - IRRF;
+ // Função para alterar o número de dependentes
+ function alterarDependentes(operacao) {
+   dependentes += operacao;
+   if (dependentes < 0) dependentes = 0; // Impede o número de dependentes ser negativo
+   document.getElementById('num-dependentes').innerText = dependentes;
+ }
 
-            // Exibir resultados
-            document.getElementById("resultado").innerHTML = `
-                <h2>Resultado:</h2>
-                <p><strong>Salário Bruto:</strong> R$ ${salarioBruto.toFixed(2)}</p>
-                <p><strong>Desconto FUNAFIN:</strong> R$ ${descontoFUNAFIN.toFixed(2)}</p>
-                <p><strong>Desconto por Dependentes:</strong> R$ ${descontoDependentes.toFixed(2)}</p>
-                <p><strong>Base de Cálculo IRRF:</strong> R$ ${baseCalculoIRRF.toFixed(2)}</p>
-                <p><strong>Desconto IRRF:</strong> R$ ${IRRF.toFixed(2)}</p>
-                <p><strong>Salário Líquido:</strong> R$ ${salarioLiquido.toFixed(2)}</p>
-            `;
-        }
+ function calcularSalario(nivel) {
+   const salarioBase = salariosTabela[cargoSelecionado][nivel];
+   const auxilioAlimentacao = 1197.60;
+   const auxilioTransporte = cargoSelecionado === 'OFICIAL' ? 2515.95 : 246.40;
+   const auxilioSaude = salarioBase * 0.1;
+   const riscoVida = cargoSelecionado === 'OFICIAL' ? 650.86 : 0;
 
-        // Função para alterar o número de dependentes
-        function alterarDependentes(valor) {
-            let dependentes = parseInt(document.getElementById("dependentes").value);
-            dependentes += valor;
-            if (dependentes >= 0) {
-                document.getElementById("dependentes").value = dependentes;
-                calcularDescontos();
-            }
-        }
+   // Desconto do INSS
+   const inss = calcularINSS(salarioBase);
 
-        // Chama a função inicial para calcular o salário
-        calcularDescontos();
-    </script>
+   // Desconto por dependentes
+   const descontoDependentes = dependentes * 189.59;
+
+   // Base de cálculo do IRRF
+   let baseIRRF = salarioBase - inss - descontoDependentes;
+
+   // Aplicação da tabela do IRRF
+   let irrf = 0;
+   let parcelaDeduzir = 0;
+   let aliquota = 0;
+   if (baseIRRF <= 2260) {
+     irrf = 0;
+   } else if (baseIRRF <= 2826.65) {
+     aliquota = 0.075;
+     parcelaDeduzir = 169.44;
+   } else if (baseIRRF <= 3751.05) {
+     aliquota = 0.15;
+     parcelaDeduzir = 381.44;
+   } else if (baseIRRF <= 4664.68) {
+     aliquota = 0.225;
+     parcelaDeduzir = 662.77;
+   } else {
+     aliquota = 0.275;
+     parcelaDeduzir = 896.00;
+   }
+
+   // IRRF bruto
+   let irrfBruto = baseIRRF * aliquota - parcelaDeduzir;
+
+   // Salário final
+   let salarioFinal = salarioBase - inss - irrfBruto + riscoVida;
+   const salarioBruto = salarioFinal + auxilioAlimentacao + auxilioTransporte + auxilioSaude;
+
+   document.getElementById("resultado").innerHTML = `
+     <h2>RESULTADO:</h2>
+     <p><strong>Cargo:</strong> ${cargoNomesCompletos[cargoSelecionado]}</p>
+     <p><strong>Padrão:</strong> ${nivel}</p>
+     <p><strong>Salário base:</strong> R$ ${salarioBase.toFixed(2)}</p>
+     <p><strong>Desconto INSS:</strong> R$ ${inss.toFixed(2)}</p>
+     <p><strong>Desconto por dependentes:</strong> R$ ${descontoDependentes.toFixed(2)}</p>
+     <p>Auxílio alimentação: R$ ${auxilioAlimentacao.toFixed(2)}</p>
+     <p>Auxílio transporte: R$ ${auxilioTransporte.toFixed(2)}</p>
+     <p>Auxílio saúde: R$ ${auxilioSaude.toFixed(2)}</p>
+     ${riscoVida > 0 ? `<p>Risco de vida: R$ ${riscoVida.toFixed(2)}</p>` : ''}
+     <p><strong>IRRF:</strong> R$ ${irrfBruto.toFixed(2)}</p>
+     <p><strong>Salário bruto final:</strong> R$ ${salarioBruto.toFixed(2)}</p>
+   `;
+ }
+
+ // Função para calcular o INSS com base na tabela
+ function calcularINSS(salario) {
+   if (salario <= 1751.81) {
+     return salario * 0.08;
+   } else if (salario <= 2919.72) {
+     return salario * 0.09;
+   } else if (salario <= 5839.45) {
+     return salario * 0.11;
+   } else {
+     return 643.34; // Teto do INSS
+   }
+ }
+ </script>
 </body>
 </html>
