@@ -92,10 +92,10 @@
  <div class="container">
    <h1>SELECIONE SEU CARGO:</h1>
    <div class="botoes-container">
-     <button class="botao ajudiciario" onclick="selecionarCargo('AUXILIAR JUDICIARIO')">AUXILIAR JUDICIÁRIO</button>
-     <button class="botao tecnico" onclick="selecionarCargo('TECNICO JUDICIARIO')">TÉCNICO JUDICIÁRIO</button>
-     <button class="botao oficial" onclick="selecionarCargo('OFICIAL DE JUSTIÇA')">OFICIAL DE JUSTIÇA</button>
-     <button class="botao analista" onclick="selecionarCargo('ANALISTA JUDICIARIO')">ANALISTA JUDICIÁRIO</button>
+     <button class="botao ajudiciario" onclick="selecionarCargo('AUXILIAR JUDICIARIO')">ajudiciario</button>
+     <button class="botao tecnico" onclick="selecionarCargo('TECNICO JUDICIARIO')">tecnico</button>
+     <button class="botao oficial" onclick="selecionarCargo('OFICIAL DE JUSTIÇA')">oficial</button>
+     <button class="botao analista" onclick="selecionarCargo('ANALISTA JUDICIARIO')">analista</button>
    </div>
    <div id="niveis"></div>
    <div id="resultado"></div>
@@ -124,9 +124,9 @@
  function calcularSalario(nivel) {
    const salarioBase = salariosTabela[cargoSelecionado][nivel];
    const auxilioAlimentacao = 1197.60;
-   const auxilioTransporte = cargoSelecionado === 'OFICIAL' ? 2515.95 : 246.40;
+   const auxilioTransporte = cargoSelecionado === 'OFICIAL DE JUSTIÇA' ? 2515.95 : 246.40;
    const auxilioSaude = salarioBase * 0.1;
-   const riscoVida = cargoSelecionado === 'OFICIAL' ? 650.86 : 0;
+   const riscoVida = cargoSelecionado === 'OFICIAL DE JUSTIÇA' ? 650.86 : 0;
 
    let salarioFinal = salarioBase + riscoVida;
 
