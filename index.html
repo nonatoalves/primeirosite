@@ -130,6 +130,11 @@
 
    // Função chamada ao clicar em um botão de padrão
    function calcularSalario(nivel) {
+     if (!cargoSelecionado) {
+       alert("Por favor, selecione um cargo antes de calcular o salário!");
+       return;
+     }
+
      const salarioBase = salariosTabela[cargoSelecionado][nivel];
      const auxilioAlimentacao = 1197.60;
      const auxilioTransporte = cargoSelecionado === 'OFICIAL' ? 2515.95 : 246.40;
