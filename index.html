@@ -59,7 +59,6 @@
    border: 1px solid #ccc;
    border-radius: 3px;
    flex: 1;
-   flex: 1;
  }
  .botoes-container {
    display: flex;
@@ -69,6 +68,15 @@
  #niveis, #resultado {
    margin-top: 20px;
    text-align: center;
+ }
+ #dependentes-container {
+   text-align: center;
+   margin: 20px 0;
+ }
+ #dependentes-container input {
+   width: 50px;
+   text-align: center;
+   font-size: 16px;
  }
  @media (max-width: 768px) {
    .botao {
@@ -98,19 +106,16 @@
      <button class="botao oficial" onclick="selecionarCargo('OFICIAL')">OFICIAL DE JUSTIÇA</button>
      <button class="botao analista" onclick="selecionarCargo('ANALISTA')">ANALISTA JUDICIÁRIO</button>
    </div>
-
-   <!-- Nova seção para dependentes -->
    <div id="dependentes-container">
-     <p><strong>Dependentes:</strong></p>
+     <label for="dependentes">Número de dependentes:</label>
      <button onclick="alterarDependentes(-1)">-</button>
-     <span id="num-dependentes">0</span>
+     <input type="number" id="dependentes" value="0" min="0">
      <button onclick="alterarDependentes(1)">+</button>
    </div>
-
    <div id="niveis"></div>
    <div id="resultado"></div>
  </div>
-
+ 
  <script>
  const salariosTabela = {
    AJUDICIARIO: [5285.77, 5417.92, 5561.48, 5717.22, 5885.88, 6068.31, 6265.54, 6478.55, 6708.57, 6956.76, 7224.61, 7513.60, 7964.42, 8521.93, 9203.67, 10032.03, 11035.21, 12249.10, 13718.96, 15502.44, 17672.80, 20323.70],
@@ -127,7 +132,6 @@
  };
 
  let cargoSelecionado = '';
- let dependentes = 0;  // Número de dependentes
 
  function selecionarCargo(cargo) {
    cargoSelecionado = cargo;
@@ -139,11 +143,11 @@
    document.getElementById('niveis').innerHTML = niveis;
  }
 
- // Função para alterar o número de dependentes
- function alterarDependentes(operacao) {
-   dependentes += operacao;
-   if (dependentes < 0) dependentes = 0; // Impede o número de dependentes ser negativo
-   document.getElementById('num-dependentes').innerText = dependentes;
+ function alterarDependentes(valor) {
+   const dependentesInput = document.getElementById('dependentes');
+   let dependentes = parseInt(dependentesInput.value) + valor;
+   if (dependentes < 0) dependentes = 0;
+   dependentesInput.value = dependentes;
  }
 
  function calcularSalario(nivel) {
@@ -152,70 +156,47 @@
    const auxilioTransporte = cargoSelecionado === 'OFICIAL' ? 2515.95 : 246.40;
    const auxilioSaude = salarioBase * 0.1;
    const riscoVida = cargoSelecionado === 'OFICIAL' ? 650.86 : 0;
+   const dependentes = parseInt(document.getElementById('dependentes').value);
 
-   // Desconto do INSS
-   const inss = calcularINSS(salarioBase);
+   let salarioFinal = salarioBase + riscoVida;
 
-   // Desconto por dependentes
-   const descontoDependentes = dependentes * 189.59;
-
-   // Base de cálculo do IRRF
-   let baseIRRF = salarioBase - inss - descontoDependentes;
-
-   // Aplicação da tabela do IRRF
-   let irrf = 0;
-   let parcelaDeduzir = 0;
-   let aliquota = 0;
-   if (baseIRRF <= 2260) {
-     irrf = 0;
-   } else if (baseIRRF <= 2826.65) {
-     aliquota = 0.075;
-     parcelaDeduzir = 169.44;
-   } else if (baseIRRF <= 3751.05) {
-     aliquota = 0.15;
-     parcelaDeduzir = 381.44;
-   } else if (baseIRRF <= 4664.68) {
-     aliquota = 0.225;
-     parcelaDeduzir = 662.77;
-   } else {
-     aliquota = 0.275;
-     parcelaDeduzir = 896.00;
-   }
-
-   // IRRF bruto
-   let irrfBruto = baseIRRF * aliquota - parcelaDeduzir;
-
-   // Salário final
-   let salarioFinal = salarioBase - inss - irrfBruto + riscoVida;
    const salarioBruto = salarioFinal + auxilioAlimentacao + auxilioTransporte + auxilioSaude;
 
-   document.getElementById("resultado").innerHTML = `
-     <h2>RESULTADO:</h2>
-     <p><strong>Cargo:</strong> ${cargoNomesCompletos[cargoSelecionado]}</p>
-     <p><strong>Padrão:</strong> ${nivel}</p>
-     <p><strong>Salário base:</strong> R$ ${salarioBase.toFixed(2)}</p>
-     <p><strong>Desconto INSS:</strong> R$ ${inss.toFixed(2)}</p>
-     <p><strong>Desconto por dependentes:</strong> R$ ${descontoDependentes.toFixed(2)}</p>
-     <p>Auxílio alimentação: R$ ${auxilioAlimentacao.toFixed(2)}</p>
-     <p>Auxílio transporte: R$ ${auxilioTransporte.toFixed(2)}</p>
-     <p>Auxílio saúde: R$ ${auxilioSaude.toFixed(2)}</p>
-     ${riscoVida > 0 ? `<p>Risco de vida: R$ ${riscoVida.toFixed(2)}</p>` : ''}
-     <p><strong>IRRF:</strong> R$ ${irrfBruto.toFixed(2)}</p>
-     <p><strong>Salário bruto final:</strong> R$ ${salarioBruto.toFixed(2)}</p>
-   `;
- }
+   // Descontos
+   const funafin = salarioBase * 0.14; // Contribuição previdenciária (FUNAFIN: 14%)
+   const deducaoDependentes = dependentes * 189.59;
+   const baseIR = salarioBase - funafin - deducaoDependentes;
 
- // Função para calcular o INSS com base na tabela
- function calcularINSS(salario) {
-   if (salario <= 1751.81) {
-     return salario * 0.08;
-   } else if (salario <= 2919.72) {
-     return salario * 0.09;
-   } else if (salario <= 5839.45) {
-     return salario * 0.11;
-   } else {
-     return 643.34; // Teto do INSS
+   let irrf = 0;
+   if (baseIR > 4664.68) {
+     irrf = baseIR * 0.275 - 896.00;
+   } else if (baseIR > 3751.06) {
+     irrf = baseIR * 0.225 - 662.77;
+   } else if (baseIR > 2826.66) {
+     irrf = baseIR * 0.15 - 381.44;
+   } else if (baseIR > 2259.21) {
+     irrf = baseIR * 0.075 - 169.44;
    }
+
+   irrf = Math.max(irrf, 0); // Garante que o IRRF não seja negativo
+
+   const descontos = funafin + irrf;
+   const salarioLiquido = salarioBruto - descontos;
+
+   document.getElementById('resultado').innerHTML = `
+     <h2>Resultados:</h2>
+     <p><strong>Cargo:</strong> ${cargoNomesCompletos[cargoSelecionado]}</p>
+     <p><strong>Salário Base:</strong> R$ ${salarioBase.toFixed(2)}</p>
+     <p><strong>Auxílio Alimentação:</strong> R$ ${auxilioAlimentacao.toFixed(2)}</p>
+     <p><strong>Auxílio Transporte:</strong> R$ ${auxilioTransporte.toFixed(2)}</p>
+     <p><strong>Auxílio Saúde:</strong> R$ ${auxilioSaude.toFixed(2)}</p>
+     ${riscoVida > 0 ? `<p><strong>Adicional de Risco de Vida:</strong> R$ ${riscoVida.toFixed(2)}</p>` : ''}
+     <p><strong>Salário Bruto:</strong> R$ ${salarioBruto.toFixed(2)}</p>
+     <p><strong>Desconto FUNAFIN (14%):</strong> R$ ${funafin.toFixed(2)}</p>
+     <p><strong>Desconto IRRF:</strong> R$ ${irrf.toFixed(2)}</p>
+     <p><strong>Total de Descontos:</strong> R$ ${descontos.toFixed(2)}</p>
+     <p><strong>Salário Líquido:</strong> R$ ${salarioLiquido.toFixed(2)}</p>
+   `;
  }
  </script>
 </body>
