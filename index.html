@@ -168,7 +168,9 @@
    document.getElementById('salarioDetalhes').style.display = 'block';
    document.getElementById('salarioDetalhes').innerHTML = `
      SALÁRIO BASE: R$ ${salarioBase.toFixed(2)}<br>
-     AUXÍLIOS: R$ ${(auxilioAlimentacao + auxilioTransporte + auxilioSaude).toFixed(2)}<br>
+     AUXÍLIO ALIMENTAÇÃO: R$ ${auxilioAlimentacao.toFixed(2)}<br>
+     AUXÍLIO TRANSPORTE: R$ ${auxilioTransporte.toFixed(2)}<br>
+     AUXÍLIO SAÚDE: R$ ${auxilioSaude.toFixed(2)}<br>
      TOTAL BRUTO: R$ ${salarioBruto.toFixed(2)}
    `;
  }
