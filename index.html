@@ -59,7 +59,6 @@
    border: 1px solid #ccc;
    border-radius: 3px;
    flex: 1;
-   flex: 1;
  }
  .botoes-container {
    display: flex;
@@ -70,11 +69,12 @@
    margin-top: 20px;
    text-align: center;
  }
- .resultado-final strong {
-   font-size: 1.2em;
+ .highlight {
+   font-weight: bold;
+   color: #d35400;
  }
  .salario-bruto {
-   color: #2c3e50;
+   color: #2980b9;
    font-weight: bold;
    text-transform: uppercase;
  }
@@ -100,25 +100,6 @@
      width: calc(50% - 10px);
    }
  }
- .dependentes-container {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   margin: 20px 0;
- }
- .dependentes-container button {
-   margin: 0 10px;
-   padding: 5px 15px;
-   border: none;
-   border-radius: 3px;
-   background-color: #3498db;
-   color: #fff;
-   cursor: pointer;
- }
- .dependentes-container span {
-   font-size: 1.2em;
-   margin: 0 10px;
- }
  </style>
 </head>
 <body>
@@ -130,13 +111,14 @@
      <button class="botao oficial" onclick="selecionarCargo('OFICIAL')">OFICIAL DE JUSTIÇA</button>
      <button class="botao analista" onclick="selecionarCargo('ANALISTA')">ANALISTA JUDICIÁRIO</button>
    </div>
-   <div class="dependentes-container">
+   <div id="niveis"></div>
+   <div id="resultado"></div>
+   <div>
+     <label for="dependentes">Número de dependentes:</label>
      <button onclick="alterarDependentes(-1)">-</button>
      <span id="dependentes">0</span>
      <button onclick="alterarDependentes(1)">+</button>
    </div>
-   <div id="niveis"></div>
-   <div id="resultado"></div>
  </div>
  
  <script>
@@ -157,11 +139,6 @@
  let cargoSelecionado = '';
  let dependentes = 0;
 
- function alterarDependentes(quantidade) {
-   dependentes = Math.max(0, dependentes + quantidade);
-   document.getElementById('dependentes').innerText = dependentes;
- }
-
  function selecionarCargo(cargo) {
    cargoSelecionado = cargo;
    document.getElementById('resultado').innerHTML = ''; // Limpa o resultado anterior
@@ -172,40 +149,54 @@
    document.getElementById('niveis').innerHTML = niveis;
  }
 
+ function alterarDependentes(valor) {
+   dependentes = Math.max(0, dependentes + valor);
+   document.getElementById('dependentes').innerText = dependentes;
+ }
+
  function calcularSalario(nivel) {
    const salarioBase = salariosTabela[cargoSelecionado][nivel];
    const auxilioAlimentacao = 1197.60;
    const auxilioTransporte = cargoSelecionado === 'OFICIAL' ? 2515.95 : 246.40;
    const auxilioSaude = salarioBase * 0.1;
    const riscoVida = cargoSelecionado === 'OFICIAL' ? 650.86 : 0;
+
+   const descontoFUNAFIN = salarioBase * 0.14;
    const descontoDependentes = dependentes * 189.59;
+   const baseIR = salarioBase - descontoFUNAFIN - descontoDependentes;
 
-   // FUNAFIN
-   const descontoFunafin = salarioBase * 0.14;
+   let impostoRenda = 0;
+   if (baseIR <= 2259.20) {
+     impostoRenda = 0;
+   } else if (baseIR <= 2826.65) {
+     impostoRenda = baseIR * 0.075 - 169.44;
+   } else if (baseIR <= 3751.05) {
+     impostoRenda = baseIR * 0.15 - 381.44;
+   } else if (baseIR <= 4664.68) {
+     impostoRenda = baseIR * 0.225 - 662.77;
+   } else {
+     impostoRenda = baseIR * 0.275 - 896;
+   }
 
-   // Base do imposto de renda
-   const baseIR = salarioBase - descontoFunafin - descontoDependentes;
+   impostoRenda = Math.max(0, impostoRenda);
 
-   // Imposto de renda simplificado (faixa fixa para dedução)
-   const impostoRenda = baseIR > 0 ? baseIR * 0.275 - 896.00 : 0;
-
-   // Salário final
    let salarioFinal = salarioBase + riscoVida;
    const salarioBruto = salarioFinal + auxilioAlimentacao + auxilioTransporte + auxilioSaude;
-   const salarioLiquido = salarioBruto - descontoFunafin - impostoRenda;
+   const salarioLiquido = salarioBruto - descontoFUNAFIN - impostoRenda;
 
    document.getElementById("resultado").innerHTML = `
      <h2>RESULTADO:</h2>
      <p><strong>Cargo:</strong> ${cargoNomesCompletos[cargoSelecionado]}</p>
      <p><strong>Padrão:</strong> ${nivel}</p>
-     <p class="salario-bruto">SALÁRIO BRUTO: R$ ${salarioBruto.toFixed(2)}</p>
+     <p><strong>Salário base:</strong> R$ ${salarioBase.toFixed(2)}</p>
      <p>Auxílio alimentação: R$ ${auxilioAlimentacao.toFixed(2)}</p>
      <p>Auxílio transporte: R$ ${auxilioTransporte.toFixed(2)}</p>
      <p>Auxílio saúde: R$ ${auxilioSaude.toFixed(2)}</p>
      ${riscoVida > 0 ? `<p>Risco de vida: R$ ${riscoVida.toFixed(2)}</p>` : ''}
-     <p>Desconto FUNAFIN: R$ ${descontoFunafin.toFixed(2)}</p>
-     <p>Imposto de Renda: R$ ${impostoRenda.toFixed(2)}</p>
-     <p><strong>Desconto por dependentes (${dependentes}):</strong> R$ ${descontoDependentes.toFixed(2)}</p>
+     <p>Desconto FUNAFIN (14%): R$ ${descontoFUNAFIN.toFixed(2)}</p>
+     <p>Desconto dependentes: R$ ${descontoDependentes.toFixed(2)}</p>
+     <p>Imposto de renda: R$ ${impostoRenda.toFixed(2)}</p>
+     <p class="salario-bruto">SALÁRIO BRUTO: R$ ${salarioBruto.toFixed(2)}</p>
      <p class="salario-liquido">SALÁRIO LÍQUIDO: R$ ${salarioLiquido.toFixed(2)}</p>
    `;
  }
