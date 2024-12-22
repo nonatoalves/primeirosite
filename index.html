@@ -1,205 +1,182 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
- <meta charset="UTF-8">
- <title>CARGO E SALÁRIO</title>
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <style>
- body {
-   font-family: Arial, sans-serif;
-   margin: 0;
-   padding: 0;
-   box-sizing: border-box;
- }
- .container {
-   max-width: 960px;
-   margin: 0 auto;
-   padding: 20px;
- }
- h1 {
-   text-align: center;
-   margin-bottom: 20px;
- }
- .botao {
-   padding: 10px 20px;
-   margin: 10px;
-   border: 2px solid #ccc;
-   border-radius: 5px;
-   cursor: pointer;
-   font-weight: bold;
-   flex: 1;
-   text-align: center;
- }
- .botao:hover {
-   opacity: 0.8;
- }
- .ajudiciario {
-   background-color: #3498db;
-   color: #fff;
-   border-color: #2980b9;
- }
- .tecnico {
-   background-color: #f1c40f;
-   color: #333;
-   border-color: #d4ac0d;
- }
- .oficial {
-   background-color: #e74c3c;
-   color: #fff;
-   border-color: #c0392b;
- }
- .analista {
-   background-color: #2ecc71;
-   color: #333;
-   border-color: #27ae60;
- }
- .nivel-botao {
-   padding: 5px 10px;
-   margin: 5px;
-   border: 1px solid #ccc;
-   border-radius: 3px;
-   flex: 1;
- }
- .botoes-container {
-   display: flex;
-   flex-wrap: wrap;
-   justify-content: center;
- }
- #niveis, #resultado {
-   margin-top: 20px;
-   text-align: center;
- }
- .highlight {
-   font-weight: bold;
-   color: #d35400;
- }
- .salario-bruto {
-   color: #2980b9;
-   font-weight: bold;
-   text-transform: uppercase;
- }
- .salario-liquido {
-   color: #27ae60;
-   font-weight: bold;
-   text-transform: uppercase;
- }
- @media (max-width: 768px) {
-   .botao {
-     flex: none;
-     width: 90%;
-     margin: 10px auto;
-   }
-   .nivel-botao {
-     flex: none;
-     width: calc(33.33% - 10px);
-     margin: 5px;
-   }
- }
- @media (max-width: 480px) {
-   .nivel-botao {
-     width: calc(50% - 10px);
-   }
- }
- </style>
+  <meta charset="UTF-8">
+  <title>CARGO E SALÁRIO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .botao {
+      padding: 10px 20px;
+      margin: 10px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      flex: 1;
+      text-align: center;
+    }
+    .botao:hover {
+      opacity: 0.8;
+    }
+    .ajudiciario {
+      background-color: #3498db;
+      color: #fff;
+      border-color: #2980b9;
+    }
+    .tecnico {
+      background-color: #f1c40f;
+      color: #333;
+      border-color: #d4ac0d;
+    }
+    .oficial {
+      background-color: #e74c3c;
+      color: #fff;
+      border-color: #c0392b;
+    }
+    .analista {
+      background-color: #2ecc71;
+      color: #333;
+      border-color: #27ae60;
+    }
+    .nivel-botao {
+      padding: 5px 10px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      flex: 1;
+    }
+    .botoes-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    #niveis, #resultado {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .bruto {
+      color: #2c3e50;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+    .liquido {
+      color: #27ae60;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #7f8c8d;
+    }
+    @media (max-width: 768px) {
+      .botao {
+        flex: none;
+        width: 90%;
+        margin: 10px auto;
+      }
+      .nivel-botao {
+        flex: none;
+        width: calc(33.33% - 10px);
+        margin: 5px;
+      }
+    }
+    @media (max-width: 480px) {
+      .nivel-botao {
+        width: calc(50% - 10px);
+      }
+    }
+  </style>
 </head>
 <body>
- <div class="container">
-   <h1>SELECIONE SEU CARGO:</h1>
-   <div class="botoes-container">
-     <button class="botao ajudiciario" onclick="selecionarCargo('AJUDICIARIO')">AUXILIAR JUDICIÁRIO</button>
-     <button class="botao tecnico" onclick="selecionarCargo('TECNICO')">TÉCNICO JUDICIÁRIO</button>
-     <button class="botao oficial" onclick="selecionarCargo('OFICIAL')">OFICIAL DE JUSTIÇA</button>
-     <button class="botao analista" onclick="selecionarCargo('ANALISTA')">ANALISTA JUDICIÁRIO</button>
-   </div>
-   <div id="niveis"></div>
-   <div id="resultado"></div>
-   <div>
-     <label for="dependentes">Número de dependentes:</label>
-     <button onclick="alterarDependentes(-1)">-</button>
-     <span id="dependentes">0</span>
-     <button onclick="alterarDependentes(1)">+</button>
-   </div>
- </div>
- 
- <script>
- const salariosTabela = {
-   AJUDICIARIO: [5285.77, 5417.92, 5561.48, 5717.22, 5885.88, 6068.31, 6265.54, 6478.55, 6708.57, 6956.76, 7224.61, 7513.60, 7964.42, 8521.93, 9203.67, 10032.03, 11035.21, 12249.10, 13718.96, 15502.44, 17672.80, 20323.70],
-   TECNICO: [5563.97, 5703.06, 5854.18, 6018.12, 6195.67, 6387.71, 6595.30, 6819.56, 7061.65, 7322.93, 7604.88, 7909.04, 8383.61, 8970.47, 9688.07, 10560.03, 11616.01, 12893.77, 14441.02, 16318.37, 18602.93, 21393.38],
-   OFICIAL: [6887.67, 7059.86, 7246.95, 7449.88, 7669.64, 7907.40, 8164.40, 8441.99, 8741.68, 9065.13, 9414.12, 9790.68, 10378.14, 11104.59, 11992.97, 13072.32, 14379.57, 15961.33, 17876.68, 20200.65, 23028.76, 26483.08],
-   ANALISTA: [7250.19, 7431.45, 7628.39, 7841.97, 8073.31, 8323.57, 8594.11, 8886.32, 9201.76, 9542.23, 9909.62, 10305.98, 10924.35, 11689.06, 12624.19, 13760.36, 15136.41, 16801.40, 18817.55, 21263.84, 24240.77, 27876.90]
- };
+  <div class="container">
+    <h1>SELECIONE SEU CARGO:</h1>
+    <div class="botoes-container">
+      <button class="botao ajudiciario" onclick="selecionarCargo('AJUDICIARIO')">AUXILIAR JUDICIÁRIO</button>
+      <button class="botao tecnico" onclick="selecionarCargo('TECNICO')">TÉCNICO JUDICIÁRIO</button>
+      <button class="botao oficial" onclick="selecionarCargo('OFICIAL')">OFICIAL DE JUSTIÇA</button>
+      <button class="botao analista" onclick="selecionarCargo('ANALISTA')">ANALISTA JUDICIÁRIO</button>
+    </div>
+    <div id="niveis"></div>
+    <div id="resultado"></div>
+  </div>
 
- const cargoNomesCompletos = {
-   AJUDICIARIO: "AUXILIAR JUDICIÁRIO",
-   TECNICO: "TÉCNICO JUDICIÁRIO",
-   OFICIAL: "OFICIAL DE JUSTIÇA",
-   ANALISTA: "ANALISTA JUDICIÁRIO"
- };
+  <footer>
+    <p>Total de acessos: <span id="contadorAcessos">0</span></p>
+    <p>Pessoas online: <span id="pessoasOnline">0</span></p>
+  </footer>
 
- let cargoSelecionado = '';
- let dependentes = 0;
+  <script>
+    const salariosTabela = {
+      AJUDICIARIO: [5285.77, 5417.92, 5561.48, 5717.22, 5885.88, 6068.31, 6265.54, 6478.55, 6708.57, 6956.76, 7224.61, 7513.60, 7964.42, 8521.93, 9203.67, 10032.03, 11035.21, 12249.10, 13718.96, 15502.44, 17672.80, 20323.70],
+      TECNICO: [5563.97, 5703.06, 5854.18, 6018.12, 6195.67, 6387.71, 6595.30, 6819.56, 7061.65, 7322.93, 7604.88, 7909.04, 8383.61, 8970.47, 9688.07, 10560.03, 11616.01, 12893.77, 14441.02, 16318.37, 18602.93, 21393.38],
+      OFICIAL: [6887.67, 7059.86, 7246.95, 7449.88, 7669.64, 7907.40, 8164.40, 8441.99, 8741.68, 9065.13, 9414.12, 9790.68, 10378.14, 11104.59, 11992.97, 13072.32, 14379.57, 15961.33, 17876.68, 20200.65, 23028.76, 26483.08],
+      ANALISTA: [7250.19, 7431.45, 7628.39, 7841.97, 8073.31, 8323.57, 8594.11, 8886.32, 9201.76, 9542.23, 9909.62, 10305.98, 10924.35, 11689.06, 12624.19, 13760.36, 15136.41, 16801.40, 18817.55, 21263.84, 24240.77, 27876.90]
+    };
 
- function selecionarCargo(cargo) {
-   cargoSelecionado = cargo;
-   document.getElementById('resultado').innerHTML = ''; // Limpa o resultado anterior
-   let niveis = '';
-   for (let i = 0; i < 22; i++) {
-     niveis += `<button class="nivel-botao ${cargo.toLowerCase()}" onclick="calcularSalario(${i})">PADRÃO ${i}</button>`;
-   }
-   document.getElementById('niveis').innerHTML = niveis;
- }
+    const cargoNomesCompletos = {
+      AJUDICIARIO: "AUXILIAR JUDICIÁRIO",
+      TECNICO: "TÉCNICO JUDICIÁRIO",
+      OFICIAL: "OFICIAL DE JUSTIÇA",
+      ANALISTA: "ANALISTA JUDICIÁRIO"
+    };
 
- function alterarDependentes(valor) {
-   dependentes = Math.max(0, dependentes + valor);
-   document.getElementById('dependentes').innerText = dependentes;
- }
+    let cargoSelecionado = '';
 
- function calcularSalario(nivel) {
-   const salarioBase = salariosTabela[cargoSelecionado][nivel];
-   const auxilioAlimentacao = 1197.60;
-   const auxilioTransporte = cargoSelecionado === 'OFICIAL' ? 2515.95 : 246.40;
-   const auxilioSaude = salarioBase * 0.1;
-   const riscoVida = cargoSelecionado === 'OFICIAL' ? 650.86 : 0;
+    function selecionarCargo(cargo) {
+      cargoSelecionado = cargo;
+      document.getElementById('resultado').innerHTML = ''; // Limpa o resultado anterior
+      let niveis = '';
+      for (let i = 0; i < 22; i++) {
+        niveis += `<button class="nivel-botao ${cargo.toLowerCase()}" onclick="calcularSalario(${i})">PADRÃO ${i}</button>`;
+      }
+      document.getElementById('niveis').innerHTML = niveis;
+    }
 
-   const descontoFUNAFIN = salarioBase * 0.14;
-   const descontoDependentes = dependentes * 189.59;
-   const baseIR = salarioBase - descontoFUNAFIN - descontoDependentes;
+    function calcularSalario(nivel) {
+      const salarioBase = salariosTabela[cargoSelecionado][nivel];
+      const auxilioAlimentacao = 1197.60;
+      const auxilioTransporte = cargoSelecionado === 'OFICIAL' ? 2515.95 : 246.40;
+      const auxilioSaude = salarioBase * 0.1;
 
-   let impostoRenda = 0;
-   if (baseIR <= 2259.20) {
-     impostoRenda = 0;
-   } else if (baseIR <= 2826.65) {
-     impostoRenda = baseIR * 0.075 - 169.44;
-   } else if (baseIR <= 3751.05) {
-     impostoRenda = baseIR * 0.15 - 381.44;
-   } else if (baseIR <= 4664.68) {
-     impostoRenda = baseIR * 0.225 - 662.77;
-   } else {
-     impostoRenda = baseIR * 0.275 - 896;
-   }
+      const salarioBruto = salarioBase + auxilioAlimentacao + auxilioTransporte + auxilioSaude;
 
-   impostoRenda = Math.max(0, impostoRenda);
+      document.getElementById("resultado").innerHTML = `
+        <h2>RESULTADO:</h2>
+        <p><strong>Cargo:</strong> ${cargoNomesCompletos[cargoSelecionado]}</p>
+        <p class="bruto">SALÁRIO BRUTO: R$ ${salarioBruto.toFixed(2)}</p>
+      `;
+    }
 
-   let salarioFinal = salarioBase + riscoVida;
-   const salarioBruto = salarioFinal + auxilioAlimentacao + auxilioTransporte + auxilioSaude;
-   const salarioLiquido = salarioBruto - descontoFUNAFIN - impostoRenda;
+    // Contador de acessos
+    let contadorAcessos = localStorage.getItem('contadorAcessos') || 0;
+    contadorAcessos++;
+    localStorage.setItem('contadorAcessos', contadorAcessos);
+    document.getElementById('contadorAcessos').textContent = contadorAcessos;
 
-   document.getElementById("resultado").innerHTML = `
-     <h2>RESULTADO:</h2>
-     <p><strong>Cargo:</strong> ${cargoNomesCompletos[cargoSelecionado]}</p>
-     <p><strong>Padrão:</strong> ${nivel}</p>
-     <p><strong>Salário base:</strong> R$ ${salarioBase.toFixed(2)}</p>
-     <p>Auxílio alimentação: R$ ${auxilioAlimentacao.toFixed(2)}</p>
-     <p>Auxílio transporte: R$ ${auxilioTransporte.toFixed(2)}</p>
-     <p>Auxílio saúde: R$ ${auxilioSaude.toFixed(2)}</p>
-     ${riscoVida > 0 ? `<p>Risco de vida: R$ ${riscoVida.toFixed(2)}</p>` : ''}
-     <p>Desconto FUNAFIN (14%): R$ ${descontoFUNAFIN.toFixed(2)}</p>
-     <p>Desconto dependentes: R$ ${descontoDependentes.toFixed(2)}</p>
-     <p>Imposto de renda: R$ ${impostoRenda.toFixed(2)}</p>
-     <p class="salario-bruto">SALÁRIO BRUTO: R$ ${salarioBruto.toFixed(2)}</p>
-     <p class="salario-liquido">SALÁRIO LÍQUIDO: R$ ${salarioLiquido.toFixed(2)}</p>
-   `;
- }
- </script>
+    // Simular pessoas online
+    function atualizarPessoasOnline() {
+      const pessoasOnline = Math.floor(Math.random() * 100) + 1;
+      document.getElementById('pessoasOnline').textContent = pessoasOnline;
+    }
+    atualizarPessoasOnline();
+    setInterval(atualizarPessoasOnline, 5000);
+  </script>
 </body>
 </html>
