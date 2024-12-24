@@ -1,105 +1,106 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transmissão de Vídeo e Áudio</title>
-  <style>
-    video {
-      width: 300px;
-      height: 200px;
-      margin: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Simples</title>
+    <style>
+        /* Estilo básico */
+        body {
+            background-color: #f0f8ff; /* Fundo colorido */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+    </style>
 </head>
 <body>
 
-  <h1>Transmissão de Vídeo e Áudio</h1>
+    <div class="chat-container">
+        <h2>Chat Simples</h2>
+        <div class="messages" id="messages"></div>
 
-  <!-- Elementos para exibir o vídeo -->
-  <video id="localVideo" autoplay muted></video>
-  <video id="remoteVideo" autoplay></video>
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="Digite sua mensagem..." />
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
+    <script>
+        // Função para enviar a mensagem
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const messagesContainer = document.getElementById('messages');
 
-    let localStream;
-    let remoteStream;
-    let peerConnection;
+            const message = messageInput.value.trim();
 
-    // Configurações do WebRTC
-    const servers = {
-      iceServers: [
-        {
-          urls: 'stun:stun.l.google.com:19302'
+            if (message) {
+                const newMessage = document.createElement('p');
+                newMessage.textContent = message;
+                messagesContainer.appendChild(newMessage);
+
+                // Rola a tela para baixo
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                // Limpa o campo de entrada
+                messageInput.value = '';
+            }
         }
-      ]
-    };
 
-    // Obtém a mídia local (áudio e vídeo)
-    async function start() {
-      try {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        document.getElementById('localVideo').srcObject = localStream;
-
-        // Cria a conexão com o peer (outro usuário)
-        peerConnection = new RTCPeerConnection(servers);
-
-        // Adiciona os streams locais à conexão
-        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-        // Quando recebermos o stream remoto, mostramos na tela
-        peerConnection.ontrack = function(event) {
-          if (event.streams && event.streams[0]) {
-            remoteStream = event.streams[0];
-            document.getElementById('remoteVideo').srcObject = remoteStream;
-          }
-        };
-
-        // Envia o ICE Candidate para os outros peers
-        peerConnection.onicecandidate = function(event) {
-          if (event.candidate) {
-            socket.emit('candidate', event.candidate);
-          }
-        };
-
-        // Cria uma oferta de conexão
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-
-        // Envia a oferta para o outro peer
-        socket.emit('offer', offer);
-      } catch (error) {
-        console.error('Erro ao acessar a mídia: ', error);
-      }
-    }
-
-    // Recebe a oferta de outro peer
-    socket.on('offer', async (offer) => {
-      await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-
-      // Cria uma resposta (answer) para o outro peer
-      const answer = await peerConnection.createAnswer();
-      await peerConnection.setLocalDescription(answer);
-
-      // Envia a resposta para o outro peer
-      socket.emit('answer', answer);
-    });
-
-    // Recebe a resposta de outro peer
-    socket.on('answer', (answer) => {
-      peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-    });
-
-    // Recebe o ICE Candidate de outro peer
-    socket.on('candidate', (candidate) => {
-      peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-    });
-
-    // Começar a captura e a transmissão
-    start();
-  </script>
+        // Permite enviar a mensagem pressionando "Enter"
+        document.getElementById('messageInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
 
 </body>
 </html>
