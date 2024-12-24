@@ -26,6 +26,8 @@
     ul {
       list-style-type: none;
       padding: 0;
+      max-height: 200px;
+      overflow-y: scroll;
     }
     li {
       padding: 8px;
@@ -57,19 +59,29 @@
 
   <div class="chat-container">
     <h2>Chat em Tempo Real</h2>
+    <div>
+      <label for="room">Escolha uma sala: </label>
+      <select id="room">
+        <option value="room1">Sala 1</option>
+        <option value="room2">Sala 2</option>
+      </select>
+    </div>
     <ul id="messages"></ul>
     <input id="inputMessage" type="text" placeholder="Digite sua mensagem..."/>
     <button onclick="sendMessage()">Enviar</button>
   </div>
 
   <script>
-    // Conectando ao servidor Socket.io
     const socket = io();
+
+    // Entrar em uma sala quando a página é carregada
+    const room = document.getElementById('room').value;
+    socket.emit('join room', room); // Envia o evento de entrar na sala
 
     // Função para enviar a mensagem
     function sendMessage() {
       const message = document.getElementById('inputMessage').value;
-      socket.emit('chat message', message); // Envia a mensagem para o servidor
+      socket.emit('chat message', message, room); // Envia a mensagem para a sala atual
       document.getElementById('inputMessage').value = ''; // Limpa o campo de entrada
     }
 
@@ -78,6 +90,12 @@
       const li = document.createElement('li');
       li.textContent = msg; // Cria um item de lista com a mensagem
       document.getElementById('messages').appendChild(li); // Adiciona ao chat
+    });
+
+    // Atualiza a sala de chat se o usuário escolher outra
+    document.getElementById('room').addEventListener('change', function() {
+      const newRoom = this.value;
+      socket.emit('join room', newRoom); // Entra na nova sala
     });
   </script>
 
