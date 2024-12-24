@@ -3,127 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transmissão de Vídeo ao Vivo</title>
+  <title>Transmissão de Vídeo e Áudio</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f1f8f6;
-      margin: 0;
-      padding: 20px;
+    video {
+      width: 300px;
+      height: 200px;
+      margin: 10px;
     }
-
-    h1 {
-      font-size: 36px;
-      margin-top: 30px;
-      color: #2ecc71;
-    }
-
-    #localVideo, #remoteVideo {
-      width: 100%;
-      max-width: 600px;
-      border: 2px solid black;
-      margin-top: 20px;
-    }
-
-    button {
-      background-color: #3498db;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    button:hover {
-      background-color: #2980b9;
-    }
-
   </style>
 </head>
 <body>
 
-  <h1>Transmissão de Vídeo ao Vivo com WebRTC</h1>
+  <h1>Transmissão de Vídeo e Áudio</h1>
 
-  <!-- Vídeo local -->
+  <!-- Elementos para exibir o vídeo -->
   <video id="localVideo" autoplay muted></video>
-
-  <!-- Vídeo remoto -->
   <video id="remoteVideo" autoplay></video>
 
-  <!-- Botão para iniciar transmissão -->
-  <button id="startButton">Iniciar Transmissão</button>
-
+  <script src="/socket.io/socket.io.js"></script>
   <script>
+    const socket = io();
+
     let localStream;
+    let remoteStream;
     let peerConnection;
-    let remoteVideo = document.getElementById('remoteVideo');
-    let localVideo = document.getElementById('localVideo');
-    let startButton = document.getElementById('startButton');
 
-    // Configuração do ICE Server (STUN ou TURN)
-    const iceServers = [{
-      urls: 'stun:stun.l.google.com:19302' // Usando um servidor STUN público
-    }];
+    // Configurações do WebRTC
+    const servers = {
+      iceServers: [
+        {
+          urls: 'stun:stun.l.google.com:19302'
+        }
+      ]
+    };
 
-    startButton.onclick = startTransmission;
+    // Obtém a mídia local (áudio e vídeo)
+    async function start() {
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        document.getElementById('localVideo').srcObject = localStream;
 
-    // Função para iniciar a captura e transmissão
-    async function startTransmission() {
-      // Solicita permissão para acessar a câmera
-      localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        // Cria a conexão com o peer (outro usuário)
+        peerConnection = new RTCPeerConnection(servers);
 
-      // Exibe o vídeo local na página
-      localVideo.srcObject = localStream;
+        // Adiciona os streams locais à conexão
+        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
-      // Configura o PeerConnection
-      peerConnection = new RTCPeerConnection({ iceServers });
+        // Quando recebermos o stream remoto, mostramos na tela
+        peerConnection.ontrack = function(event) {
+          if (event.streams && event.streams[0]) {
+            remoteStream = event.streams[0];
+            document.getElementById('remoteVideo').srcObject = remoteStream;
+          }
+        };
 
-      // Adiciona o stream local à conexão
-      localStream.getTracks().forEach(track => {
-        peerConnection.addTrack(track, localStream);
-      });
+        // Envia o ICE Candidate para os outros peers
+        peerConnection.onicecandidate = function(event) {
+          if (event.candidate) {
+            socket.emit('candidate', event.candidate);
+          }
+        };
 
-      // Cria uma oferta e envia para o peer remoto
-      const offer = await peerConnection.createOffer();
-      await peerConnection.setLocalDescription(offer);
-      sendOfferToRemotePeer(offer);
+        // Cria uma oferta de conexão
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+
+        // Envia a oferta para o outro peer
+        socket.emit('offer', offer);
+      } catch (error) {
+        console.error('Erro ao acessar a mídia: ', error);
+      }
     }
 
-    // Simula o envio da oferta para outro usuário (substitua com seu servidor ou mecanismo real)
-    function sendOfferToRemotePeer(offer) {
-      // Simulação de recebimento da oferta (normalmente, você usaria um servidor de sinalização)
-      receiveOfferFromRemotePeer(offer);
-    }
-
-    // Simula a resposta do peer remoto ao receber a oferta
-    async function receiveOfferFromRemotePeer(offer) {
-      // Recebe a oferta e cria uma resposta
+    // Recebe a oferta de outro peer
+    socket.on('offer', async (offer) => {
       await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
 
+      // Cria uma resposta (answer) para o outro peer
       const answer = await peerConnection.createAnswer();
       await peerConnection.setLocalDescription(answer);
 
-      // Simula o envio da resposta para o peer remoto
-      sendAnswerToRemotePeer(answer);
-    }
+      // Envia a resposta para o outro peer
+      socket.emit('answer', answer);
+    });
 
-    // Simula o envio da resposta para o peer remoto
-    function sendAnswerToRemotePeer(answer) {
-      // Simulação de recebimento da resposta (no mundo real, seria um envio via servidor de sinalização)
-      receiveAnswerFromRemotePeer(answer);
-    }
-
-    // Simula o recebimento da resposta do peer remoto
-    function receiveAnswerFromRemotePeer(answer) {
+    // Recebe a resposta de outro peer
+    socket.on('answer', (answer) => {
       peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-    }
+    });
 
-    // Exibe o stream remoto quando o peer remoto enviar a mídia
-    peerConnection.ontrack = function(event) {
-      remoteVideo.srcObject = event.streams[0];
-    };
+    // Recebe o ICE Candidate de outro peer
+    socket.on('candidate', (candidate) => {
+      peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    });
+
+    // Começar a captura e a transmissão
+    start();
   </script>
 
 </body>
