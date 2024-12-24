@@ -3,43 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bem-vindo ao Nosso Site!</title>
+  <title>Transmissão de Vídeo ao Vivo</title>
   <style>
-    /* Reset do estilo */
-    body, h1, button {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-
     body {
-      background-color: #f1f8f6;
+      font-family: Arial, sans-serif;
       text-align: center;
-      color: #333;
+      background-color: #f1f8f6;
+      margin: 0;
       padding: 20px;
-    }
-
-    /* Estilo do símbolo piscante */
-    .symbol {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background-color: #3498db;
-      animation: blink 1.5s infinite alternate;
-      margin-top: 50px;
-    }
-
-    /* Animação do símbolo piscando */
-    @keyframes blink {
-      0% {
-        background-color: #3498db;
-      }
-      50% {
-        background-color: #e74c3c;
-      }
-      100% {
-        background-color: #2ecc71;
-      }
     }
 
     h1 {
@@ -48,134 +19,111 @@
       color: #2ecc71;
     }
 
-    .button-container {
-      margin-top: 40px;
+    #localVideo, #remoteVideo {
+      width: 100%;
+      max-width: 600px;
+      border: 2px solid black;
+      margin-top: 20px;
     }
 
     button {
       background-color: #3498db;
       color: white;
-      padding: 15px 30px;
-      font-size: 18px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      margin-top: 20px;
     }
 
     button:hover {
       background-color: #2980b9;
     }
 
-    .camera-container {
-      display: none;
-      margin-top: 30px;
-      text-align: center;
-    }
-
-    #video {
-      border: 5px solid #3498db;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 640px;
-    }
-
-    .back-button {
-      margin-top: 20px;
-      background-color: #e74c3c;
-    }
-
-    .back-button:hover {
-      background-color: #c0392b;
-    }
-
-    /* Estilo para a imagem capturada */
-    #photo {
-      border: 5px solid #3498db;
-      border-radius: 10px;
-      margin-top: 20px;
-      width: 250px;
-      height: 333px; /* Formato 3x4 */
-      object-fit: cover;
-    }
-
   </style>
 </head>
 <body>
 
-  <!-- Página Inicial -->
-  <div class="welcome-container">
-    <h1>Bem-vindo ao nosso site!</h1>
-    <div class="symbol"></div> <!-- Símbolo colorido piscante -->
-    <div class="button-container">
-      <button onclick="accessCamera()">Acessar Câmera</button>
-    </div>
-  </div>
+  <h1>Transmissão de Vídeo ao Vivo com WebRTC</h1>
 
-  <!-- Página de Câmera -->
-  <div class="camera-container" id="cameraContainer">
-    <h2>Vídeo da Câmera</h2>
-    <video id="video" autoplay></video>
-    <br>
-    <button onclick="takePhoto()">Tirar Foto</button> <!-- Botão para tirar foto -->
-    <br>
-    <img id="photo" alt="Foto Capturada" style="display: none;"> <!-- Imagem capturada -->
-    <br>
-    <button class="back-button" onclick="goBack()">Voltar</button>
-  </div>
+  <!-- Vídeo local -->
+  <video id="localVideo" autoplay muted></video>
+
+  <!-- Vídeo remoto -->
+  <video id="remoteVideo" autoplay></video>
+
+  <!-- Botão para iniciar transmissão -->
+  <button id="startButton">Iniciar Transmissão</button>
 
   <script>
-    let stream;
+    let localStream;
+    let peerConnection;
+    let remoteVideo = document.getElementById('remoteVideo');
+    let localVideo = document.getElementById('localVideo');
+    let startButton = document.getElementById('startButton');
 
-    // Função para acessar a câmera
-    function accessCamera() {
-      document.querySelector('.welcome-container').style.display = 'none'; // Esconde a tela inicial
-      document.getElementById('cameraContainer').style.display = 'block'; // Mostra a tela da câmera
+    // Configuração do ICE Server (STUN ou TURN)
+    const iceServers = [{
+      urls: 'stun:stun.l.google.com:19302' // Usando um servidor STUN público
+    }];
 
-      // Acessa a câmera
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function (userStream) {
-          stream = userStream;
-          document.getElementById('video').srcObject = stream;
-        })
-        .catch(function (err) {
-          alert('Erro ao acessar a câmera: ' + err);
-        });
+    startButton.onclick = startTransmission;
+
+    // Função para iniciar a captura e transmissão
+    async function startTransmission() {
+      // Solicita permissão para acessar a câmera
+      localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+      // Exibe o vídeo local na página
+      localVideo.srcObject = localStream;
+
+      // Configura o PeerConnection
+      peerConnection = new RTCPeerConnection({ iceServers });
+
+      // Adiciona o stream local à conexão
+      localStream.getTracks().forEach(track => {
+        peerConnection.addTrack(track, localStream);
+      });
+
+      // Cria uma oferta e envia para o peer remoto
+      const offer = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offer);
+      sendOfferToRemotePeer(offer);
     }
 
-    // Função para tirar uma foto
-    function takePhoto() {
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-
-      const video = document.getElementById('video');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      // Desenha o conteúdo do vídeo no canvas
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      // Converte o canvas em uma imagem (base64)
-      const dataUrl = canvas.toDataURL('image/png');
-
-      // Exibe a imagem no formato 3x4
-      const photo = document.getElementById('photo');
-      photo.src = dataUrl;
-      photo.style.display = 'block'; // Mostra a imagem capturada
+    // Simula o envio da oferta para outro usuário (substitua com seu servidor ou mecanismo real)
+    function sendOfferToRemotePeer(offer) {
+      // Simulação de recebimento da oferta (normalmente, você usaria um servidor de sinalização)
+      receiveOfferFromRemotePeer(offer);
     }
 
-    // Função para voltar à página inicial
-    function goBack() {
-      document.querySelector('.welcome-container').style.display = 'block'; // Mostra a tela inicial
-      document.getElementById('cameraContainer').style.display = 'none'; // Esconde a tela da câmera
+    // Simula a resposta do peer remoto ao receber a oferta
+    async function receiveOfferFromRemotePeer(offer) {
+      // Recebe a oferta e cria uma resposta
+      await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
 
-      // Desliga o vídeo e limpa a fonte
-      let video = document.getElementById('video');
-      let tracks = stream.getTracks();
+      const answer = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answer);
 
-      tracks.forEach(track => track.stop()); // Para o fluxo da câmera
-      video.srcObject = null; // Limpa a fonte
+      // Simula o envio da resposta para o peer remoto
+      sendAnswerToRemotePeer(answer);
     }
+
+    // Simula o envio da resposta para o peer remoto
+    function sendAnswerToRemotePeer(answer) {
+      // Simulação de recebimento da resposta (no mundo real, seria um envio via servidor de sinalização)
+      receiveAnswerFromRemotePeer(answer);
+    }
+
+    // Simula o recebimento da resposta do peer remoto
+    function receiveAnswerFromRemotePeer(answer) {
+      peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+    }
+
+    // Exibe o stream remoto quando o peer remoto enviar a mídia
+    peerConnection.ontrack = function(event) {
+      remoteVideo.srcObject = event.streams[0];
+    };
   </script>
 
 </body>
