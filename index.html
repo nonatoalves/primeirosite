@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bem-vindo ao Nosso Site!</title>
   <style>
-    /* Reset do estilo */ <!– e –>
+    /* Reset do estilo */
     body, h1, button {
       margin: 0;
       padding: 0;
@@ -19,18 +19,27 @@
       padding: 20px;
     }
 
-    /* Estilo do coelho */
-    .coelho {
-      width: 200px;
-      height: auto;
+    /* Estilo do símbolo piscante */
+    .symbol {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #3498db;
+      animation: blink 1.5s infinite alternate;
       margin-top: 50px;
-      animation: jump 1s ease-in-out infinite;
     }
 
-    /* Animação do pulo do coelho */
-    @keyframes jump {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
+    /* Animação do símbolo piscando */
+    @keyframes blink {
+      0% {
+        background-color: #3498db;
+      }
+      50% {
+        background-color: #e74c3c;
+      }
+      100% {
+        background-color: #2ecc71;
+      }
     }
 
     h1 {
@@ -79,6 +88,17 @@
     .back-button:hover {
       background-color: #c0392b;
     }
+
+    /* Estilo para a imagem capturada */
+    #photo {
+      border: 5px solid #3498db;
+      border-radius: 10px;
+      margin-top: 20px;
+      width: 250px;
+      height: 333px; /* Formato 3x4 */
+      object-fit: cover;
+    }
+
   </style>
 </head>
 <body>
@@ -86,7 +106,7 @@
   <!-- Página Inicial -->
   <div class="welcome-container">
     <h1>Bem-vindo ao nosso site!</h1>
-    <img src="https://example.com/rabbit.png" alt="Coelho" class="coelho"> <!-- Coelho animado -->
+    <div class="symbol"></div> <!-- Símbolo colorido piscante -->
     <div class="button-container">
       <button onclick="accessCamera()">Acessar Câmera</button>
     </div>
@@ -97,10 +117,16 @@
     <h2>Vídeo da Câmera</h2>
     <video id="video" autoplay></video>
     <br>
+    <button onclick="takePhoto()">Tirar Foto</button> <!-- Botão para tirar foto -->
+    <br>
+    <img id="photo" alt="Foto Capturada" style="display: none;"> <!-- Imagem capturada -->
+    <br>
     <button class="back-button" onclick="goBack()">Voltar</button>
   </div>
 
   <script>
+    let stream;
+
     // Função para acessar a câmera
     function accessCamera() {
       document.querySelector('.welcome-container').style.display = 'none'; // Esconde a tela inicial
@@ -108,12 +134,34 @@
 
       // Acessa a câmera
       navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function (stream) {
+        .then(function (userStream) {
+          stream = userStream;
           document.getElementById('video').srcObject = stream;
         })
         .catch(function (err) {
           alert('Erro ao acessar a câmera: ' + err);
         });
+    }
+
+    // Função para tirar uma foto
+    function takePhoto() {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+
+      const video = document.getElementById('video');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      // Desenha o conteúdo do vídeo no canvas
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Converte o canvas em uma imagem (base64)
+      const dataUrl = canvas.toDataURL('image/png');
+
+      // Exibe a imagem no formato 3x4
+      const photo = document.getElementById('photo');
+      photo.src = dataUrl;
+      photo.style.display = 'block'; // Mostra a imagem capturada
     }
 
     // Função para voltar à página inicial
@@ -123,7 +171,6 @@
 
       // Desliga o vídeo e limpa a fonte
       let video = document.getElementById('video');
-      let stream = video.srcObject;
       let tracks = stream.getTracks();
 
       tracks.forEach(track => track.stop()); // Para o fluxo da câmera
