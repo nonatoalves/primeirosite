@@ -1,106 +1,85 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Simples</title>
-    <style>
-        /* Estilo básico */
-        body {
-            background-color: #f0f8ff; /* Fundo colorido */
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .chat-container {
-            width: 100%;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .messages {
-            border: 1px solid #ccc;
-            padding: 10px;
-            height: 300px;
-            overflow-y: scroll;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-        }
-
-        .input-container {
-            display: flex;
-            gap: 10px;
-        }
-
-        input[type="text"] {
-            width: 80%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat em Tempo Real</title>
+  <script src="/socket.io/socket.io.js"></script> <!-- Carrega o Socket.io -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .chat-container {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      width: 400px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      padding: 8px;
+      margin: 5px 0;
+      background-color: #e1f7d5;
+      border-radius: 4px;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 15px;
+      margin-left: 10px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="chat-container">
-        <h2>Chat Simples</h2>
-        <div class="messages" id="messages"></div>
+  <div class="chat-container">
+    <h2>Chat em Tempo Real</h2>
+    <ul id="messages"></ul>
+    <input id="inputMessage" type="text" placeholder="Digite sua mensagem..."/>
+    <button onclick="sendMessage()">Enviar</button>
+  </div>
 
-        <div class="input-container">
-            <input type="text" id="messageInput" placeholder="Digite sua mensagem..." />
-            <button onclick="sendMessage()">Enviar</button>
-        </div>
-    </div>
+  <script>
+    // Conectando ao servidor Socket.io
+    const socket = io();
 
-    <script>
-        // Função para enviar a mensagem
-        function sendMessage() {
-            const messageInput = document.getElementById('messageInput');
-            const messagesContainer = document.getElementById('messages');
+    // Função para enviar a mensagem
+    function sendMessage() {
+      const message = document.getElementById('inputMessage').value;
+      socket.emit('chat message', message); // Envia a mensagem para o servidor
+      document.getElementById('inputMessage').value = ''; // Limpa o campo de entrada
+    }
 
-            const message = messageInput.value.trim();
-
-            if (message) {
-                const newMessage = document.createElement('p');
-                newMessage.textContent = message;
-                messagesContainer.appendChild(newMessage);
-
-                // Rola a tela para baixo
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-                // Limpa o campo de entrada
-                messageInput.value = '';
-            }
-        }
-
-        // Permite enviar a mensagem pressionando "Enter"
-        document.getElementById('messageInput').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    </script>
+    // Ouve as mensagens recebidas do servidor
+    socket.on('chat message', function(msg) {
+      const li = document.createElement('li');
+      li.textContent = msg; // Cria um item de lista com a mensagem
+      document.getElementById('messages').appendChild(li); // Adiciona ao chat
+    });
+  </script>
 
 </body>
 </html>
