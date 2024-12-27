@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparação Salarial - TRT</title>
+    <title>Comparação Salarial - TRT e TJPE</title>
     <style>
         /* Estilos Globais */
         body {
@@ -64,13 +64,14 @@
         .btn-group {
             display: flex;
             justify-content: center;
+            margin-bottom: 20px;
         }
 
         .btn {
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 5px 15px;
+            padding: 10px 15px;
             margin: 0 5px;
             cursor: pointer;
             font-size: 16px;
@@ -109,14 +110,21 @@
 <body>
 
     <header>
-        <h1>Comparação Salarial - TRT</h1>
+        <h1>Comparação Salarial - TRT e TJPE</h1>
     </header>
 
     <div class="container">
-        <h2>Tabela Salarial - Analista Judiciário (TRT)</h2>
-        <table class="data-table" id="tabela-trt">
+        <h2>Selecione o nível para comparação</h2>
+        
+        <div class="btn-group">
+            <button class="btn" onclick="alterarNivel(-1)">-</button>
+            <button class="btn" onclick="alterarNivel(1)">+</button>
+        </div>
+
+        <table class="data-table">
             <thead>
                 <tr>
+                    <th>Cargo</th>
                     <th>Nível</th>
                     <th>Base</th>
                     <th>GAJ</th>
@@ -128,58 +136,71 @@
                     <th>Salário Bruto</th>
                 </tr>
             </thead>
-            <tbody id="tbody-trt"></tbody>
+            <tbody id="comparacao-tabela">
+                <!-- Os dados serão inseridos dinamicamente aqui -->
+            </tbody>
         </table>
     </div>
 
     <footer>
-        <p>&copy; 2024 Comparação Salarial - TRT</p>
+        <p>&copy; 2024 Comparação Salarial - TRT e TJPE</p>
     </footer>
 
     <script>
-        // Dados da tabela do TRT com todos os níveis
-        const dataTRT = [
-            { nivel: 1, base: 6188.61, gaj: 8664.05, remuneracao: 14852.66, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 464.15, salarioBruto: 18308.28 },
-            { nivel: 2, base: 6374.26, gaj: 8923.98, remuneracao: 15298.24, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 478.07, salarioBruto: 18767.78 },
-            { nivel: 3, base: 6565.49, gaj: 9191.69, remuneracao: 15757.18, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 492.41, salarioBruto: 19241.06 },
-            { nivel: 4, base: 6939.74, gaj: 9715.63, remuneracao: 16655.37, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 520.48, salarioBruto: 20167.32 },
-            { nivel: 5, base: 7147.92, gaj: 10007.09, remuneracao: 17155.01, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 536.09, salarioBruto: 20682.57 },
-            { nivel: 6, base: 7362.36, gaj: 10307.31, remuneracao: 17669.67, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 552.18, salarioBruto: 21213.32 },
-            { nivel: 7, base: 7583.23, gaj: 10616.53, remuneracao: 18199.76, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 568.74, salarioBruto: 21759.97 },
-            { nivel: 8, base: 7810.73, gaj: 10935.03, remuneracao: 18745.76, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 585.80, salarioBruto: 22323.03 },
-            { nivel: 9, base: 8255.95, gaj: 11558.32, remuneracao: 19814.27, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 619.20, salarioBruto: 23424.94 },
-            { nivel: 10, base: 8503.62, gaj: 11905.07, remuneracao: 20408.69, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 637.77, salarioBruto: 24037.93 },
-            { nivel: 11, base: 8758.73, gaj: 12262.22, remuneracao: 21020.95, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 656.90, salarioBruto: 24669.32 },
-            { nivel: 12, base: 9021.49, gaj: 12633.09, remuneracao: 21654.58, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 676.61, salarioBruto: 25322.66 },
-            { nivel: 13, base: 9292.14, gaj: 13008.99, remuneracao: 22301.13, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 696.91, salarioBruto: 25989.51 }
+        // Dados do TRT e TJPE para todos os níveis
+        const dadosTRT = [
+            {nivel: 0, base: 6188.61, gaj: 8664.05, remuneracao: 14852.66, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 464.15, salarioBruto: 18308.28},
+            {nivel: 1, base: 6374.26, gaj: 8923.98, remuneracao: 15298.24, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 478.07, salarioBruto: 18767.78},
+            {nivel: 2, base: 6565.49, gaj: 9191.69, remuneracao: 15757.18, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 492.41, salarioBruto: 19241.06},
+            {nivel: 3, base: 6939.74, gaj: 9715.63, remuneracao: 16655.37, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 520.48, salarioBruto: 20167.32},
+            {nivel: 4, base: 7147.92, gaj: 10007.09, remuneracao: 17155.01, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 536.09, salarioBruto: 20682.57},
+            {nivel: 5, base: 7362.36, gaj: 10307.31, remuneracao: 17669.67, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 552.18, salarioBruto: 21213.32},
+            {nivel: 6, base: 7583.23, gaj: 10616.53, remuneracao: 18199.76, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 568.74, salarioBruto: 21759.97},
+            {nivel: 7, base: 7810.73, gaj: 10935.03, remuneracao: 18745.76, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 585.80, salarioBruto: 22323.03},
+            {nivel: 8, base: 8255.95, gaj: 11558.32, remuneracao: 19814.27, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 619.20, salarioBruto: 23424.94},
+            {nivel: 9, base: 8503.62, gaj: 11905.07, remuneracao: 20408.69, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 637.77, salarioBruto: 24037.93},
+            {nivel: 10, base: 8758.73, gaj: 12262.22, remuneracao: 21020.95, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 656.90, salarioBruto: 24669.32},
+            {nivel: 11, base: 9021.49, gaj: 12633.09, remuneracao: 21654.58, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 676.61, salarioBruto: 25322.66},
+            {nivel: 12, base: 9292.14, gaj: 13008.99, remuneracao: 22301.13, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 696.91, salarioBruto: 25989.51},
+            {nivel: 13, base: 9569.85, gaj: 13391.92, remuneracao: 22961.77, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 717.35, salarioBruto: 26671.57}
         ];
 
-        // Função para preencher a tabela com os dados
-        function preencherTabelaTRT() {
-            const tabelaTRT = document.getElementById('tbody-trt');
-            let html = '';
+        // Função para exibir os dados com base no nível selecionado
+        let nivelAtual = 0; // Começar no nível 0
 
-            dataTRT.forEach(item => {
-                html += `
+        function exibirDados() {
+            const dados = dadosTRT[nivelAtual];
+            const tabela = document.getElementById('comparacao-tabela');
+
+            tabela.innerHTML = `
                 <tr>
-                    <td>${item.nivel}</td>
-                    <td>R$ ${item.base.toFixed(2)}</td>
-                    <td>R$ ${item.gaj.toFixed(2)}</td>
-                    <td>R$ ${item.remuneracao.toFixed(2)}</td>
-                    <td>R$ ${item.transporte.toFixed(2)}</td>
-                    <td>R$ ${item.alimentacao.toFixed(2)}</td>
-                    <td>R$ ${item.saude.toFixed(2)}</td>
-                    <td>R$ ${item.qualificacao.toFixed(2)}</td>
-                    <td>R$ ${item.salarioBruto.toFixed(2)}</td>
+                    <td>Analista Judiciário (TRT)</td>
+                    <td>${dados.nivel}</td>
+                    <td>R$ ${dados.base.toFixed(2)}</td>
+                    <td>R$ ${dados.gaj.toFixed(2)}</td>
+                    <td>R$ ${dados.remuneracao.toFixed(2)}</td>
+                    <td>R$ ${dados.transporte.toFixed(2)}</td>
+                    <td>R$ ${dados.alimentacao.toFixed(2)}</td>
+                    <td>R$ ${dados.saude.toFixed(2)}</td>
+                    <td>R$ ${dados.qualificacao.toFixed(2)}</td>
+                    <td>R$ ${dados.salarioBruto.toFixed(2)}</td>
                 </tr>
-                `;
-            });
-
-            tabelaTRT.innerHTML = html;
+            `;
         }
 
-        // Preenche a tabela ao carregar a página
-        window.onload = preencherTabelaTRT;
+        // Função para alterar o nível
+        function alterarNivel(incremento) {
+            nivelAtual += incremento;
+
+            // Garante que o nível fique dentro do intervalo válido
+            if (nivelAtual < 0) nivelAtual = 0;
+            if (nivelAtual > 13) nivelAtual = 13;
+
+            exibirDados();
+        }
+
+        // Inicializar a tabela com o nível 0
+        exibirDados();
     </script>
 
 </body>
