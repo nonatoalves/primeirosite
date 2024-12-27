@@ -189,24 +189,25 @@
                     <td>R$ ${row.transporte.toFixed(2)}</td>
                     <td>R$ ${row.alimentacao.toFixed(2)}</td>
                     <td>R$ ${row.saude.toFixed(2)}</td>
-                    <td>R$ ${(row.salarioBase + row.transporte + row.alimentacao + row.saude).toFixed(2)}</td>
+                    <td>R$ ${row.salarioTotal.toFixed(2)}</td>
                     <td><button onclick="updateLevel(${row.nivel}, 'tjpe')">Selecionar Nível</button></td>
                 `;
                 tableBody.appendChild(tr);
             });
         }
 
-        // Função para atualizar o gráfico e tabelas ao selecionar um nível
+        // Função para atualizar o gráfico
         function updateLevel(nivel, type) {
             if (type === 'trt') {
+                // Atualiza o valor para TRT
                 let trtSalary = trtData[nivel].salarioBase + trtData[nivel].alimentacao + trtData[nivel].qualificacao + trtData[nivel].saude + trtData[nivel].transporte;
                 chart.data.datasets[0].data[nivel] = trtSalary;
-                chart.update();
             } else if (type === 'tjpe') {
+                // Atualiza o valor para TJPE
                 let tjpeSalary = tjpeData[nivel].salarioBase + tjpeData[nivel].transporte + tjpeData[nivel].alimentacao + tjpeData[nivel].saude;
                 chart.data.datasets[1].data[nivel] = tjpeSalary;
-                chart.update();
             }
+            chart.update();
         }
 
         // Criar gráfico inicial
@@ -214,7 +215,7 @@
         const chart = new Chart(ctx, {
             type: 'line', // Altere para gráfico de linha
             data: {
-                labels: Array.from({ length: 10 }, (_, i) => `Nível ${i + 1}`), // Níveis
+                labels: Array.from({ length: 20 }, (_, i) => `Nível ${i + 1}`), // Níveis
                 datasets: [{
                     label: 'TRT - Salário Total',
                     data: trtData.map(row => row.salarioBase + row.alimentacao + row.qualificacao + row.saude + row.transporte),
