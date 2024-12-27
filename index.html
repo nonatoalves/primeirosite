@@ -1,248 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comparação Salarial - TRT e TJPE</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        header {
-            background-color: #4a90e2;
-            color: white;
-            padding: 1rem 2rem;
-            text-align: center;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 1rem;
-        }
-        .data-table {
-            width: 100%;
+        /* Estilo das tabelas */
+        table {
             border-collapse: collapse;
-            margin: 1rem 0;
-            text-align: left;
         }
-        .data-table th, .data-table td {
+        
+        th, td {
             border: 1px solid #ddd;
             padding: 8px;
+            text-align: left;
         }
-        .data-table th {
-            background-color: #4a90e2;
-            color: white;
-        }
-        canvas {
-            margin: 1rem auto;
-            display: block;
-        }
-        footer {
-            background-color: #4a90e2;
-            color: white;
-            text-align: center;
-            padding: 1rem 0;
-            margin-top: 2rem;
+        
+        th {
+            background-color: #f0f0f0;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Comparação Salarial - TRT e TJPE</h1>
-    </header>
-    <div class="container">
-        <h2>Analista Judiciário - TRT (13 Níveis)</h2>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Nível</th>
-                    <th>Salário Base</th>
-                    <th>Alimentação</th>
-                    <th>Qualificação</th>
-                    <th>Saúde</th>
-                    <th>Transporte</th>
-                    <th>Salário Total</th>
-                    <th>Selecionar Nível</th>
-                </tr>
-            </thead>
-            <tbody id="trt-table-body">
-                <!-- Tabela TRT será preenchida dinamicamente -->
-            </tbody>
-        </table>
-
-        <h2>Técnico Judiciário - TJPE (21 Níveis)</h2>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Nível</th>
-                    <th>Salário Base</th>
-                    <th>Transporte</th>
-                    <th>Alimentação</th>
-                    <th>Saúde</th>
-                    <th>Salário Total</th>
-                    <th>Selecionar Nível</th>
-                </tr>
-            </thead>
-            <tbody id="tjpe-table-body">
-                <!-- Tabela TJPE será preenchida dinamicamente -->
-            </tbody>
-        </table>
-
-        <h2>Evolução Salarial - Gráfico Comparativo</h2>
-        <canvas id="salaryChart" width="800" height="400"></canvas>
-    </div>
-
-    <footer>
-        <p>&copy; 2024 Comparação Salarial - TRT e TJPE</p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    <script>
-        // Dados completos de TRT (Analista Judiciário)
-        let trtData = [
-    {nivel: 1, salarioBase: 5703.06, alimentacao: 492.00, qualificacao: 1197.60, saude: 570.31, transporte: 7962.97, total: 15826.94},
-    {nivel: 2, salarioBase: 5854.18, alimentacao: 492.00, qualificacao: 1197.60, saude: 585.42, transporte: 8129.20, total: 16058.40},
-    {nivel: 3, salarioBase: 6018.12, alimentacao: 492.00, qualificacao: 1197.60, saude: 601.81, transporte: 8309.53, total: 16319.06},
-    {nivel: 4, salarioBase: 6195.67, alimentacao: 492.00, qualificacao: 1197.60, saude: 619.57, transporte: 8504.84, total: 16609.68},
-    {nivel: 5, salarioBase: 6387.71, alimentacao: 492.00, qualificacao: 1197.60, saude: 638.77, transporte: 8716.08, total: 16932.16},
-    {nivel: 6, salarioBase: 6595.30, alimentacao: 492.00, qualificacao: 1197.60, saude: 659.53, transporte: 8944.43, total: 17288.86},
-    {nivel: 7, salarioBase: 6819.56, alimentacao: 492.00, qualificacao: 1197.60, saude: 681.96, transporte: 9191.12, total: 17682.24},
-    {nivel: 8, salarioBase: 7061.65, alimentacao: 492.00, qualificacao: 1197.60, saude: 706.17, transporte: 9457.42, total: 18114.84},
-    {nivel: 9, salarioBase: 7322.93, alimentacao: 492.00, qualificacao: 1197.60, saude: 732.29, transporte: 9744.82, total: 18489.64},
-    {nivel: 10, salarioBase: 7604.88, alimentacao: 492.00, qualificacao: 1197.60, saude: 760.49, transporte: 10054.97, total: 18809.94},
-    {nivel: 11, salarioBase: 7909.04, alimentacao: 492.00, qualificacao: 1197.60, saude: 790.90, transporte: 10389.54, total: 19184.08},
-    {nivel: 12, salarioBase: 8383.61, alimentacao: 492.00, qualificacao: 1197.60, saude: 838.36, transporte: 10911.57, total: 19724.14},
-    {nivel: 13, salarioBase: 8970.47, alimentacao: 492.00, qualificacao: 1197.60, saude: 897.05, transporte: 11557.12, total: 20314.24}
-];
-
-
-        // Dados completos de TJPE (Técnico Judiciário)
-        let tjpeData = [
-            {nivel: 0, salarioBase: 5563.97, transporte: 492.00, alimentacao: 1197.60, saude: 556.40, salarioTotal: 7809.97},
-            {nivel: 1, salarioBase: 5703.06, transporte: 492.00, alimentacao: 1197.60, saude: 570.31, salarioTotal: 7962.97},
-            {nivel: 2, salarioBase: 5854.18, transporte: 492.00, alimentacao: 1197.60, saude: 585.42, salarioTotal: 8129.20},
-            {nivel: 3, salarioBase: 6018.12, transporte: 492.00, alimentacao: 1197.60, saude: 601.81, salarioTotal: 8309.53},
-            {nivel: 4, salarioBase: 6195.67, transporte: 492.00, alimentacao: 1197.60, saude: 619.57, salarioTotal: 8504.84},
-            {nivel: 5, salarioBase: 6387.71, transporte: 492.00, alimentacao: 1197.60, saude: 638.77, salarioTotal: 8716.08},
-            {nivel: 6, salarioBase: 6595.30, transporte: 492.00, alimentacao: 1197.60, saude: 659.53, salarioTotal: 8944.43},
-            {nivel: 7, salarioBase: 6819.56, transporte: 492.00, alimentacao: 1197.60, saude: 681.96, salarioTotal: 9191.12},
-            {nivel: 8, salarioBase: 7061.65, transporte: 492.00, alimentacao: 1197.60, saude: 706.17, salarioTotal: 9457.42},
-            {nivel: 9, salarioBase: 7322.93, transporte: 492.00, alimentacao: 1197.60, saude: 732.29, salarioTotal: 9744.82},
-            {nivel: 10, salarioBase: 7604.88, transporte: 492.00, alimentacao: 1197.60, saude: 760.49, salarioTotal: 10054.97},
-            {nivel: 11, salarioBase: 7909.04, transporte: 492.00, alimentacao: 1197.60, saude: 790.90, salarioTotal: 10389.54},
-            {nivel: 12, salarioBase: 8383.61, transporte: 492.00, alimentacao: 1197.60, saude: 838.36, salarioTotal: 10911.57},
-            {nivel: 13, salarioBase: 8970.47, transporte: 492.00, alimentacao: 1197.60, saude: 897.05, salarioTotal: 11557.12},
-            {nivel: 14, salarioBase: 9688.07, transporte: 492.00, alimentacao: 1197.60, saude: 968.81, salarioTotal: 12346.48},
-            {nivel: 15, salarioBase: 10560.03, transporte: 492.00, alimentacao: 1197.60, saude: 1056.00, salarioTotal: 13305.63},
-            {nivel: 16, salarioBase: 11616.01, transporte: 492.00, alimentacao: 1197.60, saude: 1161.60, salarioTotal: 14467.21},
-            {nivel: 17, salarioBase: 12893.77, transporte: 492.00, alimentacao: 1197.60, saude: 1289.38, salarioTotal: 15872.75},
-            {nivel: 18, salarioBase: 14441.02, transporte: 492.00, alimentacao: 1197.60, saude: 1444.10, salarioTotal: 17574.72},
-            {nivel: 19, salarioBase: 16318.37, transporte: 492.00, alimentacao: 1197.60, saude: 1631.84, salarioTotal: 19639.81},
-            {nivel: 20, salarioBase: 18602.93, transporte: 492.00, alimentacao: 1197.60, saude: 1860.29, salarioTotal: 22152.82},
-            {nivel: 21, salarioBase: 21393,38, transporte: 492.00, alimentacao: 1197.60, saude: 1860.29, salarioTotal: 25222,32}
-        ];
-
-        // Função para preencher a tabela do TRT
-        function fillTrtTable() {
-            let tableBody = document.getElementById('trt-table-body');
-            tableBody.innerHTML = '';
-            trtData.forEach(row => {
-                let tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${row.nivel + 1}</td>
-                    <td>R$ ${row.salarioBase.toFixed(2)}</td>
-                    <td>R$ ${row.alimentacao.toFixed(2)}</td>
-                    <td>R$ ${row.qualificacao.toFixed(2)}</td>
-                    <td>R$ ${row.saude.toFixed(2)}</td>
-                    <td>R$ ${row.transporte.toFixed(2)}</td>
-                    <td>R$ ${(row.salarioBase + row.alimentacao + row.qualificacao + row.saude + row.transporte).toFixed(2)}</td>
-                    <td><button onclick="updateLevel(${row.nivel}, 'trt')">Selecionar Nível</button></td>
-                `;
-                tableBody.appendChild(tr);
-            });
-        }
-
-        // Função para preencher a tabela do TJPE
-        function fillTjpeTable() {
-            let tableBody = document.getElementById('tjpe-table-body');
-            tableBody.innerHTML = '';
-            tjpeData.forEach(row => {
-                let tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${row.nivel + 1}</td>
-                    <td>R$ ${row.salarioBase.toFixed(2)}</td>
-                    <td>R$ ${row.transporte.toFixed(2)}</td>
-                    <td>R$ ${row.alimentacao.toFixed(2)}</td>
-                    <td>R$ ${row.saude.toFixed(2)}</td>
-                    <td>R$ ${row.salarioTotal.toFixed(2)}</td>
-                    <td><button onclick="updateLevel(${row.nivel}, 'tjpe')">Selecionar Nível</button></td>
-                `;
-                tableBody.appendChild(tr);
-            });
-        }
-
-        // Função para atualizar o gráfico
-        function updateLevel(nivel, type) {
-            if (type === 'trt') {
-                // Atualiza o valor para TRT
-                let trtSalary = trtData[nivel].salarioBase + trtData[nivel].alimentacao + trtData[nivel].qualificacao + trtData[nivel].saude + trtData[nivel].transporte;
-                chart.data.datasets[0].data[nivel] = trtSalary;
-            } else if (type === 'tjpe') {
-                // Atualiza o valor para TJPE
-                let tjpeSalary = tjpeData[nivel].salarioBase + tjpeData[nivel].transporte + tjpeData[nivel].alimentacao + tjpeData[nivel].saude;
-                chart.data.datasets[1].data[nivel] = tjpeSalary;
-            }
-            chart.update();
-        }
-
-        // Criar gráfico inicial
-        const ctx = document.getElementById('salaryChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line', // Altere para gráfico de linha
-            data: {
-                labels: Array.from({ length: 21 }, (_, i) => `Nível ${i + 1}`), // Níveis (com 21 para TJPE)
-                datasets: [{
-                    label: 'TRT - Salário Total',
-                    data: trtData.map(row => row.salarioBase + row.alimentacao + row.qualificacao + row.saude + row.transporte),
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    fill: false,
-                    borderWidth: 2
-                }, {
-                    label: 'TJPE - Salário Total',
-                    data: tjpeData.map(row => row.salarioBase + row.transporte + row.alimentacao + row.saude),
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    fill: false,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Nível'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Salário (R$)'
-                        },
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        // Inicializar as tabelas
-        fillTrtTable();
-        fillTjpeTable();
-    </script>
+    <h1>Comparação Salarial - TRT e TJPE</h1>
+    
+    <!-- Tabela Analista Judiciário - TRT -->
+    <h2>Analista Judiciário - TRT (13 Níveis)</h2>
+    <table>
+        <tr>
+            <th>Nível</th>
+            <th>Salário Base</th>
+            <th>Alimentação</th>
+            <th>Qualificação</th>
+            <th>Saúde</th>
+            <th>Transporte</th>
+            <th>Salário Total</th>
+            <th>Selecionar Nível</th>
+        </tr>
+        <!-- Inserir dados de 1 a 13 níveis -->
+        <tr>
+            <td>1</td>
+            <td>R$ 4.000,00</td>
+            <td>R$ 500,00</td>
+            <td>R$ 1.000,00</td>
+            <td>R$ 300,00</td>
+            <td>R$ 200,00</td>
+            <td>R$ 6.000,00</td>
+            <td><input type="radio" name="trt"></td>
+        </tr>
+        <!-- Adicionar mais linhas conforme necessário -->
+    </table>
+    
+    <!-- Tabela Técnico Judiciário - TJPE -->
+    <h2>Técnico Judiciário - TJPE (21 Níveis)</h2>
+    <table>
+        <tr>
+            <th>Nível</th>
+            <th>Salário Base</th>
+            <th>Transporte</th>
+            <th>Alimentação</th>
+            <th>Saúde</th>
+            <th>Salário Total</th>
+            <th>Selecionar Nível</th>
+        </tr>
+        <!-- Inserir dados de 1 a 21 níveis -->
+        <tr>
+            <td>1</td>
+            <td>R$ 3.500,00</td>
+            <td>R$ 300,00</td>
+            <td>R$ 400,00</td>
+            <td>R$ 250,00</td>
+            <td>R$ 4.450,00</td>
+            <td><input type="radio" name="tjpe"></td>
+        </tr>
+        <!-- Adicionar mais linhas conforme necessário -->
+    </table>
+    
+    <!-- Evolução Salarial - Gráfico Comparativo -->
+    <h2>Evolução Salarial - Gráfico Comparativo</h2>
+    <!-- Inserir gráfico aqui -->
+    <!-- Você pode usar bibliotecas como Chart.js ou Google Charts para criar gráficos dinâmicos -->
 </body>
 </html>
