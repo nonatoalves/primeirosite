@@ -22,7 +22,6 @@
         }
         button {
             padding: 5px 10px;
-            margin: 0 5px;
         }
     </style>
 </head>
@@ -32,7 +31,7 @@
     <table id="trt-table">
         <thead>
             <tr>
-                <th>Níveis</th>
+                <th>Nível</th>
                 <th>Base</th>
                 <th>GAJ</th>
                 <th>Remuneração</th>
@@ -47,7 +46,7 @@
             <tr>
                 <td>
                     <button onclick="decrementLevel('trt')">-</button>
-                    <span id="trt-level">1</span>
+                    <span id="trt-level">0</span>
                     <button onclick="incrementLevel('trt')">+</button>
                 </td>
                 <td id="trt-base">R$ 6.188,61</td>
@@ -65,7 +64,7 @@
     <table id="tjpe-table">
         <thead>
             <tr>
-                <th>Níveis</th>
+                <th>Nível</th>
                 <th>Base</th>
                 <th>Transporte</th>
                 <th>Alimentação</th>
@@ -92,19 +91,20 @@
     <script>
         const trtData = [
             { base: "R$ 6.188,61", gaj: "R$ 8.664,05", remuneracao: "R$ 14.852,66", alimentacao: "R$ 1.393,10", qualificacao: "R$ 464,15", saude: "R$ 1.100,00", transporte: "R$ 498,37", salarioBruto: "R$ 18.308,28" },
+            { base: "R$ 6.374,26", gaj: "R$ 8.923,98", remuneracao: "R$ 15.298,24", alimentacao: "R$ 1.393,10", qualificacao: "R$ 478,07", saude: "R$ 1.100,00", transporte: "R$ 498,37", salarioBruto: "R$ 18.767,78" },
             // Add all other levels for TRT here...
         ];
 
         const tjpeData = [
             { base: "R$ 5.563,97", transporte: "R$ 492,00", alimentacao: "R$ 1.197,60", saude: "R$ 556,40", salarioBruto: "R$ 7.809,97" },
+            { base: "R$ 5.703,06", transporte: "R$ 492,00", alimentacao: "R$ 1.197,60", saude: "R$ 570,31", salarioBruto: "R$ 7.962,97" },
             // Add all other levels for TJPE here...
         ];
 
-        let trtLevel = 1;
+        let trtLevel = 0;
         let tjpeLevel = 0;
 
         function updateTable(tableId, level, data) {
-            const table = document.getElementById(tableId);
             const row = data[level];
             if (tableId === 'trt-table') {
                 document.getElementById('trt-base').textContent = row.base;
@@ -115,7 +115,7 @@
                 document.getElementById('trt-saude').textContent = row.saude;
                 document.getElementById('trt-transporte').textContent = row.transporte;
                 document.getElementById('trt-salario-bruto').textContent = row.salarioBruto;
-                document.getElementById('trt-level').textContent = level + 1;
+                document.getElementById('trt-level').textContent = level;
             } else if (tableId === 'tjpe-table') {
                 document.getElementById('tjpe-base').textContent = row.base;
                 document.getElementById('tjpe-transporte').textContent = row.transporte;
@@ -128,9 +128,9 @@
 
         function incrementLevel(tableId) {
             if (tableId === 'trt') {
-                if (trtLevel < trtData.length) {
+                if (trtLevel < trtData.length - 1) {
                     trtLevel++;
-                    updateTable('trt-table', trtLevel - 1, trtData);
+                    updateTable('trt-table', trtLevel, trtData);
                 }
             } else if (tableId === 'tjpe') {
                 if (tjpeLevel < tjpeData.length - 1) {
@@ -142,9 +142,9 @@
 
         function decrementLevel(tableId) {
             if (tableId === 'trt') {
-                if (trtLevel > 1) {
+                if (trtLevel > 0) {
                     trtLevel--;
-                    updateTable('trt-table', trtLevel - 1, trtData);
+                    updateTable('trt-table', trtLevel, trtData);
                 }
             } else if (tableId === 'tjpe') {
                 if (tjpeLevel > 0) {
