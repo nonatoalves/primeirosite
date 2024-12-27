@@ -32,7 +32,7 @@
             text-align: center;
             color: #2c3e50;
             margin-bottom: 20px;
-            font-size: 32px;
+            font-size: 28px;
             font-weight: bold;
         }
         /* Subtítulo explicativo */
@@ -40,7 +40,7 @@
             text-align: center;
             color: #7f8c8d;
             margin-bottom: 30px;
-            font-size: 18px;
+            font-size: 16px;
         }
         /* Tabela */
         table {
@@ -50,7 +50,7 @@
             border: 1px solid #ddd;
         }
         th, td {
-            padding: 10px;
+            padding: 8px;
             text-align: center;
             border: 1px solid #ddd;
             font-size: 12px;
@@ -75,12 +75,12 @@
         .button {
             background-color: #27ae60;
             color: white;
-            padding: 12px 20px;
+            padding: 8px 12px;
             border: none;
             cursor: pointer;
             border-radius: 5px;
-            font-size: 16px;
-            width: 50px;
+            font-size: 14px;
+            width: 40px;
             text-align: center;
         }
         .button:disabled {
@@ -102,7 +102,7 @@
                 font-size: 10px;
             }
             th, td {
-                padding: 8px;
+                padding: 6px;
             }
             .button-container {
                 flex-direction: column;
@@ -114,13 +114,22 @@
             table td {
                 word-wrap: break-word;
             }
+            table {
+                font-size: 10px;
+            }
+            th {
+                font-size: 12px;
+            }
+            td {
+                font-size: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Tabela Comparativa Salarial - Cargos de Analista Judiciário do TRT e Técnico Judiciário do TJPE</h1>
-        <h2>Comparação de níveis e remunerações para os cargos mencionados</h2>
+        <h1>Tabela Comparativa Salarial</h1>
+        <h2>Analista Judiciário (TRT) e Técnico Judiciário (TJPE)</h2>
 
         <!-- Analista Judiciário do TRT -->
         <div class="row">
@@ -137,12 +146,12 @@
                     <th>Nível</th>
                     <th>Base</th>
                     <th>GAJ</th>
-                    <th>Remuneração</th>
-                    <th>Transporte</th>
-                    <th>Alimentação</th>
+                    <th>Rem</th>
+                    <th>Trans</th>
+                    <th>Alim</th>
                     <th>Saúde</th>
-                    <th>Qualificação</th>
-                    <th>Salário Bruto</th>
+                    <th>Qual</th>
+                    <th>Sal. Bruto</th>
                 </tr>
             </thead>
             <tbody>
@@ -175,11 +184,11 @@
                     <th>Nível</th>
                     <th>Base</th>
                     <th>GAJ</th>
-                    <th>Remuneração</th>
-                    <th>Transporte</th>
-                    <th>Alimentação</th>
+                    <th>Rem</th>
+                    <th>Trans</th>
+                    <th>Alim</th>
                     <th>Saúde</th>
-                    <th>Salário Bruto</th>
+                    <th>Sal. Bruto</th>
                 </tr>
             </thead>
             <tbody>
@@ -207,13 +216,7 @@
             [6939.74, 9715.63, 16655.37, 498.37, 1393.10, 1100.00, 520.48, 20167.32],
             [7147.92, 10007.09, 17155.01, 498.37, 1393.10, 1100.00, 536.09, 20682.57],
             [7362.36, 10307.31, 17669.67, 498.37, 1393.10, 1100.00, 552.18, 21213.32],
-            [7583.23, 10616.53, 18199.76, 498.37, 1393.10, 1100.00, 568.74, 21759.97],
-            [7810.73, 10935.03, 18745.76, 498.37, 1393.10, 1100.00, 585.80, 22323.03],
-            [8255.95, 11558.32, 19814.27, 498.37, 1393.10, 1100.00, 619.20, 23424.94],
-            [8503.62, 11905.07, 20408.69, 498.37, 1393.10, 1100.00, 637.77, 24037.93],
-            [8758.73, 12262.22, 21020.95, 498.37, 1393.10, 1100.00, 656.90, 24669.32],
-            [9021.49, 12633.09, 21654.58, 498.37, 1393.10, 1100.00, 676.61, 25322.66],
-            [9292.14, 13008.99, 22301.13, 498.37, 1393.10, 1100.00, 696.91, 25989.51]
+            [7583.23, 10616.53, 18199.76, 498.37, 1393.10, 1100.00, 568.74, 21759.97]
         ];
 
         // Dados do Técnico Judiciário (TJPE) por nível
@@ -224,12 +227,7 @@
             [6018.12, 492.00, 1197.60, 601.81, 827.16, 492.00, 8309.53],
             [6195.67, 492.00, 1197.60, 619.57, 843.00, 492.00, 8504.84],
             [6387.71, 492.00, 1197.60, 638.77, 859.08, 492.00, 8716.08],
-            [6595.30, 492.00, 1197.60, 659.53, 875.42, 492.00, 8944.43],
-            [6819.56, 492.00, 1197.60, 681.96, 892.05, 492.00, 9191.12],
-            [7061.65, 492.00, 1197.60, 706.17, 909.08, 492.00, 9457.42],
-            [7322.93, 492.00, 1197.60, 732.29, 926.42, 492.00, 9744.82],
-            [7604.88, 492.00, 1197.60, 760.49, 944.06, 492.00, 10054.97],
-            [7909.04, 492.00, 1197.60, 790.90, 962.01, 492.00, 10389.54]
+            [6595.30, 492.00, 1197.60, 659.53, 875.42, 492.00, 8944.43]
         ];
 
         // Inicializando os níveis
