@@ -104,12 +104,12 @@
                     <th>Qualificação</th>
                     <th>Saúde</th>
                     <th>Transporte</th>
-                    <th>Total com Benefícios</th>
+                    <th>Salário Bruto</th>
                     <th>Operações</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr id="linha1">
                     <td>1</td>
                     <td id="gaj1">R$ 8.664,05</td>
                     <td id="salarioTotal1">R$ 14.852,66</td>
@@ -117,7 +117,7 @@
                     <td id="qualificacao1">R$ 464,15</td>
                     <td id="saude1">R$ 1.100,00</td>
                     <td id="transporte1">R$ 498,37</td>
-                    <td id="totalBeneficios1">R$ 18.308,28</td>
+                    <td id="salarioBruto1">R$ 18.308,28</td>
                     <td>
                         <div class="btn-group">
                             <button class="btn" onclick="alterarValor('TRT', 1, 200)">+</button>
@@ -125,7 +125,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr>
+                <tr id="linha2">
                     <td>2</td>
                     <td id="gaj2">R$ 9.664,05</td>
                     <td id="salarioTotal2">R$ 15.852,66</td>
@@ -133,7 +133,7 @@
                     <td id="qualificacao2">R$ 564,15</td>
                     <td id="saude2">R$ 1.200,00</td>
                     <td id="transporte2">R$ 598,37</td>
-                    <td id="totalBeneficios2">R$ 19.408,28</td>
+                    <td id="salarioBruto2">R$ 19.408,28</td>
                     <td>
                         <div class="btn-group">
                             <button class="btn" onclick="alterarValor('TRT', 2, 200)">+</button>
@@ -158,7 +158,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr id="linha0">
                     <td>0</td>
                     <td id="salarioBase0">R$ 5.563,97</td>
                     <td id="transporte0">R$ 492,00</td>
@@ -185,21 +185,22 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script>
+        // Inicialização do gráfico
         const ctx = document.getElementById('salaryChart').getContext('2d');
         const salaryChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Nível 0', 'Nível 1', 'Nível 2', 'Nível 3', 'Nível 4', 'Nível 5'],
+                labels: ['Nível 0', 'Nível 1', 'Nível 2', 'Nível 3', 'Nível 4', 'Nível 5'], // Eixo X
                 datasets: [
                     {
-                        label: 'TRT - Salário com Benefícios',
-                        data: [18308.28, 18269.41, 18742.69, 19668.95],
+                        label: 'TRT - Salário Bruto',
+                        data: [18308.28, 19408.28], // Iniciando com dados estáticos
                         borderColor: 'rgba(75, 192, 192, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.1)',
                     },
                     {
                         label: 'TJPE - Salário Bruto',
-                        data: [7809.97, 7962.97, 8129.20, 8309.53],
+                        data: [7809.97],
                         borderColor: 'rgba(255, 99, 132, 1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.1)',
                     }
@@ -229,9 +230,11 @@
             }
         });
 
+        // Função para alterar o valor na tabela e no gráfico
         function alterarValor(tipo, nivel, valor) {
-            let elementoGaj, elementoTotal, elementoAlimentacao, elementoQualificacao, elementoSaude, elementoTransporte, elementoTotalBeneficios;
-            
+            let elementoGaj, elementoTotal, elementoAlimentacao, elementoQualificacao, elementoSaude, elementoTransporte, elementoSalarioBruto;
+            let novoValor;
+
             if (tipo === 'TRT') {
                 elementoGaj = document.getElementById('gaj' + nivel);
                 elementoTotal = document.getElementById('salarioTotal' + nivel);
@@ -239,7 +242,7 @@
                 elementoQualificacao = document.getElementById('qualificacao' + nivel);
                 elementoSaude = document.getElementById('saude' + nivel);
                 elementoTransporte = document.getElementById('transporte' + nivel);
-                elementoTotalBeneficios = document.getElementById('totalBeneficios' + nivel);
+                elementoSalarioBruto = document.getElementById('salarioBruto' + nivel);
             } else if (tipo === 'TJPE') {
                 elementoGaj = document.getElementById('salarioBase' + nivel);
                 elementoTotal = document.getElementById('salarioBruto' + nivel);
@@ -247,15 +250,24 @@
                 elementoQualificacao = document.getElementById('qualificacao' + nivel);
                 elementoSaude = document.getElementById('saude' + nivel);
                 elementoTransporte = document.getElementById('transporte' + nivel);
-                elementoTotalBeneficios = document.getElementById('totalBeneficios' + nivel);
+                elementoSalarioBruto = document.getElementById('salarioBruto' + nivel);
             }
 
-            // Atualizando valores
-            let valorAtual = parseFloat(elementoTotal.innerText.replace("R$", "").replace(",", "."));
-            let novoValor = valorAtual + valor;
-            elementoTotal.innerText = `R$ ${novoValor.toFixed(2).replace(".", ",")}`;
-            // Calcule novamente o total de benefícios e outros campos com base na lógica necessária (ajuste conforme os requisitos).
+            // Atualiza os valores das células
+            let valorAtual = parseFloat(elementoSalarioBruto.innerText.replace("R$", "").replace(",", "."));
+            novoValor = valorAtual + valor;
+            elementoSalarioBruto.innerText = `R$ ${novoValor.toFixed(2).replace(".", ",")}`;
+
+            // Atualiza o gráfico com os novos valores
+            if (tipo === 'TRT') {
+                salaryChart.data.datasets[0].data[nivel] = novoValor;
+            } else if (tipo === 'TJPE') {
+                salaryChart.data.datasets[1].data[nivel] = novoValor;
+            }
+
+            salaryChart.update();
         }
     </script>
+
 </body>
 </html>
