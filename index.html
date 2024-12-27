@@ -75,6 +75,8 @@
         <table class="data-table">
             <thead>
                 <tr>
+                    <th>Nível</th>
+                    <th>Salário Base</th>
                     <th>GAJ</th>
                     <th>Salário Total</th>
                     <th>Alimentação</th>
@@ -82,19 +84,11 @@
                     <th>Saúde</th>
                     <th>Transporte</th>
                     <th>Total com Benefícios</th>
+                    <th>Incremento de Nível</th> <!-- Novo campo para incremento de nível -->
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>R$ 8.664,05</td>
-                    <td>R$ 14.852,66</td>
-                    <td>R$ 1.393,10</td>
-                    <td>R$ 464,15</td>
-                    <td>R$ 1.100,00</td>
-                    <td>R$ 498,37</td> <!-- Atualizado o valor do auxílio transporte -->
-                    <td>R$ 17.809,91</td>
-                </tr>
-                <!-- Adicionar os outros dados semelhantes aqui -->
+            <tbody id="trt-table-body">
+                <!-- A tabela será populada com os dados de forma dinâmica com JavaScript -->
             </tbody>
         </table>
 
@@ -111,21 +105,8 @@
                     <th>Incremento de Nível</th> <!-- Novo campo para incremento de nível -->
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>0</td>
-                    <td>R$ 5.563,97</td>
-                    <td>R$ 492,00</td>
-                    <td>R$ 1.197,60</td>
-                    <td>R$ 556,40</td>
-                    <td>R$ 7.809,97</td>
-                    <td class="increment-btns">
-                        <button onclick="incrementLevel(0)">+</button>
-                        <span class="value" id="level0">0</span>
-                        <button onclick="decrementLevel(0)">-</button>
-                    </td>
-                </tr>
-                <!-- Adicionar os outros dados semelhantes aqui -->
+            <tbody id="tjpe-table-body">
+                <!-- A tabela será populada com os dados de forma dinâmica com JavaScript -->
             </tbody>
         </table>
 
@@ -138,64 +119,91 @@
     </footer>
 
     <script>
-        // Funções para incrementar e decrementar o nível salarial
-        function incrementLevel(level) {
-            let currentLevel = parseInt(document.getElementById('level' + level).innerText);
-            document.getElementById('level' + level).innerText = currentLevel + 1;
+        // Dados para a Tabela Salarial - TRT e TJPE
+        const trtData = [
+            {nivel: 1, salarioBase: 6188.61, gaj: 8664.05, salarioTotal: 14852.66, alimentacao: 1393.10, qualificacao: 464.15, saude: 1100.00, transporte: 498.37},
+            {nivel: 2, salarioBase: 6374.26, gaj: 8923.98, salarioTotal: 15298.24, alimentacao: 1393.10, qualificacao: 478.07, saude: 1100.00, transporte: 498.37},
+            {nivel: 3, salarioBase: 6565.49, gaj: 9191.69, salarioTotal: 15757.18, alimentacao: 1393.10, qualificacao: 492.41, saude: 1100.00, transporte: 498.37},
+            {nivel: 4, salarioBase: 6939.74, gaj: 9715.63, salarioTotal: 16655.37, alimentacao: 1393.10, qualificacao: 520.48, saude: 1100.00, transporte: 498.37},
+            {nivel: 5, salarioBase: 7147.92, gaj: 10007.09, salarioTotal: 17155.01, alimentacao: 1393.10, qualificacao: 536.09, saude: 1100.00, transporte: 498.37},
+            {nivel: 6, salarioBase: 7362.36, gaj: 10307.31, salarioTotal: 17669.67, alimentacao: 1393.10, qualificacao: 552.18, saude: 1100.00, transporte: 498.37},
+            {nivel: 7, salarioBase: 7583.23, gaj: 10616.53, salarioTotal: 18199.76, alimentacao: 1393.10, qualificacao: 568.74, saude: 1100.00, transporte: 498.37},
+            {nivel: 8, salarioBase: 7810.73, gaj: 10935.03, salarioTotal: 18745.76, alimentacao: 1393.10, qualificacao: 585.80, saude: 1100.00, transporte: 498.37},
+            {nivel: 9, salarioBase: 8255.95, gaj: 11558.32, salarioTotal: 19814.27, alimentacao: 1393.10, qualificacao: 619.20, saude: 1100.00, transporte: 498.37},
+            {nivel: 10, salarioBase: 8503.62, gaj: 11905.07, salarioTotal: 20408.69, alimentacao: 1393.10, qualificacao: 637.77, saude: 1100.00, transporte: 498.37},
+            {nivel: 11, salarioBase: 8758.73, gaj: 12262.22, salarioTotal: 21020.95, alimentacao: 1393.10, qualificacao: 656.90, saude: 1100.00, transporte: 498.37},
+            {nivel: 12, salarioBase: 9021.49, gaj: 12633.09, salarioTotal: 21654.58, alimentacao: 1393.10, qualificacao: 676.61, saude: 1100.00, transporte: 498.37},
+            {nivel: 13, salarioBase: 9292.14, gaj: 13008.99, salarioTotal: 22301.13, alimentacao: 1393.10, qualificacao: 696.91, saude: 1100.00, transporte: 498.37},
+        ];
+
+        // Preencher as tabelas de TRT e TJPE dinamicamente
+        const trtTableBody = document.getElementById('trt-table-body');
+        const tjpeTableBody = document.getElementById('tjpe-table-body');
+
+        // Função para preencher a Tabela Salarial - TRT
+        function fillTrtTable() {
+            trtData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.nivel}</td>
+                    <td>R$ ${row.salarioBase.toFixed(2)}</td>
+                    <td>R$ ${row.gaj.toFixed(2)}</td>
+                    <td>R$ ${row.salarioTotal.toFixed(2)}</td>
+                    <td>R$ ${row.alimentacao.toFixed(2)}</td>
+                    <td>R$ ${row.qualificacao.toFixed(2)}</td>
+                    <td>R$ ${row.saude.toFixed(2)}</td>
+                    <td>R$ ${row.transporte.toFixed(2)}</td>
+                    <td>R$ ${(row.salarioTotal + row.alimentacao + row.qualificacao + row.saude + row.transporte).toFixed(2)}</td>
+                    <td class="increment-btns">
+                        <button onclick="incrementLevel('trt', ${row.nivel})">+</button>
+                        <span class="value" id="trt-level-${row.nivel}">${row.nivel}</span>
+                        <button onclick="decrementLevel('trt', ${row.nivel})">-</button>
+                    </td>
+                `;
+                trtTableBody.appendChild(tr);
+            });
         }
 
-        function decrementLevel(level) {
-            let currentLevel = parseInt(document.getElementById('level' + level).innerText);
+        // Função para preencher a Tabela Salarial - TJPE
+        function fillTjpeTable() {
+            trtData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.nivel}</td>
+                    <td>R$ ${row.salarioBase.toFixed(2)}</td>
+                    <td>R$ ${row.transporte.toFixed(2)}</td>
+                    <td>R$ ${row.alimentacao.toFixed(2)}</td>
+                    <td>R$ ${row.qualificacao.toFixed(2)}</td>
+                    <td>R$ ${(row.salarioBase + row.transporte + row.alimentacao + row.qualificacao).toFixed(2)}</td>
+                    <td class="increment-btns">
+                        <button onclick="incrementLevel('tjpe', ${row.nivel})">+</button>
+                        <span class="value" id="tjpe-level-${row.nivel}">${row.nivel}</span>
+                        <button onclick="decrementLevel('tjpe', ${row.nivel})">-</button>
+                    </td>
+                `;
+                tjpeTableBody.appendChild(tr);
+            });
+        }
+
+        // Função para incrementar o nível
+        function incrementLevel(cargo, nivel) {
+            let currentLevel = parseInt(document.getElementById(cargo + '-level-' + nivel).innerText);
+            document.getElementById(cargo + '-level-' + nivel).innerText = currentLevel + 1;
+        }
+
+        // Função para decrementar o nível
+        function decrementLevel(cargo, nivel) {
+            let currentLevel = parseInt(document.getElementById(cargo + '-level-' + nivel).innerText);
             if (currentLevel > 0) {
-                document.getElementById('level' + level).innerText = currentLevel - 1;
+                document.getElementById(cargo + '-level-' + nivel).innerText = currentLevel - 1;
             }
         }
 
-        const ctx = document.getElementById('salaryChart').getContext('2d');
-        const salaryChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Nível 0', 'Nível 1', 'Nível 2', 'Nível 3', 'Nível 4', 'Nível 5'],
-                datasets: [
-                    {
-                        label: 'TRT - Salário com Benefícios',
-                        data: [17809.91, 18269.41, 18742.69, 19668.95],
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        fill: true,
-                    },
-                    {
-                        label: 'TJPE - Salário Bruto',
-                        data: [7809.97, 7962.97, 8129.20, 8309.53],
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        fill: true,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                },
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Níveis'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Salário (R$)'
-                        }
-                    }
-                }
-            }
-        });
+        // Preencher as tabelas assim que a página carregar
+        window.onload = function() {
+            fillTrtTable();
+            fillTjpeTable();
+        };
     </script>
 </body>
 </html>
