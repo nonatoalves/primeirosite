@@ -5,81 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Remuneração</title>
     <style>
-        /* Reseta as margens e o padding para ter um visual limpo */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Estilo geral do corpo da página */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #444;
-        }
-
-        h2 {
-            margin-bottom: 15px;
-            color: #555;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 8px;
             text-align: center;
         }
 
         th {
             background-color: #f2f2f2;
-            color: #333;
-        }
-
-        td {
-            background-color: #fff;
-        }
-
-        /* Estilo para os botões de incremento e decremento */
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .btn-group button {
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
             margin: 0 5px;
-            border-radius: 5px;
-        }
-
-        .btn-group button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Estilo para as células de valores de salário */
-        .valor-salario {
-            font-weight: bold;
-            color: #007bff;
         }
     </style>
 </head>
@@ -147,48 +92,96 @@
             { nivel: 1, base: 5703.06, transporte: 492.00, alimentacao: 1197.60, saude: 570.31, salarioBruto: 7962.97 },
             { nivel: 2, base: 5854.18, transporte: 492.00, alimentacao: 1197.60, saude: 585.42, salarioBruto: 8129.20 },
             { nivel: 3, base: 6018.12, transporte: 492.00, alimentacao: 1197.60, saude: 601.81, salarioBruto: 8309.53 },
-            { nivel: 4, base: 6179.18, transporte: 492.00, alimentacao: 1197.60, saude: 617.92, salarioBruto: 8486.70 },
-            { nivel: 5, base: 6341.29, transporte: 492.00, alimentacao: 1197.60, saude: 634.13, salarioBruto: 8665.02 },
-            { nivel: 6, base: 6502.80, transporte: 492.00, alimentacao: 1197.60, saude: 650.28, salarioBruto: 8842.68 },
+            { nivel: 4, base: 6195.67, transporte: 492.00, alimentacao: 1197.60, saude: 619.57, salarioBruto: 8504.84 },
+            { nivel: 5, base: 6387.71, transporte: 492.00, alimentacao: 1197.60, saude: 638.77, salarioBruto: 8716.08 },
+            { nivel: 6, base: 6595.30, transporte: 492.00, alimentacao: 1197.60, saude: 659.53, salarioBruto: 8944.43 },
+            { nivel: 7, base: 6819.56, transporte: 492.00, alimentacao: 1197.60, saude: 681.96, salarioBruto: 9191.12 },
+            { nivel: 8, base: 7061.65, transporte: 492.00, alimentacao: 1197.60, saude: 706.17, salarioBruto: 9457.42 },
+            { nivel: 9, base: 7322.93, transporte: 492.00, alimentacao: 1197.60, saude: 732.29, salarioBruto: 9744.82 },
+            { nivel: 10, base: 7604.88, transporte: 492.00, alimentacao: 1197.60, saude: 760.49, salarioBruto: 10054.97 },
+            { nivel: 11, base: 7909.04, transporte: 492.00, alimentacao: 1197.60, saude: 790.90, salarioBruto: 10389.54 },
+            { nivel: 12, base: 8383.61, transporte: 492.00, alimentacao: 1197.60, saude: 838.36, salarioBruto: 10911.57 },
+            { nivel: 13, base: 8970.47, transporte: 492.00, alimentacao: 1197.60, saude: 897.05, salarioBruto: 11557.12 },
         ];
 
-        // Função para popular as tabelas
-        function preencherTabela(trtData, tjpeData) {
+        // Variáveis para controlar o nível selecionado
+        let nivelTRT = 0;
+        let nivelTJPE = 0;
+
+        // Função para atualizar a tabela do TRT
+        function atualizarTabelaTRT() {
             const tbodyTRT = document.getElementById('tbodyTRT');
-            const tbodyTJPE = document.getElementById('tbodyTJPE');
+            tbodyTRT.innerHTML = '';
 
-            trtData.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+            const item = trtData[nivelTRT];
+            const row = `
+                <tr>
                     <td>${item.nivel}</td>
-                    <td class="valor-salario">${item.base.toFixed(2)}</td>
-                    <td>${item.gaj.toFixed(2)}</td>
-                    <td>${item.remuneracao.toFixed(2)}</td>
-                    <td>${item.alimentacao.toFixed(2)}</td>
-                    <td>${item.qualificacao.toFixed(2)}</td>
-                    <td>${item.saude.toFixed(2)}</td>
-                    <td>${item.transporte.toFixed(2)}</td>
-                    <td class="valor-salario">${item.salarioBruto.toFixed(2)}</td>
-                `;
-                tbodyTRT.appendChild(row);
-            });
-
-            tjpeData.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.nivel}</td>
-                    <td class="valor-salario">${item.base.toFixed(2)}</td>
-                    <td>${item.transporte.toFixed(2)}</td>
-                    <td>${item.alimentacao.toFixed(2)}</td>
-                    <td>${item.saude.toFixed(2)}</td>
-                    <td class="valor-salario">${item.salarioBruto.toFixed(2)}</td>
-                `;
-                tbodyTJPE.appendChild(row);
-            });
+                    <td>R$ ${item.base.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.gaj.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.remuneracao.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.alimentacao.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.qualificacao.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.saude.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.transporte.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
+                </tr>
+            `;
+            tbodyTRT.innerHTML += row;
         }
 
-        // Preencher as tabelas ao carregar a página
-        preencherTabela(trtData, tjpeData);
+        // Função para atualizar a tabela do TJPE
+        function atualizarTabelaTJPE() {
+            const tbodyTJPE = document.getElementById('tbodyTJPE');
+            tbodyTJPE.innerHTML = '';
+
+            const item = tjpeData[nivelTJPE];
+            const row = `
+                <tr>
+                    <td>${item.nivel}</td>
+                    <td>R$ ${item.base.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.transporte.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.alimentacao.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.saude.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
+                </tr>
+            `;
+            tbodyTJPE.innerHTML += row;
+        }
+
+        // Funções de incremento e decremento para o TRT
+        function incrementarTRT() {
+            if (nivelTRT < trtData.length - 1) {
+                nivelTRT++;
+                atualizarTabelaTRT();
+            }
+        }
+
+        function decrementarTRT() {
+            if (nivelTRT > 0) {
+                nivelTRT--;
+                atualizarTabelaTRT();
+            }
+        }
+
+        // Funções de incremento e decremento para o TJPE
+        function incrementarTJPE() {
+            if (nivelTJPE < tjpeData.length - 1) {
+                nivelTJPE++;
+                atualizarTabelaTJPE();
+            }
+        }
+
+        function decrementarTJPE() {
+            if (nivelTJPE > 0) {
+                nivelTJPE--;
+                atualizarTabelaTJPE();
+            }
+        }
+
+        // Inicializar as tabelas
+        atualizarTabelaTRT();
+        atualizarTabelaTJPE();
     </script>
 </body>
 </html>
