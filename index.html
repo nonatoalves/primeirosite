@@ -1,83 +1,150 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comparação Salarial - TRT e TJPE</title>
+    <!-- Fontes padrões, removi a fonte do Google Fonts -->
     <style>
-        /* Estilo das tabelas */
-        table {
-            border-collapse: collapse;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
         }
-        
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+        header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
             text-align: left;
         }
-        
-        th {
-            background-color: #f0f0f0;
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .data-table th {
+            background-color: #4a90e2;
+            color: white;
+        }
+        canvas {
+            margin: 1rem auto;
+            display: block;
+        }
+        footer {
+            background-color: #4a90e2;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
         }
     </style>
 </head>
 <body>
-    <h1>Comparação Salarial - TRT e TJPE</h1>
-    
-    <!-- Tabela Analista Judiciário - TRT -->
-    <h2>Analista Judiciário - TRT (13 Níveis)</h2>
-    <table>
-        <tr>
-            <th>Nível</th>
-            <th>Salário Base</th>
-            <th>Alimentação</th>
-            <th>Qualificação</th>
-            <th>Saúde</th>
-            <th>Transporte</th>
-            <th>Salário Total</th>
-            <th>Selecionar Nível</th>
-        </tr>
-        <!-- Inserir dados de 1 a 13 níveis -->
-        <tr>
-            <td>1</td>
-            <td>R$ 4.000,00</td>
-            <td>R$ 500,00</td>
-            <td>R$ 1.000,00</td>
-            <td>R$ 300,00</td>
-            <td>R$ 200,00</td>
-            <td>R$ 6.000,00</td>
-            <td><input type="radio" name="trt"></td>
-        </tr>
-        <!-- Adicionar mais linhas conforme necessário -->
-    </table>
-    
-    <!-- Tabela Técnico Judiciário - TJPE -->
-    <h2>Técnico Judiciário - TJPE (21 Níveis)</h2>
-    <table>
-        <tr>
-            <th>Nível</th>
-            <th>Salário Base</th>
-            <th>Transporte</th>
-            <th>Alimentação</th>
-            <th>Saúde</th>
-            <th>Salário Total</th>
-            <th>Selecionar Nível</th>
-        </tr>
-        <!-- Inserir dados de 1 a 21 níveis -->
-        <tr>
-            <td>1</td>
-            <td>R$ 3.500,00</td>
-            <td>R$ 300,00</td>
-            <td>R$ 400,00</td>
-            <td>R$ 250,00</td>
-            <td>R$ 4.450,00</td>
-            <td><input type="radio" name="tjpe"></td>
-        </tr>
-        <!-- Adicionar mais linhas conforme necessário -->
-    </table>
-    
-    <!-- Evolução Salarial - Gráfico Comparativo -->
-    <h2>Evolução Salarial - Gráfico Comparativo</h2>
-    <!-- Inserir gráfico aqui -->
-    <!-- Você pode usar bibliotecas como Chart.js ou Google Charts para criar gráficos dinâmicos -->
+    <header>
+        <h1>Comparação Salarial - TRT e TJPE</h1>
+    </header>
+    <div class="container">
+        <h2>Tabela Salarial - TRT</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>GAJ</th>
+                    <th>Salário Total</th>
+                    <th>Alimentação</th>
+                    <th>Qualificação</th>
+                    <th>Saúde</th>
+                    <th>Transporte</th>
+                    <th>Total com Benefícios</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>R$ 8.664,05</td><td>R$ 14.852,66</td><td>R$ 1.393,10</td><td>R$ 464,15</td><td>R$ 1.100,00</td><td>R$ 17.809,91</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Tabela Salarial - TJPE</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Nível</th>
+                    <th>Salário Base</th>
+                    <th>Transporte</th>
+                    <th>Alimentação</th>
+                    <th>Saúde</th>
+                    <th>Salário Bruto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>0</td><td>R$ 5.563,97</td><td>R$ 492,00</td><td>R$ 1.197,60</td><td>R$ 556,40</td><td>R$ 7.809,97</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Evolução Salarial - Gráfico Comparativo</h2>
+        <canvas id="salaryChart" width="800" height="400"></canvas>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Comparação Salarial - TRT e TJPE</p>
+    </footer>
+
+    <!-- Usando CDN mais leve e básica do Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        const ctx = document.getElementById('salaryChart').getContext('2d');
+        const salaryChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Nível 0', 'Nível 1', 'Nível 2', 'Nível 3', 'Nível 4', 'Nível 5'], // Adicione mais níveis conforme necessário
+                datasets: [
+                    {
+                        label: 'TRT - Salário com Benefícios',
+                        data: [17809.91, 18269.41, 18742.69, 19668.95], // Adicione os valores do TRT
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',  // Reduzi o preenchimento
+                    },
+                    {
+                        label: 'TJPE - Salário Bruto',
+                        data: [7809.97, 7962.97, 8129.20, 8309.53], // Adicione os valores do TJPE
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',  // Reduzi o preenchimento
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Níveis'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Salário (R$)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
