@@ -22,7 +22,7 @@
             width: 90%;
             max-width: 1200px;
             margin: 30px auto;
-            background-color: #ffffff;
+            background-color: #ecf0f1; /* Cor mais suave para o fundo */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -47,10 +47,12 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            border: 1px solid #ddd;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
         }
         th, td {
-            padding: 6px 8px;
+            padding: 8px 12px;
             text-align: center;
             border: 1px solid #ddd;
             font-size: 12px;
@@ -60,6 +62,7 @@
             background-color: #2980b9;
             color: #fff;
             font-size: 14px;
+            font-weight: bold;
         }
         td {
             background-color: #f9f9f9;
@@ -103,7 +106,7 @@
                 font-size: 10px;
             }
             th, td {
-                padding: 4px 6px;
+                padding: 6px 8px;
             }
             .button-container {
                 flex-direction: column;
@@ -114,9 +117,6 @@
             }
             table td {
                 word-wrap: break-word;
-            }
-            table {
-                font-size: 10px;
             }
             th {
                 font-size: 12px;
@@ -144,28 +144,26 @@
         <table id="tabela-analista">
             <thead>
                 <tr>
-                    <th>Nível</th>
                     <th>Base</th>
                     <th>GAJ</th>
-                    <th>Remun</th>
-                    <th>Transp</th>
-                    <th>Alim</th>
+                    <th>Remuneração</th>
+                    <th>Transporte</th>
+                    <th>Alimentação</th>
                     <th>Saúde</th>
-                    <th>Qualif. Pós</th>
-                    <th>Sal. Bruto</th>
+                    <th>Qualificação Pós-Grad.</th>
+                    <th>Salário Bruto</th>
                 </tr>
             </thead>
             <tbody>
                 <tr id="analista-row">
-                    <td id="nivel-analista">0</td>
-                    <td id="base-analista">R$ 6.188,61</td>
-                    <td id="gaj-analista">R$ 8.664,05</td>
-                    <td id="remuneracao-analista">R$ 14.852,66</td>
-                    <td id="transporte-analista">R$ 498,37</td>
-                    <td id="alimentacao-analista">R$ 1.393,10</td>
-                    <td id="saude-analista">R$ 1.100,00</td>
-                    <td id="qualificacao-analista">R$ 464,15</td>
-                    <td id="salario-bruto-analista">R$ 18.308,28</td>
+                    <td id="base-analista"><strong>R$ 6.188,61</strong></td>
+                    <td id="gaj-analista"><strong>R$ 8.664,05</strong></td>
+                    <td id="remuneracao-analista"><strong>R$ 14.852,66</strong></td>
+                    <td id="transporte-analista"><strong>R$ 498,37</strong></td>
+                    <td id="alimentacao-analista"><strong>R$ 1.393,10</strong></td>
+                    <td id="saude-analista"><strong>R$ 1.100,00</strong></td>
+                    <td id="qualificacao-analista"><strong>R$ 464,15</strong></td>
+                    <td id="salario-bruto-analista"><strong>R$ 18.308,28</strong></td>
                 </tr>
             </tbody>
         </table>
@@ -182,26 +180,24 @@
         <table id="tabela-tecnico">
             <thead>
                 <tr>
-                    <th>Nível</th>
                     <th>Base</th>
                     <th>GAJ</th>
-                    <th>Remun</th>
-                    <th>Transp</th>
-                    <th>Alim</th>
+                    <th>Remuneração</th>
+                    <th>Transporte</th>
+                    <th>Alimentação</th>
                     <th>Saúde</th>
-                    <th>Sal. Bruto</th>
+                    <th>Salário Bruto</th>
                 </tr>
             </thead>
             <tbody>
                 <tr id="tecnico-row">
-                    <td id="nivel-tecnico">0</td>
-                    <td id="base-tecnico">R$ 5.563,97</td>
-                    <td id="gaj-tecnico">R$ 492,00</td>
-                    <td id="remuneracao-tecnico">R$ 1.197,60</td>
-                    <td id="transporte-tecnico">R$ 556,40</td>
-                    <td id="alimentacao-tecnico">R$ 780,99</td>
-                    <td id="saude-tecnico">R$ 492,00</td>
-                    <td id="salario-bruto-tecnico">R$ 7.809,97</td>
+                    <td id="base-tecnico"><strong>R$ 5.563,97</strong></td>
+                    <td id="gaj-tecnico"><strong>R$ 492,00</strong></td>
+                    <td id="remuneracao-tecnico"><strong>R$ 1.197,60</strong></td>
+                    <td id="transporte-tecnico"><strong>R$ 556,40</strong></td>
+                    <td id="alimentacao-tecnico"><strong>R$ 780,99</strong></td>
+                    <td id="saude-tecnico"><strong>R$ 492,00</strong></td>
+                    <td id="salario-bruto-tecnico"><strong>R$ 7.809,97</strong></td>
                 </tr>
             </tbody>
         </table>
@@ -238,7 +234,7 @@
         // Funções de atualização da tabela
         function atualizarTabelaAnalista() {
             const dadosAnalista = analistaDados[nivelAnalista];
-            document.getElementById("nivel-analista").textContent = nivelAnalista;
+            document.getElementById("nivel-display-analista").textContent = `Nível ${nivelAnalista}`;
             document.getElementById("base-analista").textContent = `R$ ${dadosAnalista[0].toFixed(2)}`;
             document.getElementById("gaj-analista").textContent = `R$ ${dadosAnalista[1].toFixed(2)}`;
             document.getElementById("remuneracao-analista").textContent = `R$ ${dadosAnalista[2].toFixed(2)}`;
@@ -251,7 +247,7 @@
 
         function atualizarTabelaTecnico() {
             const dadosTecnico = tecnicoDados[nivelTecnico];
-            document.getElementById("nivel-tecnico").textContent = nivelTecnico;
+            document.getElementById("nivel-display-tecnico").textContent = `Nível ${nivelTecnico}`;
             document.getElementById("base-tecnico").textContent = `R$ ${dadosTecnico[0].toFixed(2)}`;
             document.getElementById("gaj-tecnico").textContent = `R$ ${dadosTecnico[1].toFixed(2)}`;
             document.getElementById("remuneracao-tecnico").textContent = `R$ ${dadosTecnico[2].toFixed(2)}`;
