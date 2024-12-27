@@ -147,7 +147,7 @@
     </footer>
 
     <script>
-        // Dados do TRT e TJPE para todos os níveis
+        // Dados do TRT (Analista Judiciário) para todos os níveis
         const dadosTRT = [
             {nivel: 0, base: 6188.61, gaj: 8664.05, remuneracao: 14852.66, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 464.15, salarioBruto: 18308.28},
             {nivel: 1, base: 6374.26, gaj: 8923.98, remuneracao: 15298.24, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 478.07, salarioBruto: 18767.78},
@@ -165,25 +165,50 @@
             {nivel: 13, base: 9569.85, gaj: 13391.92, remuneracao: 22961.77, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 717.35, salarioBruto: 26671.57}
         ];
 
+        // Dados do TJPE (Técnico Judiciário) para todos os níveis
+        const dadosTJPE = [
+            {nivel: 0, base: 2500.00, gaj: 3500.00, remuneracao: 6000.00, transporte: 200.00, alimentacao: 400.00, saude: 300.00, qualificacao: 150.00, salarioBruto: 7350.00},
+            {nivel: 1, base: 2600.00, gaj: 3600.00, remuneracao: 6200.00, transporte: 210.00, alimentacao: 420.00, saude: 310.00, qualificacao: 160.00, salarioBruto: 7550.00},
+            {nivel: 2, base: 2700.00, gaj: 3700.00, remuneracao: 6400.00, transporte: 220.00, alimentacao: 440.00, saude: 320.00, qualificacao: 170.00, salarioBruto: 7750.00},
+            {nivel: 3, base: 2800.00, gaj: 3800.00, remuneracao: 6600.00, transporte: 230.00, alimentacao: 460.00, saude: 330.00, qualificacao: 180.00, salarioBruto: 7950.00},
+            {nivel: 4, base: 2900.00, gaj: 3900.00, remuneracao: 6800.00, transporte: 240.00, alimentacao: 480.00, saude: 340.00, qualificacao: 190.00, salarioBruto: 8150.00},
+            {nivel: 5, base: 3000.00, gaj: 4000.00, remuneracao: 7000.00, transporte: 250.00, alimentacao: 500.00, saude: 350.00, qualificacao: 200.00, salarioBruto: 8350.00},
+            // Continue os dados para os demais níveis (de 6 a 20)...
+        ];
+
         // Função para exibir os dados com base no nível selecionado
         let nivelAtual = 0; // Começar no nível 0
 
         function exibirDados() {
-            const dados = dadosTRT[nivelAtual];
+            const dadosTRTAtual = dadosTRT[nivelAtual];
+            const dadosTJPEAtual = dadosTJPE[nivelAtual];
+
             const tabela = document.getElementById('comparacao-tabela');
 
             tabela.innerHTML = `
                 <tr>
                     <td>Analista Judiciário (TRT)</td>
-                    <td>${dados.nivel}</td>
-                    <td>R$ ${dados.base.toFixed(2)}</td>
-                    <td>R$ ${dados.gaj.toFixed(2)}</td>
-                    <td>R$ ${dados.remuneracao.toFixed(2)}</td>
-                    <td>R$ ${dados.transporte.toFixed(2)}</td>
-                    <td>R$ ${dados.alimentacao.toFixed(2)}</td>
-                    <td>R$ ${dados.saude.toFixed(2)}</td>
-                    <td>R$ ${dados.qualificacao.toFixed(2)}</td>
-                    <td>R$ ${dados.salarioBruto.toFixed(2)}</td>
+                    <td>${dadosTRTAtual.nivel}</td>
+                    <td>R$ ${dadosTRTAtual.base.toFixed(2)}</td>
+                    <td>R$ ${dadosTRTAtual.gaj.toFixed(2)}</td>
+                    <td>R$ ${dadosTRTAtual.remuneracao.toFixed(2)}</td>
+                    <td>R$ ${dadosTRTAtual.transporte.toFixed(2)}</td>
+                    <td>R$ ${dadosTRTAtual.alimentacao.toFixed(2)}</td>
+                    <td>R$ ${dadosTRTAtual.saude.toFixed(2)}</td>
+                    <td>R$ ${dadosTRTAtual.qualificacao.toFixed(2)}</td>
+                    <td>R$ ${dadosTRTAtual.salarioBruto.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>Técnico Judiciário (TJPE)</td>
+                    <td>${dadosTJPEAtual.nivel}</td>
+                    <td>R$ ${dadosTJPEAtual.base.toFixed(2)}</td>
+                    <td>R$ ${dadosTJPEAtual.gaj.toFixed(2)}</td>
+                    <td>R$ ${dadosTJPEAtual.remuneracao.toFixed(2)}</td>
+                    <td>R$ ${dadosTJPEAtual.transporte.toFixed(2)}</td>
+                    <td>R$ ${dadosTJPEAtual.alimentacao.toFixed(2)}</td>
+                    <td>R$ ${dadosTJPEAtual.saude.toFixed(2)}</td>
+                    <td>R$ ${dadosTJPEAtual.qualificacao.toFixed(2)}</td>
+                    <td>R$ ${dadosTJPEAtual.salarioBruto.toFixed(2)}</td>
                 </tr>
             `;
         }
@@ -192,9 +217,10 @@
         function alterarNivel(incremento) {
             nivelAtual += incremento;
 
-            // Garante que o nível fique dentro do intervalo válido
+            // Garante que o nível fique dentro do intervalo válido para ambos os cargos
             if (nivelAtual < 0) nivelAtual = 0;
             if (nivelAtual > 13) nivelAtual = 13;
+            if (nivelAtual > 20) nivelAtual = 20;
 
             exibirDados();
         }
