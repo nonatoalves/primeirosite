@@ -176,10 +176,10 @@
         const tbodyTRT = document.getElementById('tbody-trt');
         const tbodyTJPE = document.getElementById('tbody-tjpe');
 
-        // Preenche a tabela TRT com o nível 0
-        function atualizarTabelaTRT() {
+        // Função para atualizar a tabela do TRT
+        function atualizarTabelaTRT(nivelMax) {
             tbodyTRT.innerHTML = '';
-            trtData.slice(0, 1).forEach(item => {
+            trtData.slice(0, nivelMax + 1).forEach(item => {
                 const row = `
                     <tr>
                         <td>${item.nivel}</td>
@@ -193,6 +193,7 @@
                         <td>
                             <div class="btn-group">
                                 <button class="btn" onclick="incrementarTRT(${item.nivel})">+</button>
+                                <button class="btn" onclick="decrementarTRT(${item.nivel})">-</button>
                             </div>
                         </td>
                     </tr>
@@ -201,10 +202,10 @@
             });
         }
 
-        // Preenche a tabela TJPE com o nível 0
-        function atualizarTabelaTJPE() {
+        // Função para atualizar a tabela do TJPE
+        function atualizarTabelaTJPE(nivelMax) {
             tbodyTJPE.innerHTML = '';
-            tjpeData.slice(0, 1).forEach(item => {
+            tjpeData.slice(0, nivelMax + 1).forEach(item => {
                 const row = `
                     <tr>
                         <td>${item.nivel}</td>
@@ -216,6 +217,7 @@
                         <td>
                             <div class="btn-group">
                                 <button class="btn" onclick="incrementarTJPE(${item.nivel})">+</button>
+                                <button class="btn" onclick="decrementarTJPE(${item.nivel})">-</button>
                             </div>
                         </td>
                     </tr>
@@ -253,36 +255,54 @@
             }
         });
 
-        // Funções de incremento
+        let nivelMaxTRT = 0;
+        let nivelMaxTJPE = 0;
+
+        // Funções de incremento e decremento para o TRT
         function incrementarTRT(nivel) {
-            if (nivel < trtData.length - 1) {
-                const nextLevel = trtData[nivel];
-                trtData.push(nextLevel);
-                atualizarTabelaTRT();
+            if (nivelMaxTRT < trtData.length - 1) {
+                nivelMaxTRT++;
+                atualizarTabelaTRT(nivelMaxTRT);
                 atualizarGrafico();
             }
         }
 
+        function decrementarTRT(nivel) {
+            if (nivelMaxTRT > 0) {
+                nivelMaxTRT--;
+                atualizarTabelaTRT(nivelMaxTRT);
+                atualizarGrafico();
+            }
+        }
+
+        // Funções de incremento e decremento para o TJPE
         function incrementarTJPE(nivel) {
-            if (nivel < tjpeData.length - 1) {
-                const nextLevel = tjpeData[nivel];
-                tjpeData.push(nextLevel);
-                atualizarTabelaTJPE();
+            if (nivelMaxTJPE < tjpeData.length - 1) {
+                nivelMaxTJPE++;
+                atualizarTabelaTJPE(nivelMaxTJPE);
+                atualizarGrafico();
+            }
+        }
+
+        function decrementarTJPE(nivel) {
+            if (nivelMaxTJPE > 0) {
+                nivelMaxTJPE--;
+                atualizarTabelaTJPE(nivelMaxTJPE);
                 atualizarGrafico();
             }
         }
 
         // Atualiza o gráfico dinamicamente
         function atualizarGrafico() {
-            salaryChart.data.labels = trtData.slice(0, trtData.length).map(item => `Nível ${item.nivel}`);
-            salaryChart.data.datasets[0].data = trtData.slice(0, trtData.length).map(item => item.salarioBruto);
-            salaryChart.data.datasets[1].data = tjpeData.slice(0, tjpeData.length).map(item => item.salarioBruto);
+            salaryChart.data.labels = Array.from({ length: nivelMaxTRT + 1 }, (_, i) => `Nível ${i}`);
+            salaryChart.data.datasets[0].data = trtData.slice(0, nivelMaxTRT + 1).map(item => item.salarioBruto);
+            salaryChart.data.datasets[1].data = tjpeData.slice(0, nivelMaxTJPE + 1).map(item => item.salarioBruto);
             salaryChart.update();
         }
 
         // Inicializar as tabelas e o gráfico
-        atualizarTabelaTRT();
-        atualizarTabelaTJPE();
+        atualizarTabelaTRT(nivelMaxTRT);
+        atualizarTabelaTJPE(nivelMaxTJPE);
     </script>
 
 </body>
