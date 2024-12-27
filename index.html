@@ -125,6 +125,23 @@
                         </div>
                     </td>
                 </tr>
+                <tr id="linha2">
+                    <td id="nivel2">2</td>
+                    <td id="gaj2">R$ 8.923,98</td>
+                    <td id="salarioTotal2">R$ 15.298,24</td>
+                    <td id="alimentacao2">R$ 1.393,10</td>
+                    <td id="qualificacao2">R$ 478,07</td>
+                    <td id="saude2">R$ 1.100,00</td>
+                    <td id="transporte2">R$ 498,37</td>
+                    <td id="salarioBruto2">R$ 18.767,78</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn" onclick="alterarValor('TRT', 2, 200)">+</button>
+                            <button class="btn" onclick="alterarValor('TRT', 2, -200)">-</button>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Adicionar mais níveis conforme necessário -->
             </tbody>
         </table>
 
@@ -156,6 +173,21 @@
                         </div>
                     </td>
                 </tr>
+                <tr id="linha1">
+                    <td id="nivel1">1</td>
+                    <td id="salarioBase1">R$ 5.703,06</td>
+                    <td id="transporte1">R$ 492,00</td>
+                    <td id="alimentacao1">R$ 1.197,60</td>
+                    <td id="saude1">R$ 570,31</td>
+                    <td id="salarioBruto1">R$ 7.962,97</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn" onclick="alterarValor('TJPE', 1, 100)">+</button>
+                            <button class="btn" onclick="alterarValor('TJPE', 1, -100)">-</button>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Adicionar mais níveis conforme necessário -->
             </tbody>
         </table>
 
@@ -178,14 +210,14 @@
                 datasets: [
                     {
                         label: 'TRT - Salário Bruto',
-                        data: [18308.28], // Iniciando com dados estáticos
+                        data: [18308.28, 18767.78], // Dados para os Níveis 1 e 2
                         borderColor: 'rgba(75, 192, 192, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.1)',
                         fill: false,  // Não preencher a linha
                     },
                     {
                         label: 'TJPE - Salário Bruto',
-                        data: [7809.97],
+                        data: [7809.97, 7962.97], // Dados para os Níveis 0 e 1
                         borderColor: 'rgba(255, 99, 132, 1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.1)',
                         fill: false,  // Não preencher a linha
@@ -233,26 +265,27 @@
             } else if (tipo === 'TJPE') {
                 elementoNivel = document.getElementById('nivel' + nivel);
                 elementoGaj = document.getElementById('salarioBase' + nivel);
-                elementoTotal = document.getElementById('salarioBruto' + nivel);
+                elementoTotal = document.getElementById('salarioBase' + nivel);  // Ajuste para TJPE
                 elementoAlimentacao = document.getElementById('alimentacao' + nivel);
-                elementoQualificacao = document.getElementById('qualificacao' + nivel);
+                elementoQualificacao = null; // Não existe no TJPE
                 elementoSaude = document.getElementById('saude' + nivel);
                 elementoTransporte = document.getElementById('transporte' + nivel);
                 elementoSalarioBruto = document.getElementById('salarioBruto' + nivel);
             }
 
-            // Atualiza os valores das células
-            let valorAtual = parseFloat(elementoSalarioBruto.innerText.replace("R$", "").replace(",", "."));
-            novoValor = valorAtual + valor;
-            elementoSalarioBruto.innerText = `R$ ${novoValor.toFixed(2).replace(".", ",")}`;
+            // Atualizar valor de transporte
+            let salarioBase = parseFloat(elementoGaj.textContent.replace('R$', '').replace(',', '.').trim());
+            let alimentacao = parseFloat(elementoAlimentacao.textContent.replace('R$', '').replace(',', '.').trim());
+            let qualificacao = parseFloat(elementoQualificacao ? elementoQualificacao.textContent.replace('R$', '').replace(',', '.').trim() : 0);
+            let saude = parseFloat(elementoSaude.textContent.replace('R$', '').replace(',', '.').trim());
+            let transporte = parseFloat(elementoTransporte.textContent.replace('R$', '').replace(',', '.').trim());
 
-            // Atualiza o gráfico com os novos valores
-            if (tipo === 'TRT') {
-                salaryChart.data.datasets[0].data[nivel] = novoValor;
-            } else if (tipo === 'TJPE') {
-                salaryChart.data.datasets[1].data[nivel] = novoValor;
-            }
-
+            let salarioBruto = salarioBase + alimentacao + qualificacao + saude + transporte;
+            elementoSalarioBruto.textContent = `R$ ${salarioBruto.toFixed(2).replace('.', ',')}`;
+            
+            // Atualizar gráfico com os novos valores (se necessário)
+            salaryChart.data.datasets[0].data[nivel] = salarioBruto;
+            salaryChart.data.datasets[1].data[nivel] = salarioBruto;
             salaryChart.update();
         }
     </script>
