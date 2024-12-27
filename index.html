@@ -65,7 +65,8 @@
 <body>
     <div class="container">
         <h1>Comparação de Níveis Salariais</h1>
-        
+
+        <!-- Botões para manipular o nível do Analista Judiciário -->
         <div class="row">
             <label for="nivel-analista">Selecione o Nível do Analista Judiciário (TRT):</label>
             <button class="button" id="nivel-dec-analista" onclick="decrementarNivelAnalista()">-</button>
@@ -73,14 +74,8 @@
             <button class="button" id="nivel-inc-analista" onclick="incrementarNivelAnalista()">+</button>
         </div>
 
-        <div class="row">
-            <label for="nivel-tecnico">Selecione o Nível do Técnico Judiciário (TJPE):</label>
-            <button class="button" id="nivel-dec-tecnico" onclick="decrementarNivelTecnico()">-</button>
-            <span id="nivel-display-tecnico">Nível 0</span>
-            <button class="button" id="nivel-inc-tecnico" onclick="incrementarNivelTecnico()">+</button>
-        </div>
-
-        <table id="tabela-salarios">
+        <!-- Exibição dos dados do Analista Judiciário (TRT) -->
+        <table id="tabela-analista">
             <thead>
                 <tr>
                     <th>Nível</th>
@@ -92,6 +87,35 @@
                     <th>Saúde</th>
                     <th>Qualificação</th>
                     <th>Salário Bruto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="analista-row">
+                    <td id="nivel-analista">0</td>
+                    <td id="base-analista">R$ 6.188,61</td>
+                    <td id="gaj-analista">R$ 8.664,05</td>
+                    <td id="remuneracao-analista">R$ 14.852,66</td>
+                    <td id="transporte-analista">R$ 498,37</td>
+                    <td id="alimentacao-analista">R$ 1.393,10</td>
+                    <td id="saude-analista">R$ 1.100,00</td>
+                    <td id="qualificacao-analista">R$ 464,15</td>
+                    <td id="salario-bruto-analista">R$ 18.308,28</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Botões para manipular o nível do Técnico Judiciário -->
+        <div class="row">
+            <label for="nivel-tecnico">Selecione o Nível do Técnico Judiciário (TJPE):</label>
+            <button class="button" id="nivel-dec-tecnico" onclick="decrementarNivelTecnico()">-</button>
+            <span id="nivel-display-tecnico">Nível 0</span>
+            <button class="button" id="nivel-inc-tecnico" onclick="incrementarNivelTecnico()">+</button>
+        </div>
+
+        <!-- Exibição dos dados do Técnico Judiciário (TJPE) -->
+        <table id="tabela-tecnico">
+            <thead>
+                <tr>
                     <th>Nível</th>
                     <th>Base</th>
                     <th>GAJ</th>
@@ -103,126 +127,119 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Dados do cargo de Analista Judiciário (TRT) e Técnico Judiciário (TJPE) -->
-                <tr id="nivel0-analista">
-                    <td>0</td>
-                    <td>R$ 6.188,61</td>
-                    <td>R$ 8.664,05</td>
-                    <td>R$ 14.852,66</td>
-                    <td>R$ 498,37</td>
-                    <td>R$ 1.393,10</td>
-                    <td>R$ 1.100,00</td>
-                    <td>R$ 464,15</td>
-                    <td>R$ 18.308,28</td>
-                    <td>0</td>
-                    <td>R$ 5.563,97</td>
-                    <td>R$ 492,00</td>
-                    <td>R$ 1.197,60</td>
-                    <td>R$ 556,40</td>
-                    <td>R$ 7.809,97</td>
+                <tr id="tecnico-row">
+                    <td id="nivel-tecnico">0</td>
+                    <td id="base-tecnico">R$ 5.563,97</td>
+                    <td id="gaj-tecnico">R$ 492,00</td>
+                    <td id="remuneracao-tecnico">R$ 1.197,60</td>
+                    <td id="transporte-tecnico">R$ 556,40</td>
+                    <td id="alimentacao-tecnico">R$ 780,99</td>
+                    <td id="saude-tecnico">R$ 492,00</td>
+                    <td id="salario-bruto-tecnico">R$ 7.809,97</td>
                 </tr>
-                <tr id="nivel1-analista">
-                    <td>1</td>
-                    <td>R$ 6.374,26</td>
-                    <td>R$ 8.923,98</td>
-                    <td>R$ 15.298,24</td>
-                    <td>R$ 498,37</td>
-                    <td>R$ 1.393,10</td>
-                    <td>R$ 1.100,00</td>
-                    <td>R$ 478,07</td>
-                    <td>R$ 18.767,78</td>
-                    <td>1</td>
-                    <td>R$ 5.703,06</td>
-                    <td>R$ 492,00</td>
-                    <td>R$ 1.197,60</td>
-                    <td>R$ 570,31</td>
-                    <td>R$ 7.962,97</td>
-                </tr>
-                <tr id="nivel2-analista">
-                    <td>2</td>
-                    <td>R$ 6.565,49</td>
-                    <td>R$ 9.191,69</td>
-                    <td>R$ 15.757,18</td>
-                    <td>R$ 498,37</td>
-                    <td>R$ 1.393,10</td>
-                    <td>R$ 1.100,00</td>
-                    <td>R$ 492,41</td>
-                    <td>R$ 19.241,06</td>
-                    <td>2</td>
-                    <td>R$ 5.854,18</td>
-                    <td>R$ 492,00</td>
-                    <td>R$ 1.197,60</td>
-                    <td>R$ 585,42</td>
-                    <td>R$ 8.129,20</td>
-                </tr>
-                <!-- Mais dados do cargo de Analista Judiciário e Técnico Judiciário -->
-                <!-- ... -->
             </tbody>
         </table>
+
     </div>
 
     <script>
+        // Dados do Analista Judiciário (TRT) por nível
+        const analistaDados = [
+            [6188.61, 8664.05, 14852.66, 498.37, 1393.10, 1100.00, 464.15, 18308.28],
+            [6374.26, 8923.98, 15298.24, 498.37, 1393.10, 1100.00, 478.07, 18767.78],
+            [6565.49, 9191.69, 15757.18, 498.37, 1393.10, 1100.00, 492.41, 19241.06],
+            [6939.74, 9715.63, 16655.37, 498.37, 1393.10, 1100.00, 520.48, 20167.32],
+            [7147.92, 10007.09, 17155.01, 498.37, 1393.10, 1100.00, 536.09, 20682.57],
+            [7362.36, 10307.31, 17669.67, 498.37, 1393.10, 1100.00, 552.18, 21213.32],
+            [7583.23, 10616.53, 18199.76, 498.37, 1393.10, 1100.00, 568.74, 21759.97],
+            [7810.73, 10935.03, 18745.76, 498.37, 1393.10, 1100.00, 585.80, 22323.03],
+            [8255.95, 11558.32, 19814.27, 498.37, 1393.10, 1100.00, 619.20, 23424.94],
+            [8503.62, 11905.07, 20408.69, 498.37, 1393.10, 1100.00, 637.77, 24037.93],
+            [8758.73, 12262.22, 21020.95, 498.37, 1393.10, 1100.00, 656.90, 24669.32],
+            [9021.49, 12633.09, 21654.58, 498.37, 1393.10, 1100.00, 676.61, 25322.66],
+            [9292.14, 13008.99, 22301.13, 498.37, 1393.10, 1100.00, 696.91, 25989.51]
+        ];
+
+        // Dados do Técnico Judiciário (TJPE) por nível
+        const tecnicoDados = [
+            [5563.97, 492.00, 1197.60, 556.40, 780.99, 492.00, 7809.97],
+            [5703.06, 492.00, 1197.60, 570.31, 796.05, 492.00, 7962.97],
+            [5854.18, 492.00, 1197.60, 585.42, 811.51, 492.00, 8129.20],
+            [6018.12, 492.00, 1197.60, 601.81, 827.16, 492.00, 8309.53],
+            [6195.67, 492.00, 1197.60, 619.57, 843.00, 492.00, 8504.84],
+            [6387.71, 492.00, 1197.60, 638.77, 859.08, 492.00, 8716.08],
+            [6595.30, 492.00, 1197.60, 659.53, 875.42, 492.00, 8944.43],
+            [6819.56, 492.00, 1197.60, 681.96, 892.05, 492.00, 9191.12],
+            [7061.65, 492.00, 1197.60, 706.17, 909.08, 492.00, 9457.42],
+            [7322.93, 492.00, 1197.60, 732.29, 926.42, 492.00, 9744.82],
+            [7604.88, 492.00, 1197.60, 760.49, 944.06, 492.00, 10054.97],
+            [7909.04, 492.00, 1197.60, 790.90, 962.01, 492.00, 10389.54],
+            [8383.61, 492.00, 1197.60, 838.36, 980.35, 492.00, 10911.57]
+        ];
+
+        // Inicializando o nível atual
         let nivelAnalista = 0;
         let nivelTecnico = 0;
 
-        const analistaDados = [
-            [6188.61, 8664.05, 14852.66, 498.37, 1393.1, 1100.00, 464.15, 18308.28],
-            [6374.26, 8923.98, 15298.24, 498.37, 1393.1, 1100.00, 478.07, 18767.78],
-            [6565.49, 9191.69, 15757.18, 498.37, 1393.1, 1100.00, 492.41, 19241.06],
-            // Continuar os dados...
-        ];
-
-        const tecnicoDados = [
-            [5563.97, 492.00, 1197.60, 556.40, 7809.97],
-            [5703.06, 492.00, 1197.60, 570.31, 7962.97],
-            [5854.18, 492.00, 1197.60, 585.42, 8129.20],
-            // Continuar os dados...
-        ];
-
-        function atualizarTabela() {
-            const analistaRow = document.querySelector(`#nivel${nivelAnalista}-analista`);
-            const tecnicoRow = document.querySelector(`#nivel${nivelTecnico}-tecnico`);
-            
-            if (analistaRow) analistaRow.style.backgroundColor = '#f9f9f9';
-            if (tecnicoRow) tecnicoRow.style.backgroundColor = '#f9f9f9';
-
-            document.querySelector(`#nivel-display-analista`).textContent = `Nível ${nivelAnalista}`;
-            document.querySelector(`#nivel-display-tecnico`).textContent = `Nível ${nivelTecnico}`;
-            
-            if (analistaRow) analistaRow.style.backgroundColor = '#d3f8d3';
-            if (tecnicoRow) tecnicoRow.style.backgroundColor = '#d3f8d3';
+        // Função para atualizar a tabela do Analista Judiciário
+        function atualizarTabelaAnalista() {
+            const dadosAnalista = analistaDados[nivelAnalista];
+            document.getElementById("nivel-analista").textContent = nivelAnalista;
+            document.getElementById("base-analista").textContent = `R$ ${dadosAnalista[0].toFixed(2)}`;
+            document.getElementById("gaj-analista").textContent = `R$ ${dadosAnalista[1].toFixed(2)}`;
+            document.getElementById("remuneracao-analista").textContent = `R$ ${dadosAnalista[2].toFixed(2)}`;
+            document.getElementById("transporte-analista").textContent = `R$ ${dadosAnalista[3].toFixed(2)}`;
+            document.getElementById("alimentacao-analista").textContent = `R$ ${dadosAnalista[4].toFixed(2)}`;
+            document.getElementById("saude-analista").textContent = `R$ ${dadosAnalista[5].toFixed(2)}`;
+            document.getElementById("qualificacao-analista").textContent = `R$ ${dadosAnalista[6].toFixed(2)}`;
+            document.getElementById("salario-bruto-analista").textContent = `R$ ${dadosAnalista[7].toFixed(2)}`;
         }
 
+        // Função para atualizar a tabela do Técnico Judiciário
+        function atualizarTabelaTecnico() {
+            const dadosTecnico = tecnicoDados[nivelTecnico];
+            document.getElementById("nivel-tecnico").textContent = nivelTecnico;
+            document.getElementById("base-tecnico").textContent = `R$ ${dadosTecnico[0].toFixed(2)}`;
+            document.getElementById("gaj-tecnico").textContent = `R$ ${dadosTecnico[1].toFixed(2)}`;
+            document.getElementById("remuneracao-tecnico").textContent = `R$ ${dadosTecnico[2].toFixed(2)}`;
+            document.getElementById("transporte-tecnico").textContent = `R$ ${dadosTecnico[3].toFixed(2)}`;
+            document.getElementById("alimentacao-tecnico").textContent = `R$ ${dadosTecnico[4].toFixed(2)}`;
+            document.getElementById("saude-tecnico").textContent = `R$ ${dadosTecnico[5].toFixed(2)}`;
+            document.getElementById("salario-bruto-tecnico").textContent = `R$ ${dadosTecnico[6].toFixed(2)}`;
+        }
+
+        // Funções para incrementar e decrementar os níveis
         function incrementarNivelAnalista() {
             if (nivelAnalista < analistaDados.length - 1) {
                 nivelAnalista++;
-                atualizarTabela();
+                atualizarTabelaAnalista();
             }
         }
 
         function decrementarNivelAnalista() {
             if (nivelAnalista > 0) {
                 nivelAnalista--;
-                atualizarTabela();
+                atualizarTabelaAnalista();
             }
         }
 
         function incrementarNivelTecnico() {
             if (nivelTecnico < tecnicoDados.length - 1) {
                 nivelTecnico++;
-                atualizarTabela();
+                atualizarTabelaTecnico();
             }
         }
 
         function decrementarNivelTecnico() {
             if (nivelTecnico > 0) {
                 nivelTecnico--;
-                atualizarTabela();
+                atualizarTabelaTecnico();
             }
         }
 
-        // Inicializa a tabela
-        atualizarTabela();
+        // Atualiza as tabelas no carregamento inicial
+        atualizarTabelaAnalista();
+        atualizarTabelaTecnico();
     </script>
 </body>
 </html>
