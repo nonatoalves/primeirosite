@@ -110,7 +110,7 @@
             </thead>
             <tbody>
                 <tr id="linha1">
-                    <td>1</td>
+                    <td id="nivel1">1</td>
                     <td id="gaj1">R$ 8.664,05</td>
                     <td id="salarioTotal1">R$ 14.852,66</td>
                     <td id="alimentacao1">R$ 1.393,10</td>
@@ -122,22 +122,6 @@
                         <div class="btn-group">
                             <button class="btn" onclick="alterarValor('TRT', 1, 200)">+</button>
                             <button class="btn" onclick="alterarValor('TRT', 1, -200)">-</button>
-                        </div>
-                    </td>
-                </tr>
-                <tr id="linha2">
-                    <td>2</td>
-                    <td id="gaj2">R$ 9.664,05</td>
-                    <td id="salarioTotal2">R$ 15.852,66</td>
-                    <td id="alimentacao2">R$ 1.493,10</td>
-                    <td id="qualificacao2">R$ 564,15</td>
-                    <td id="saude2">R$ 1.200,00</td>
-                    <td id="transporte2">R$ 598,37</td>
-                    <td id="salarioBruto2">R$ 19.408,28</td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn" onclick="alterarValor('TRT', 2, 200)">+</button>
-                            <button class="btn" onclick="alterarValor('TRT', 2, -200)">-</button>
                         </div>
                     </td>
                 </tr>
@@ -159,7 +143,7 @@
             </thead>
             <tbody>
                 <tr id="linha0">
-                    <td>0</td>
+                    <td id="nivel0">0</td>
                     <td id="salarioBase0">R$ 5.563,97</td>
                     <td id="transporte0">R$ 492,00</td>
                     <td id="alimentacao0">R$ 1.197,60</td>
@@ -190,11 +174,11 @@
         const salaryChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Nível 0', 'Nível 1', 'Nível 2', 'Nível 3', 'Nível 4', 'Nível 5'], // Eixo X
+                labels: ['Nível 0', 'Nível 1'], // Eixo X
                 datasets: [
                     {
                         label: 'TRT - Salário Bruto',
-                        data: [18308.28, 19408.28], // Iniciando com dados estáticos
+                        data: [18308.28], // Iniciando com dados estáticos
                         borderColor: 'rgba(75, 192, 192, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.1)',
                     },
@@ -232,10 +216,11 @@
 
         // Função para alterar o valor na tabela e no gráfico
         function alterarValor(tipo, nivel, valor) {
-            let elementoGaj, elementoTotal, elementoAlimentacao, elementoQualificacao, elementoSaude, elementoTransporte, elementoSalarioBruto;
+            let elementoNivel, elementoGaj, elementoTotal, elementoAlimentacao, elementoQualificacao, elementoSaude, elementoTransporte, elementoSalarioBruto;
             let novoValor;
 
             if (tipo === 'TRT') {
+                elementoNivel = document.getElementById('nivel' + nivel);
                 elementoGaj = document.getElementById('gaj' + nivel);
                 elementoTotal = document.getElementById('salarioTotal' + nivel);
                 elementoAlimentacao = document.getElementById('alimentacao' + nivel);
@@ -244,6 +229,7 @@
                 elementoTransporte = document.getElementById('transporte' + nivel);
                 elementoSalarioBruto = document.getElementById('salarioBruto' + nivel);
             } else if (tipo === 'TJPE') {
+                elementoNivel = document.getElementById('nivel' + nivel);
                 elementoGaj = document.getElementById('salarioBase' + nivel);
                 elementoTotal = document.getElementById('salarioBruto' + nivel);
                 elementoAlimentacao = document.getElementById('alimentacao' + nivel);
