@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparação Salarial - TRT e TJPE</title>
+    <title>Comparação Salarial - TRT</title>
     <style>
         /* Estilos Globais */
         body {
@@ -109,129 +109,77 @@
 <body>
 
     <header>
-        <h1>Comparação Salarial - TRT e TJPE</h1>
+        <h1>Comparação Salarial - TRT</h1>
     </header>
 
     <div class="container">
-        <h2>Tabela Salarial - TRT</h2>
+        <h2>Tabela Salarial - Analista Judiciário (TRT)</h2>
         <table class="data-table" id="tabela-trt">
             <thead>
                 <tr>
                     <th>Nível</th>
+                    <th>Base</th>
                     <th>GAJ</th>
-                    <th>Salário Total</th>
-                    <th>Alimentação</th>
-                    <th>Qualificação</th>
-                    <th>Saúde</th>
+                    <th>Remuneração</th>
                     <th>Transporte</th>
+                    <th>Alimentação</th>
+                    <th>Saúde</th>
+                    <th>Qualificação Pos Grad.</th>
                     <th>Salário Bruto</th>
                 </tr>
             </thead>
             <tbody id="tbody-trt"></tbody>
         </table>
-
-        <h2>Tabela Salarial - TJPE</h2>
-        <table class="data-table" id="tabela-tjpe">
-            <thead>
-                <tr>
-                    <th>Nível</th>
-                    <th>Salário Base</th>
-                    <th>Transporte</th>
-                    <th>Alimentação</th>
-                    <th>Saúde</th>
-                    <th>Salário Bruto</th>
-                </tr>
-            </thead>
-            <tbody id="tbody-tjpe"></tbody>
-        </table>
     </div>
 
     <footer>
-        <p>&copy; 2024 Comparação Salarial - TRT e TJPE</p>
+        <p>&copy; 2024 Comparação Salarial - TRT</p>
     </footer>
 
     <script>
-        // Dados das tabelas TRT e TJPE com todos os níveis
-        const data = {
-            TRT: [
-                { nivel: 1, gaj: 8664.05, salarioTotal: 14852.66, alimentacao: 1393.10, qualificacao: 464.15, saude: 1100.00, transporte: 498.37, salarioBruto: 18308.28 },
-                { nivel: 2, gaj: 8923.98, salarioTotal: 15298.24, alimentacao: 1393.10, qualificacao: 478.07, saude: 1100.00, transporte: 498.37, salarioBruto: 18767.78 },
-                { nivel: 3, gaj: 9191.69, salarioTotal: 15757.18, alimentacao: 1393.10, qualificacao: 492.41, saude: 1100.00, transporte: 498.37, salarioBruto: 19241.06 },
-                { nivel: 4, gaj: 9715.63, salarioTotal: 16655.37, alimentacao: 1393.10, qualificacao: 520.48, saude: 1100.00, transporte: 498.37, salarioBruto: 20167.32 },
-                { nivel: 5, gaj: 10007.09, salarioTotal: 17155.01, alimentacao: 1393.10, qualificacao: 536.09, saude: 1100.00, transporte: 498.37, salarioBruto: 20682.57 },
-                { nivel: 6, gaj: 10307.31, salarioTotal: 17669.67, alimentacao: 1393.10, qualificacao: 552.18, saude: 1100.00, transporte: 498.37, salarioBruto: 21213.32 },
-                { nivel: 7, gaj: 10616.53, salarioTotal: 18199.76, alimentacao: 1393.10, qualificacao: 568.74, saude: 1100.00, transporte: 498.37, salarioBruto: 21759.97 },
-                { nivel: 8, gaj: 10935.03, salarioTotal: 18745.76, alimentacao: 1393.10, qualificacao: 585.80, saude: 1100.00, transporte: 498.37, salarioBruto: 22323.03 },
-                { nivel: 9, gaj: 11558.32, salarioTotal: 19814.27, alimentacao: 1393.10, qualificacao: 619.20, saude: 1100.00, transporte: 498.37, salarioBruto: 23424.94 },
-                { nivel: 10, gaj: 11905.07, salarioTotal: 20408.69, alimentacao: 1393.10, qualificacao: 637.77, saude: 1100.00, transporte: 498.37, salarioBruto: 24037.93 },
-                { nivel: 11, gaj: 12262.22, salarioTotal: 21020.95, alimentacao: 1393.10, qualificacao: 656.90, saude: 1100.00, transporte: 498.37, salarioBruto: 24669.32 },
-                { nivel: 12, gaj: 12633.09, salarioTotal: 21654.58, alimentacao: 1393.10, qualificacao: 676.61, saude: 1100.00, transporte: 498.37, salarioBruto: 25322.66 },
-                { nivel: 13, gaj: 13008.99, salarioTotal: 22301.13, alimentacao: 1393.10, qualificacao: 696.91, saude: 1100.00, transporte: 498.37, salarioBruto: 25989.51 },
-                { nivel: 14, gaj: 13456.36, salarioTotal: 22957.56, alimentacao: 1393.10, qualificacao: 717.57, saude: 1100.00, transporte: 498.37, salarioBruto: 26665.39 },
-                { nivel: 15, gaj: 13924.71, salarioTotal: 23619.93, alimentacao: 1393.10, qualificacao: 738.14, saude: 1100.00, transporte: 498.37, salarioBruto: 27350.51 },
-                { nivel: 16, gaj: 14401.29, salarioTotal: 24308.24, alimentacao: 1393.10, qualificacao: 759.30, saude: 1100.00, transporte: 498.37, salarioBruto: 28045.90 },
-                { nivel: 17, gaj: 14889.02, salarioTotal: 24983.43, alimentacao: 1393.10, qualificacao: 780.11, saude: 1100.00, transporte: 498.37, salarioBruto: 28751.02 },
-                { nivel: 18, gaj: 15383.16, salarioTotal: 25663.93, alimentacao: 1393.10, qualificacao: 801.25, saude: 1100.00, transporte: 498.37, salarioBruto: 29467.13 },
-                { nivel: 19, gaj: 15884.99, salarioTotal: 26345.15, alimentacao: 1393.10, qualificacao: 822.56, saude: 1100.00, transporte: 498.37, salarioBruto: 30193.08 },
-                { nivel: 20, gaj: 16392.12, salarioTotal: 27028.52, alimentacao: 1393.10, qualificacao: 844.06, saude: 1100.00, transporte: 498.37, salarioBruto: 30929.16 },
-                { nivel: 21, gaj: 16905.72, salarioTotal: 27714.57, alimentacao: 1393.10, qualificacao: 865.73, saude: 1100.00, transporte: 498.37, salarioBruto: 31675.82 }
-            ],
-            TJPE: [
-                { nivel: 0, salarioBase: 5563.97, transporte: 492.00, alimentacao: 1197.60, saude: 556.40, salarioBruto: 7809.97 },
-                { nivel: 1, salarioBase: 5781.92, transporte: 492.00, alimentacao: 1197.60, saude: 578.19, salarioBruto: 8049.71 },
-                { nivel: 2, salarioBase: 6073.72, transporte: 492.00, alimentacao: 1197.60, saude: 607.37, salarioBruto: 8310.69 },
-                { nivel: 3, salarioBase: 6392.34, transporte: 492.00, alimentacao: 1197.60, saude: 639.23, salarioBruto: 8580.17 },
-                { nivel: 4, salarioBase: 6731.17, transporte: 492.00, alimentacao: 1197.60, saude: 673.12, salarioBruto: 8855.89 },
-                { nivel: 5, salarioBase: 7079.85, transporte: 492.00, alimentacao: 1197.60, saude: 707.99, salarioBruto: 9137.44 },
-                { nivel: 6, salarioBase: 7429.64, transporte: 492.00, alimentacao: 1197.60, saude: 742.96, salarioBruto: 9423.20 },
-                { nivel: 7, salarioBase: 7781.69, transporte: 492.00, alimentacao: 1197.60, saude: 778.17, salarioBruto: 9715.46 },
-                { nivel: 8, salarioBase: 8136.19, transporte: 492.00, alimentacao: 1197.60, saude: 813.62, salarioBruto: 10012.41 },
-                { nivel: 9, salarioBase: 8490.85, transporte: 492.00, alimentacao: 1197.60, saude: 849.09, salarioBruto: 10210.54 }
-            ]
-        };
+        // Dados da tabela do TRT com todos os níveis
+        const dataTRT = [
+            { nivel: 1, base: 6188.61, gaj: 8664.05, remuneracao: 14852.66, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 464.15, salarioBruto: 18308.28 },
+            { nivel: 2, base: 6374.26, gaj: 8923.98, remuneracao: 15298.24, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 478.07, salarioBruto: 18767.78 },
+            { nivel: 3, base: 6565.49, gaj: 9191.69, remuneracao: 15757.18, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 492.41, salarioBruto: 19241.06 },
+            { nivel: 4, base: 6939.74, gaj: 9715.63, remuneracao: 16655.37, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 520.48, salarioBruto: 20167.32 },
+            { nivel: 5, base: 7147.92, gaj: 10007.09, remuneracao: 17155.01, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 536.09, salarioBruto: 20682.57 },
+            { nivel: 6, base: 7362.36, gaj: 10307.31, remuneracao: 17669.67, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 552.18, salarioBruto: 21213.32 },
+            { nivel: 7, base: 7583.23, gaj: 10616.53, remuneracao: 18199.76, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 568.74, salarioBruto: 21759.97 },
+            { nivel: 8, base: 7810.73, gaj: 10935.03, remuneracao: 18745.76, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 585.80, salarioBruto: 22323.03 },
+            { nivel: 9, base: 8255.95, gaj: 11558.32, remuneracao: 19814.27, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 619.20, salarioBruto: 23424.94 },
+            { nivel: 10, base: 8503.62, gaj: 11905.07, remuneracao: 20408.69, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 637.77, salarioBruto: 24037.93 },
+            { nivel: 11, base: 8758.73, gaj: 12262.22, remuneracao: 21020.95, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 656.90, salarioBruto: 24669.32 },
+            { nivel: 12, base: 9021.49, gaj: 12633.09, remuneracao: 21654.58, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 676.61, salarioBruto: 25322.66 },
+            { nivel: 13, base: 9292.14, gaj: 13008.99, remuneracao: 22301.13, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00, qualificacao: 696.91, salarioBruto: 25989.51 }
+        ];
 
-        // Função para preencher as tabelas com os dados
-        function preencherTabela(tipo) {
-            let tabela = tipo === 'TRT' ? document.getElementById('tbody-trt') : document.getElementById('tbody-tjpe');
-            let dados = tipo === 'TRT' ? data.TRT : data.TJPE;
+        // Função para preencher a tabela com os dados
+        function preencherTabelaTRT() {
+            const tabelaTRT = document.getElementById('tbody-trt');
             let html = '';
 
-            dados.forEach(item => {
-                if (tipo === 'TRT') {
-                    html += `
-                    <tr>
-                        <td>${item.nivel}</td>
-                        <td>R$ ${item.gaj.toFixed(2)}</td>
-                        <td>R$ ${item.salarioTotal.toFixed(2)}</td>
-                        <td>R$ ${item.alimentacao.toFixed(2)}</td>
-                        <td>R$ ${item.qualificacao.toFixed(2)}</td>
-                        <td>R$ ${item.saude.toFixed(2)}</td>
-                        <td>R$ ${item.transporte.toFixed(2)}</td>
-                        <td>R$ ${item.salarioBruto.toFixed(2)}</td>
-                    </tr>
-                    `;
-                } else if (tipo === 'TJPE') {
-                    html += `
-                    <tr>
-                        <td>${item.nivel}</td>
-                        <td>R$ ${item.salarioBase.toFixed(2)}</td>
-                        <td>R$ ${item.transporte.toFixed(2)}</td>
-                        <td>R$ ${item.alimentacao.toFixed(2)}</td>
-                        <td>R$ ${item.saude.toFixed(2)}</td>
-                        <td>R$ ${item.salarioBruto.toFixed(2)}</td>
-                    </tr>
-                    `;
-                }
+            dataTRT.forEach(item => {
+                html += `
+                <tr>
+                    <td>${item.nivel}</td>
+                    <td>R$ ${item.base.toFixed(2)}</td>
+                    <td>R$ ${item.gaj.toFixed(2)}</td>
+                    <td>R$ ${item.remuneracao.toFixed(2)}</td>
+                    <td>R$ ${item.transporte.toFixed(2)}</td>
+                    <td>R$ ${item.alimentacao.toFixed(2)}</td>
+                    <td>R$ ${item.saude.toFixed(2)}</td>
+                    <td>R$ ${item.qualificacao.toFixed(2)}</td>
+                    <td>R$ ${item.salarioBruto.toFixed(2)}</td>
+                </tr>
+                `;
             });
 
-            tabela.innerHTML = html;
+            tabelaTRT.innerHTML = html;
         }
 
-        // Preenche as tabelas ao carregar a página
-        window.onload = () => {
-            preencherTabela('TRT');
-            preencherTabela('TJPE');
-        };
+        // Preenche a tabela ao carregar a página
+        window.onload = preencherTabelaTRT;
     </script>
 
 </body>
