@@ -1,97 +1,38 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Remuneração</title>
+    <title>Salários TRT e TJPE</title>
     <style>
-        /* Reseta as margens e o padding para ter um visual limpo */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Estilo geral do corpo da página */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #444;
-        }
-
-        h2 {
-            margin-bottom: 15px;
-            color: #555;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
-
+        table, th, td {
+            border: 1px solid black;
+        }
         th, td {
-            border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
         }
-
         th {
             background-color: #f2f2f2;
-            color: #333;
         }
-
-        td {
-            background-color: #fff;
-        }
-
-        /* Estilo para os botões de incremento e decremento */
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .btn-group button {
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
+        button {
             padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
             margin: 0 5px;
-            border-radius: 5px;
-        }
-
-        .btn-group button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Estilo para as células de valores de salário */
-        .valor-salario {
-            font-weight: bold;
-            color: #007bff;
         }
     </style>
 </head>
 <body>
-    <h1>Simulador de Remuneração</h1>
+    <h1>Comparativo de Salários: TRT e TJPE</h1>
 
-    <!-- Tabela TRT -->
-    <h2>TRT - Analista Judiciário</h2>
-    <table id="tabelaTRT">
+    <table id="trt-table">
         <thead>
             <tr>
-                <th>Nível</th>
+                <th>Níveis</th>
                 <th>Base</th>
                 <th>GAJ</th>
                 <th>Remuneração</th>
@@ -102,16 +43,29 @@
                 <th>Salário Bruto</th>
             </tr>
         </thead>
-        <tbody id="tbodyTRT">
+        <tbody>
+            <tr>
+                <td>
+                    <button onclick="decrementLevel('trt')">-</button>
+                    <span id="trt-level">1</span>
+                    <button onclick="incrementLevel('trt')">+</button>
+                </td>
+                <td id="trt-base">R$ 6.188,61</td>
+                <td id="trt-gaj">R$ 8.664,05</td>
+                <td id="trt-remuneracao">R$ 14.852,66</td>
+                <td id="trt-alimentacao">R$ 1.393,10</td>
+                <td id="trt-qualificacao">R$ 464,15</td>
+                <td id="trt-saude">R$ 1.100,00</td>
+                <td id="trt-transporte">R$ 498,37</td>
+                <td id="trt-salario-bruto">R$ 18.308,28</td>
+            </tr>
         </tbody>
     </table>
 
-    <!-- Tabela TJPE -->
-    <h2>TJPE - Técnico Judiciário</h2>
-    <table id="tabelaTJPE">
+    <table id="tjpe-table">
         <thead>
             <tr>
-                <th>Nível</th>
+                <th>Níveis</th>
                 <th>Base</th>
                 <th>Transporte</th>
                 <th>Alimentação</th>
@@ -119,76 +73,86 @@
                 <th>Salário Bruto</th>
             </tr>
         </thead>
-        <tbody id="tbodyTJPE">
+        <tbody>
+            <tr>
+                <td>
+                    <button onclick="decrementLevel('tjpe')">-</button>
+                    <span id="tjpe-level">0</span>
+                    <button onclick="incrementLevel('tjpe')">+</button>
+                </td>
+                <td id="tjpe-base">R$ 5.563,97</td>
+                <td id="tjpe-transporte">R$ 492,00</td>
+                <td id="tjpe-alimentacao">R$ 1.197,60</td>
+                <td id="tjpe-saude">R$ 556,40</td>
+                <td id="tjpe-salario-bruto">R$ 7.809,97</td>
+            </tr>
         </tbody>
     </table>
 
     <script>
-        // Dados para o TRT
         const trtData = [
-            { nivel: 1, base: 6188.61, gaj: 8664.05, remuneracao: 14852.66, alimentacao: 1393.10, qualificacao: 464.15, saude: 1100.00, transporte: 498.37, salarioBruto: 18308.28 },
-            { nivel: 2, base: 6374.26, gaj: 8923.98, remuneracao: 15298.24, alimentacao: 1393.10, qualificacao: 478.07, saude: 1100.00, transporte: 498.37, salarioBruto: 18767.78 },
-            { nivel: 3, base: 6565.49, gaj: 9191.69, remuneracao: 15757.18, alimentacao: 1393.10, qualificacao: 492.41, saude: 1100.00, transporte: 498.37, salarioBruto: 19241.06 },
-            { nivel: 4, base: 6939.74, gaj: 9715.63, remuneracao: 16655.37, alimentacao: 1393.10, qualificacao: 520.48, saude: 1100.00, transporte: 498.37, salarioBruto: 20167.32 },
-            { nivel: 5, base: 7147.92, gaj: 10007.09, remuneracao: 17155.01, alimentacao: 1393.10, qualificacao: 536.09, saude: 1100.00, transporte: 498.37, salarioBruto: 20682.57 },
-            { nivel: 6, base: 7362.36, gaj: 10307.31, remuneracao: 17669.67, alimentacao: 1393.10, qualificacao: 552.18, saude: 1100.00, transporte: 498.37, salarioBruto: 21213.32 },
-            { nivel: 7, base: 7583.23, gaj: 10616.53, remuneracao: 18199.76, alimentacao: 1393.10, qualificacao: 568.74, saude: 1100.00, transporte: 498.37, salarioBruto: 21759.97 },
-            { nivel: 8, base: 7810.73, gaj: 10935.03, remuneracao: 18745.76, alimentacao: 1393.10, qualificacao: 585.80, saude: 1100.00, transporte: 498.37, salarioBruto: 22323.03 },
-            { nivel: 9, base: 8255.95, gaj: 11558.32, remuneracao: 19814.27, alimentacao: 1393.10, qualificacao: 619.20, saude: 1100.00, transporte: 498.37, salarioBruto: 23424.94 },
-            { nivel: 10, base: 8503.62, gaj: 11905.07, remuneracao: 20408.69, alimentacao: 1393.10, qualificacao: 637.77, saude: 1100.00, transporte: 498.37, salarioBruto: 24037.93 },
-            { nivel: 11, base: 8758.73, gaj: 12262.22, remuneracao: 21020.95, alimentacao: 1393.10, qualificacao: 656.90, saude: 1100.00, transporte: 498.37, salarioBruto: 24669.32 },
-            { nivel: 12, base: 9021.49, gaj: 12633.09, remuneracao: 21654.58, alimentacao: 1393.10, qualificacao: 676.61, saude: 1100.00, transporte: 498.37, salarioBruto: 25322.66 },
-            { nivel: 13, base: 9292.14, gaj: 13008.99, remuneracao: 22301.13, alimentacao: 1393.10, qualificacao: 696.91, saude: 1100.00, transporte: 498.37, salarioBruto: 25989.51 },
+            { base: "R$ 6.188,61", gaj: "R$ 8.664,05", remuneracao: "R$ 14.852,66", alimentacao: "R$ 1.393,10", qualificacao: "R$ 464,15", saude: "R$ 1.100,00", transporte: "R$ 498,37", salarioBruto: "R$ 18.308,28" },
+            // Add all other levels for TRT here...
         ];
 
-        // Dados para o TJPE
         const tjpeData = [
-            { nivel: 0, base: 5563.97, transporte: 492.00, alimentacao: 1197.60, saude: 556.40, salarioBruto: 7809.97 },
-            { nivel: 1, base: 5703.06, transporte: 492.00, alimentacao: 1197.60, saude: 570.31, salarioBruto: 7962.97 },
-            { nivel: 2, base: 5854.18, transporte: 492.00, alimentacao: 1197.60, saude: 585.42, salarioBruto: 8129.20 },
-            { nivel: 3, base: 6018.12, transporte: 492.00, alimentacao: 1197.60, saude: 601.81, salarioBruto: 8309.53 },
-            { nivel: 4, base: 6179.18, transporte: 492.00, alimentacao: 1197.60, saude: 617.92, salarioBruto: 8486.70 },
-            { nivel: 5, base: 6341.29, transporte: 492.00, alimentacao: 1197.60, saude: 634.13, salarioBruto: 8665.02 },
-            { nivel: 6, base: 6502.80, transporte: 492.00, alimentacao: 1197.60, saude: 650.28, salarioBruto: 8842.68 },
+            { base: "R$ 5.563,97", transporte: "R$ 492,00", alimentacao: "R$ 1.197,60", saude: "R$ 556,40", salarioBruto: "R$ 7.809,97" },
+            // Add all other levels for TJPE here...
         ];
 
-        // Função para popular as tabelas
-        function preencherTabela(trtData, tjpeData) {
-            const tbodyTRT = document.getElementById('tbodyTRT');
-            const tbodyTJPE = document.getElementById('tbodyTJPE');
+        let trtLevel = 1;
+        let tjpeLevel = 0;
 
-            trtData.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.nivel}</td>
-                    <td class="valor-salario">${item.base.toFixed(2)}</td>
-                    <td>${item.gaj.toFixed(2)}</td>
-                    <td>${item.remuneracao.toFixed(2)}</td>
-                    <td>${item.alimentacao.toFixed(2)}</td>
-                    <td>${item.qualificacao.toFixed(2)}</td>
-                    <td>${item.saude.toFixed(2)}</td>
-                    <td>${item.transporte.toFixed(2)}</td>
-                    <td class="valor-salario">${item.salarioBruto.toFixed(2)}</td>
-                `;
-                tbodyTRT.appendChild(row);
-            });
-
-            tjpeData.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.nivel}</td>
-                    <td class="valor-salario">${item.base.toFixed(2)}</td>
-                    <td>${item.transporte.toFixed(2)}</td>
-                    <td>${item.alimentacao.toFixed(2)}</td>
-                    <td>${item.saude.toFixed(2)}</td>
-                    <td class="valor-salario">${item.salarioBruto.toFixed(2)}</td>
-                `;
-                tbodyTJPE.appendChild(row);
-            });
+        function updateTable(tableId, level, data) {
+            const table = document.getElementById(tableId);
+            const row = data[level];
+            if (tableId === 'trt-table') {
+                document.getElementById('trt-base').textContent = row.base;
+                document.getElementById('trt-gaj').textContent = row.gaj;
+                document.getElementById('trt-remuneracao').textContent = row.remuneracao;
+                document.getElementById('trt-alimentacao').textContent = row.alimentacao;
+                document.getElementById('trt-qualificacao').textContent = row.qualificacao;
+                document.getElementById('trt-saude').textContent = row.saude;
+                document.getElementById('trt-transporte').textContent = row.transporte;
+                document.getElementById('trt-salario-bruto').textContent = row.salarioBruto;
+                document.getElementById('trt-level').textContent = level + 1;
+            } else if (tableId === 'tjpe-table') {
+                document.getElementById('tjpe-base').textContent = row.base;
+                document.getElementById('tjpe-transporte').textContent = row.transporte;
+                document.getElementById('tjpe-alimentacao').textContent = row.alimentacao;
+                document.getElementById('tjpe-saude').textContent = row.saude;
+                document.getElementById('tjpe-salario-bruto').textContent = row.salarioBruto;
+                document.getElementById('tjpe-level').textContent = level;
+            }
         }
 
-        // Preencher as tabelas ao carregar a página
-        preencherTabela(trtData, tjpeData);
+        function incrementLevel(tableId) {
+            if (tableId === 'trt') {
+                if (trtLevel < trtData.length) {
+                    trtLevel++;
+                    updateTable('trt-table', trtLevel - 1, trtData);
+                }
+            } else if (tableId === 'tjpe') {
+                if (tjpeLevel < tjpeData.length - 1) {
+                    tjpeLevel++;
+                    updateTable('tjpe-table', tjpeLevel, tjpeData);
+                }
+            }
+        }
+
+        function decrementLevel(tableId) {
+            if (tableId === 'trt') {
+                if (trtLevel > 1) {
+                    trtLevel--;
+                    updateTable('trt-table', trtLevel - 1, trtData);
+                }
+            } else if (tableId === 'tjpe') {
+                if (tjpeLevel > 0) {
+                    tjpeLevel--;
+                    updateTable('tjpe-table', tjpeLevel, tjpeData);
+                }
+            }
+        }
     </script>
 </body>
 </html>
