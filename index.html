@@ -3,126 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Níveis e Salários</title>
+    <title>Comparação Salarial - TRT e TJPE</title>
     <style>
-        .tabela-oculta {
-            display: none;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
         }
-        .controle-nivel {
-            margin: 10px;
+        header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
         }
-        .resultado {
-            font-size: 20px;
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            text-align: left;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .data-table th {
+            background-color: #4a90e2;
+            color: white;
+        }
+        .btn-group {
             margin-top: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #357ABD;
+        }
+        footer {
+            background-color: #4a90e2;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Comparação Salarial - TRT e TJPE</h1>
+    </header>
 
-    <h2>Selecione o Nível e Controle o Salário</h2>
+    <div class="container">
+        <h2>Tabela Salarial - TRT</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>GAJ</th>
+                    <th>Salário Total</th>
+                    <th>Alimentação</th>
+                    <th>Qualificação</th>
+                    <th>Saúde</th>
+                    <th>Transporte</th>
+                    <th>Total com Benefícios</th>
+                    <th>Operações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>R$ 8.664,05</td>
+                    <td>R$ 14.852,66</td>
+                    <td>R$ 1.393,10</td>
+                    <td>R$ 464,15</td>
+                    <td>R$ 1.100,00</td>
+                    <td>R$ 498,37</td>
+                    <td>R$ 18.308,28</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn" onclick="alterarValor('TRT', 1, 200)">+</button>
+                            <button class="btn" onclick="alterarValor('TRT', 1, -200)">-</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-    <div class="controle-nivel">
-        <button id="decremento">-</button>
-        <span id="nivelSelecionado">Nível 1</span>
-        <button id="incremento">+</button>
+        <h2>Tabela Salarial - TJPE</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Nível</th>
+                    <th>Salário Base</th>
+                    <th>Transporte</th>
+                    <th>Alimentação</th>
+                    <th>Saúde</th>
+                    <th>Salário Bruto</th>
+                    <th>Operações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0</td>
+                    <td>R$ 5.563,97</td>
+                    <td>R$ 492,00</td>
+                    <td>R$ 1.197,60</td>
+                    <td>R$ 556,40</td>
+                    <td>R$ 7.809,97</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn" onclick="alterarValor('TJPE', 0, 100)">+</button>
+                            <button class="btn" onclick="alterarValor('TJPE', 0, -100)">-</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Evolução Salarial - Gráfico Comparativo</h2>
+        <canvas id="salaryChart" width="800" height="400"></canvas>
     </div>
 
-    <div class="resultado">
-        <strong>Salário Bruto: </strong><span id="salarioBruto"></span>
-    </div>
+    <footer>
+        <p>&copy; 2024 Comparação Salarial - TRT e TJPE</p>
+    </footer>
 
-    <!-- Tabelas Ocultas de Dados -->
-    <table class="tabela-oculta" id="tabelaTRT">
-        <thead>
-            <tr>
-                <th>Nível</th>
-                <th>Salário Base</th>
-                <th>GAJ</th>
-                <th>Salário Total</th>
-                <th>Alimentação</th>
-                <th>Qualificação</th>
-                <th>Saúde</th>
-                <th>Transporte</th>
-                <th>Salário Bruto</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>1</td><td>R$ 6.188,61</td><td>R$ 8.664,05</td><td>R$ 14.852,66</td><td>R$ 1.393,10</td><td>R$ 464,15</td><td>R$ 1.100,00</td><td>R$ 498,37</td><td>R$ 18.308,28</td></tr>
-            <tr><td>2</td><td>R$ 6.374,26</td><td>R$ 8.923,98</td><td>R$ 15.298,24</td><td>R$ 1.393,10</td><td>R$ 478,07</td><td>R$ 1.100,00</td><td>R$ 498,37</td><td>R$ 18.767,78</td></tr>
-            <tr><td>3</td><td>R$ 6.565,49</td><td>R$ 9.191,69</td><td>R$ 15.757,18</td><td>R$ 1.393,10</td><td>R$ 492,41</td><td>R$ 1.100,00</td><td>R$ 498,37</td><td>R$ 19.241,06</td></tr>
-            <tr><td>4</td><td>R$ 6.939,74</td><td>R$ 9.715,63</td><td>R$ 16.655,37</td><td>R$ 1.393,10</td><td>R$ 520,48</td><td>R$ 1.100,00</td><td>R$ 498,37</td><td>R$ 20.167,32</td></tr>
-            <!-- Adicionar os demais níveis aqui -->
-        </tbody>
-    </table>
-
-    <table class="tabela-oculta" id="tabelaTJPE">
-        <thead>
-            <tr>
-                <th>Nível</th>
-                <th>Salário Base</th>
-                <th>Alimentação</th>
-                <th>Saúde</th>
-                <th>Salário Bruto</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>0</td><td>R$ 5.563,97</td><td>R$ 492,00</td><td>R$ 556,40</td><td>R$ 7.809,97</td></tr>
-            <tr><td>1</td><td>R$ 5.703,06</td><td>R$ 492,00</td><td>R$ 570,31</td><td>R$ 7.962,97</td></tr>
-            <tr><td>2</td><td>R$ 5.854,18</td><td>R$ 492,00</td><td>R$ 585,42</td><td>R$ 8.129,20</td></tr>
-            <tr><td>3</td><td>R$ 6.018,12</td><td>R$ 492,00</td><td>R$ 601,81</td><td>R$ 8.309,53</td></tr>
-            <!-- Adicionar os demais níveis aqui -->
-        </tbody>
-    </table>
-
+    <!-- Usando CDN mais leve e básica do Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script>
-        // Dados da Tabela TRT
-        const trtData = [
-            {nivel: 1, salarioBase: 6188.61, alimentacao: 1393.10, qualificacao: 464.15, saude: 1100.00, transporte: 498.37, salarioBruto: 18308.28},
-            {nivel: 2, salarioBase: 6374.26, alimentacao: 1393.10, qualificacao: 478.07, saude: 1100.00, transporte: 498.37, salarioBruto: 18767.78},
-            {nivel: 3, salarioBase: 6565.49, alimentacao: 1393.10, qualificacao: 492.41, saude: 1100.00, transporte: 498.37, salarioBruto: 19241.06},
-            {nivel: 4, salarioBase: 6939.74, alimentacao: 1393.10, qualificacao: 520.48, saude: 1100.00, transporte: 498.37, salarioBruto: 20167.32},
-            // Adicionar os dados restantes aqui
-        ];
+        const ctx = document.getElementById('salaryChart').getContext('2d');
+        const salaryChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Nível 0', 'Nível 1', 'Nível 2', 'Nível 3', 'Nível 4', 'Nível 5'], // Adicione mais níveis conforme necessário
+                datasets: [
+                    {
+                        label: 'TRT - Salário com Benefícios',
+                        data: [18308.28, 18269.41, 18742.69, 19668.95], // Adicione os valores do TRT
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',  // Reduzi o preenchimento
+                    },
+                    {
+                        label: 'TJPE - Salário Bruto',
+                        data: [7809.97, 7962.97, 8129.20, 8309.53], // Adicione os valores do TJPE
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',  // Reduzi o preenchimento
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Níveis'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Salário (R$)'
+                        }
+                    }
+                }
+            }
+        });
 
-        // Dados da Tabela TJPE
-        const tjpeData = [
-            {nivel: 0, salarioBase: 5563.97, alimentacao: 492.00, saude: 556.40, salarioBruto: 7809.97},
-            {nivel: 1, salarioBase: 5703.06, alimentacao: 492.00, saude: 570.31, salarioBruto: 7962.97},
-            {nivel: 2, salarioBase: 5854.18, alimentacao: 492.00, saude: 585.42, salarioBruto: 8129.20},
-            {nivel: 3, salarioBase: 6018.12, alimentacao: 492.00, saude: 601.81, salarioBruto: 8309.53},
-            // Adicionar os dados restantes aqui
-        ];
-
-        let nivelAtual = 1; // Nível inicial para TRT (ou pode ser 0 para TJPE)
-        let dadosAtuais = trtData; // Inicializa com os dados do TRT
-
-        // Função para atualizar o salário bruto com base no nível
-        function atualizarSalario() {
-            const dadosNivel = dadosAtuais.find(dado => dado.nivel === nivelAtual);
-            const salarioBruto = dadosNivel ? dadosNivel.salarioBruto : 0;
-            document.getElementById('salarioBruto').textContent = `R$ ${salarioBruto.toFixed(2)}`;
-            document.getElementById('nivelSelecionado').textContent = `Nível ${nivelAtual}`;
+        // Função para alterar o valor do salário
+        function alterarValor(tipo, nivel, valor) {
+            let salarioTotal;
+            if (tipo === 'TRT') {
+                salarioTotal = 18308.28 + valor; // Ajuste com base no valor de incremento ou decremento
+            } else if (tipo === 'TJPE') {
+                salarioTotal = 7809.97 + valor; // Ajuste para TJPE
+            }
+            
+            // Atualiza o gráfico ou tabela
+            console.log(`Salário atualizado para ${tipo}, Nível ${nivel}: R$ ${salarioTotal.toFixed(2)}`);
+            alert(`Novo salário para ${tipo}, Nível ${nivel}: R$ ${salarioTotal.toFixed(2)}`);
         }
-
-        // Função para incrementar o nível
-        document.getElementById('incremento').addEventListener('click', function() {
-            if (nivelAtual < dadosAtuais.length - 1) {
-                nivelAtual++;
-                atualizarSalario();
-            }
-        });
-
-        // Função para decrementar o nível
-        document.getElementById('decremento').addEventListener('click', function() {
-            if (nivelAtual > 1) {
-                nivelAtual--;
-                atualizarSalario();
-            }
-        });
-
-        // Inicializa a tabela
-        atualizarSalario();
     </script>
-
 </body>
 </html>
