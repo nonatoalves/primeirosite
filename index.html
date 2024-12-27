@@ -5,7 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comparação Salarial - TRT e TJPE</title>
     <style>
-        /* Mesma estilização do seu código original */
+        /* Adicione sua estilização aqui */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -76,7 +95,7 @@
         const tbodyTJPE = document.getElementById('tbody-tjpe');
 
         function atualizarTabelaTRT() {
-            tbodyTRT.innerHTML = '';
+            tbodyTRT.innerHTML = ''; // Limpa o conteúdo da tabela
             const item = data.TRT[nivelTRT];
             const row = `
                 <tr>
@@ -100,7 +119,7 @@
         }
 
         function atualizarTabelaTJPE() {
-            tbodyTJPE.innerHTML = '';
+            tbodyTJPE.innerHTML = ''; // Limpa o conteúdo da tabela
             const item = data.TJPE[nivelTJPE];
             const row = `
                 <tr>
