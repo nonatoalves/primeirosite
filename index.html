@@ -13,7 +13,8 @@
             color: #333;
         }
         .container {
-            width: 80%;
+            width: 90%;
+            max-width: 1200px;
             margin: 20px auto;
             background-color: #fff;
             border-radius: 8px;
@@ -23,6 +24,7 @@
         h1 {
             text-align: center;
             color: #4CAF50;
+            margin-bottom: 30px;
         }
         table {
             width: 100%;
@@ -40,6 +42,12 @@
             background-color: #f2f2f2;
             color: #333;
         }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
         .button {
             background-color: #4CAF50;
             color: white;
@@ -48,6 +56,8 @@
             cursor: pointer;
             border-radius: 5px;
             font-size: 16px;
+            width: 50px;
+            text-align: center;
         }
         .button:disabled {
             background-color: #ccc;
@@ -60,21 +70,41 @@
             font-size: 16px;
             font-weight: bold;
         }
+        .level-info {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        /* Estilo Responsivo */
+        @media (max-width: 768px) {
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            table {
+                font-size: 14px;
+            }
+            th, td {
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Comparação de Níveis Salariais</h1>
 
-        <!-- Botões para manipular o nível do Analista Judiciário -->
+        <!-- Analista Judiciário (TRT) -->
         <div class="row">
-            <label for="nivel-analista">Selecione o Nível do Analista Judiciário (TRT):</label>
-            <button class="button" id="nivel-dec-analista" onclick="decrementarNivelAnalista()">-</button>
-            <span id="nivel-display-analista">Nível 0</span>
-            <button class="button" id="nivel-inc-analista" onclick="incrementarNivelAnalista()">+</button>
+            <div class="button-container">
+                <button class="button" id="nivel-dec-analista" onclick="decrementarNivelAnalista()">-</button>
+                <span id="nivel-display-analista" class="level-info">Nível 0</span>
+                <button class="button" id="nivel-inc-analista" onclick="incrementarNivelAnalista()">+</button>
+            </div>
         </div>
-
-        <!-- Exibição dos dados do Analista Judiciário (TRT) -->
+        
         <table id="tabela-analista">
             <thead>
                 <tr>
@@ -104,15 +134,15 @@
             </tbody>
         </table>
 
-        <!-- Botões para manipular o nível do Técnico Judiciário -->
+        <!-- Técnico Judiciário (TJPE) -->
         <div class="row">
-            <label for="nivel-tecnico">Selecione o Nível do Técnico Judiciário (TJPE):</label>
-            <button class="button" id="nivel-dec-tecnico" onclick="decrementarNivelTecnico()">-</button>
-            <span id="nivel-display-tecnico">Nível 0</span>
-            <button class="button" id="nivel-inc-tecnico" onclick="incrementarNivelTecnico()">+</button>
+            <div class="button-container">
+                <button class="button" id="nivel-dec-tecnico" onclick="decrementarNivelTecnico()">-</button>
+                <span id="nivel-display-tecnico" class="level-info">Nível 0</span>
+                <button class="button" id="nivel-inc-tecnico" onclick="incrementarNivelTecnico()">+</button>
+            </div>
         </div>
 
-        <!-- Exibição dos dados do Técnico Judiciário (TJPE) -->
         <table id="tabela-tecnico">
             <thead>
                 <tr>
@@ -173,8 +203,7 @@
             [7061.65, 492.00, 1197.60, 706.17, 909.08, 492.00, 9457.42],
             [7322.93, 492.00, 1197.60, 732.29, 926.42, 492.00, 9744.82],
             [7604.88, 492.00, 1197.60, 760.49, 944.06, 492.00, 10054.97],
-            [7909.04, 492.00, 1197.60, 790.90, 962.01, 492.00, 10389.54],
-            [8383.61, 492.00, 1197.60, 838.36, 980.35, 492.00, 10911.57]
+            [7909.04, 492.00, 1197.60, 790.90, 962.01, 492.00, 10389.54]
         ];
 
         // Inicializando o nível atual
@@ -193,6 +222,7 @@
             document.getElementById("saude-analista").textContent = `R$ ${dadosAnalista[5].toFixed(2)}`;
             document.getElementById("qualificacao-analista").textContent = `R$ ${dadosAnalista[6].toFixed(2)}`;
             document.getElementById("salario-bruto-analista").textContent = `R$ ${dadosAnalista[7].toFixed(2)}`;
+            document.getElementById("nivel-display-analista").textContent = `Nível ${nivelAnalista}`;
         }
 
         // Função para atualizar a tabela do Técnico Judiciário
@@ -206,6 +236,7 @@
             document.getElementById("alimentacao-tecnico").textContent = `R$ ${dadosTecnico[4].toFixed(2)}`;
             document.getElementById("saude-tecnico").textContent = `R$ ${dadosTecnico[5].toFixed(2)}`;
             document.getElementById("salario-bruto-tecnico").textContent = `R$ ${dadosTecnico[6].toFixed(2)}`;
+            document.getElementById("nivel-display-tecnico").textContent = `Nível ${nivelTecnico}`;
         }
 
         // Funções para incrementar e decrementar os níveis
