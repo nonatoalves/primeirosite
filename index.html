@@ -84,11 +84,11 @@
                     <th>Saúde</th>
                     <th>Transporte</th>
                     <th>Total com Benefícios</th>
-                    <th>Incremento de Nível</th> <!-- Novo campo para incremento de nível -->
+                    <th>Incremento de Nível</th>
                 </tr>
             </thead>
             <tbody id="trt-table-body">
-                <!-- A tabela será populada com os dados de forma dinâmica com JavaScript -->
+                <!-- Tabela será preenchida dinamicamente -->
             </tbody>
         </table>
 
@@ -102,11 +102,11 @@
                     <th>Alimentação</th>
                     <th>Saúde</th>
                     <th>Salário Bruto</th>
-                    <th>Incremento de Nível</th> <!-- Novo campo para incremento de nível -->
+                    <th>Incremento de Nível</th>
                 </tr>
             </thead>
             <tbody id="tjpe-table-body">
-                <!-- A tabela será populada com os dados de forma dinâmica com JavaScript -->
+                <!-- Tabela será preenchida dinamicamente -->
             </tbody>
         </table>
 
@@ -119,7 +119,7 @@
     </footer>
 
     <script>
-        // Dados para a Tabela Salarial - TRT e TJPE
+        // Dados de TRT
         const trtData = [
             {nivel: 1, salarioBase: 6188.61, gaj: 8664.05, salarioTotal: 14852.66, alimentacao: 1393.10, qualificacao: 464.15, saude: 1100.00, transporte: 498.37},
             {nivel: 2, salarioBase: 6374.26, gaj: 8923.98, salarioTotal: 15298.24, alimentacao: 1393.10, qualificacao: 478.07, saude: 1100.00, transporte: 498.37},
@@ -136,12 +136,17 @@
             {nivel: 13, salarioBase: 9292.14, gaj: 13008.99, salarioTotal: 22301.13, alimentacao: 1393.10, qualificacao: 696.91, saude: 1100.00, transporte: 498.37},
         ];
 
-        // Preencher as tabelas de TRT e TJPE dinamicamente
-        const trtTableBody = document.getElementById('trt-table-body');
-        const tjpeTableBody = document.getElementById('tjpe-table-body');
+        // Dados de TJPE (exemplo de estrutura)
+        const tjpeData = [
+            {nivel: 1, salarioBase: 6000.00, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00},
+            {nivel: 2, salarioBase: 6200.00, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00},
+            {nivel: 3, salarioBase: 6400.00, transporte: 498.37, alimentacao: 1393.10, saude: 1100.00},
+            // Continue conforme os dados...
+        ];
 
-        // Função para preencher a Tabela Salarial - TRT
+        // Preencher a Tabela Salarial - TRT
         function fillTrtTable() {
+            const trtTableBody = document.getElementById('trt-table-body');
             trtData.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -164,17 +169,18 @@
             });
         }
 
-        // Função para preencher a Tabela Salarial - TJPE
+        // Preencher a Tabela Salarial - TJPE
         function fillTjpeTable() {
-            trtData.forEach(row => {
+            const tjpeTableBody = document.getElementById('tjpe-table-body');
+            tjpeData.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${row.nivel}</td>
                     <td>R$ ${row.salarioBase.toFixed(2)}</td>
                     <td>R$ ${row.transporte.toFixed(2)}</td>
                     <td>R$ ${row.alimentacao.toFixed(2)}</td>
-                    <td>R$ ${row.qualificacao.toFixed(2)}</td>
-                    <td>R$ ${(row.salarioBase + row.transporte + row.alimentacao + row.qualificacao).toFixed(2)}</td>
+                    <td>R$ ${row.saude.toFixed(2)}</td>
+                    <td>R$ ${(row.salarioBase + row.transporte + row.alimentacao + row.saude).toFixed(2)}</td>
                     <td class="increment-btns">
                         <button onclick="incrementLevel('tjpe', ${row.nivel})">+</button>
                         <span class="value" id="tjpe-level-${row.nivel}">${row.nivel}</span>
@@ -185,25 +191,68 @@
             });
         }
 
-        // Função para incrementar o nível
-        function incrementLevel(cargo, nivel) {
-            let currentLevel = parseInt(document.getElementById(cargo + '-level-' + nivel).innerText);
-            document.getElementById(cargo + '-level-' + nivel).innerText = currentLevel + 1;
-        }
-
-        // Função para decrementar o nível
-        function decrementLevel(cargo, nivel) {
-            let currentLevel = parseInt(document.getElementById(cargo + '-level-' + nivel).innerText);
-            if (currentLevel > 0) {
-                document.getElementById(cargo + '-level-' + nivel).innerText = currentLevel - 1;
+        // Função para incrementar o nível (TRT e TJPE)
+        function incrementLevel(tipo, nivel) {
+            const data = tipo === 'trt' ? trtData : tjpeData;
+            if (nivel < data.length) {
+                data[nivel].nivel++;
+                updateTableAndChart();
             }
         }
 
-        // Preencher as tabelas assim que a página carregar
-        window.onload = function() {
+        // Função para decrementar o nível (TRT e TJPE)
+        function decrementLevel(tipo, nivel) {
+            const data = tipo === 'trt' ? trtData : tjpeData;
+            if (nivel > 1) {
+                data[nivel].nivel--;
+                updateTableAndChart();
+            }
+        }
+
+        // Função para atualizar a tabela e o gráfico após mudança
+        function updateTableAndChart() {
             fillTrtTable();
             fillTjpeTable();
-        };
+            updateChart();
+        }
+
+        // Função para atualizar o gráfico
+        function updateChart() {
+            const ctx = document.getElementById('salaryChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: trtData.map(data => `Nível ${data.nivel}`),
+                    datasets: [{
+                        label: 'TRT Salário Total',
+                        data: trtData.map(data => data.salarioTotal),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        tension: 0.1
+                    },{
+                        label: 'TJPE Salário Bruto',
+                        data: tjpeData.map(data => data.salarioBase),
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Inicializar as tabelas e o gráfico
+        fillTrtTable();
+        fillTjpeTable();
+        updateChart();
     </script>
 </body>
 </html>
