@@ -47,7 +47,6 @@
         }
         .btn-group {
             display: flex;
-            justify-content: space-between;
             gap: 10px;
         }
         .btn {
@@ -69,21 +68,20 @@
             text-align: center;
             padding: 1rem;
             margin-top: 2rem;
-            position: absolute;
-            width: 100%;
-            bottom: 0;
+            position: relative;
         }
-        .alert {
-            display: none;
-            padding: 1rem;
-            margin: 1rem 0;
-            background-color: #28a745;
-            color: white;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .alert.show {
-            display: block;
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .data-table th, .data-table td {
+                padding: 8px;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -94,12 +92,12 @@
     </header>
 
     <div class="container">
-        <div class="alert" id="alert-box">Salário Atualizado!</div>
 
         <h2>Tabela Salarial - TRT</h2>
-        <table class="data-table">
+        <table class="data-table" id="tabela-trt">
             <thead>
                 <tr>
+                    <th>Nível</th>
                     <th>GAJ</th>
                     <th>Salário Total</th>
                     <th>Alimentação</th>
@@ -112,13 +110,14 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>R$ 8.664,05</td>
-                    <td>R$ 14.852,66</td>
-                    <td>R$ 1.393,10</td>
-                    <td>R$ 464,15</td>
-                    <td>R$ 1.100,00</td>
-                    <td>R$ 498,37</td>
-                    <td>R$ 18.308,28</td>
+                    <td>1</td>
+                    <td id="gaj1">R$ 8.664,05</td>
+                    <td id="salarioTotal1">R$ 14.852,66</td>
+                    <td id="alimentacao1">R$ 1.393,10</td>
+                    <td id="qualificacao1">R$ 464,15</td>
+                    <td id="saude1">R$ 1.100,00</td>
+                    <td id="transporte1">R$ 498,37</td>
+                    <td id="totalBeneficios1">R$ 18.308,28</td>
                     <td>
                         <div class="btn-group">
                             <button class="btn" onclick="alterarValor('TRT', 1, 200)">+</button>
@@ -126,11 +125,27 @@
                         </div>
                     </td>
                 </tr>
+                <tr>
+                    <td>2</td>
+                    <td id="gaj2">R$ 9.664,05</td>
+                    <td id="salarioTotal2">R$ 15.852,66</td>
+                    <td id="alimentacao2">R$ 1.493,10</td>
+                    <td id="qualificacao2">R$ 564,15</td>
+                    <td id="saude2">R$ 1.200,00</td>
+                    <td id="transporte2">R$ 598,37</td>
+                    <td id="totalBeneficios2">R$ 19.408,28</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn" onclick="alterarValor('TRT', 2, 200)">+</button>
+                            <button class="btn" onclick="alterarValor('TRT', 2, -200)">-</button>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
 
         <h2>Tabela Salarial - TJPE</h2>
-        <table class="data-table">
+        <table class="data-table" id="tabela-tjpe">
             <thead>
                 <tr>
                     <th>Nível</th>
@@ -145,11 +160,11 @@
             <tbody>
                 <tr>
                     <td>0</td>
-                    <td>R$ 5.563,97</td>
-                    <td>R$ 492,00</td>
-                    <td>R$ 1.197,60</td>
-                    <td>R$ 556,40</td>
-                    <td>R$ 7.809,97</td>
+                    <td id="salarioBase0">R$ 5.563,97</td>
+                    <td id="transporte0">R$ 492,00</td>
+                    <td id="alimentacao0">R$ 1.197,60</td>
+                    <td id="saude0">R$ 556,40</td>
+                    <td id="salarioBruto0">R$ 7.809,97</td>
                     <td>
                         <div class="btn-group">
                             <button class="btn" onclick="alterarValor('TJPE', 0, 100)">+</button>
@@ -174,19 +189,19 @@
         const salaryChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Nível 0', 'Nível 1', 'Nível 2', 'Nível 3', 'Nível 4', 'Nível 5'], // Adicione mais níveis conforme necessário
+                labels: ['Nível 0', 'Nível 1', 'Nível 2', 'Nível 3', 'Nível 4', 'Nível 5'],
                 datasets: [
                     {
                         label: 'TRT - Salário com Benefícios',
-                        data: [18308.28, 18269.41, 18742.69, 19668.95], // Adicione os valores do TRT
+                        data: [18308.28, 18269.41, 18742.69, 19668.95],
                         borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.1)',  // Reduzi o preenchimento
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
                     },
                     {
                         label: 'TJPE - Salário Bruto',
-                        data: [7809.97, 7962.97, 8129.20, 8309.53], // Adicione os valores do TJPE
+                        data: [7809.97, 7962.97, 8129.20, 8309.53],
                         borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.1)',  // Reduzi o preenchimento
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
                     }
                 ]
             },
@@ -215,19 +230,31 @@
         });
 
         function alterarValor(tipo, nivel, valor) {
-            let salarioTotal;
+            let elementoGaj, elementoTotal, elementoAlimentacao, elementoQualificacao, elementoSaude, elementoTransporte, elementoTotalBeneficios;
+            
             if (tipo === 'TRT') {
-                salarioTotal = 18308.28 + valor; // Ajuste com base no valor de incremento ou decremento
+                elementoGaj = document.getElementById('gaj' + nivel);
+                elementoTotal = document.getElementById('salarioTotal' + nivel);
+                elementoAlimentacao = document.getElementById('alimentacao' + nivel);
+                elementoQualificacao = document.getElementById('qualificacao' + nivel);
+                elementoSaude = document.getElementById('saude' + nivel);
+                elementoTransporte = document.getElementById('transporte' + nivel);
+                elementoTotalBeneficios = document.getElementById('totalBeneficios' + nivel);
             } else if (tipo === 'TJPE') {
-                salarioTotal = 7809.97 + valor; // Ajuste para TJPE
+                elementoGaj = document.getElementById('salarioBase' + nivel);
+                elementoTotal = document.getElementById('salarioBruto' + nivel);
+                elementoAlimentacao = document.getElementById('alimentacao' + nivel);
+                elementoQualificacao = document.getElementById('qualificacao' + nivel);
+                elementoSaude = document.getElementById('saude' + nivel);
+                elementoTransporte = document.getElementById('transporte' + nivel);
+                elementoTotalBeneficios = document.getElementById('totalBeneficios' + nivel);
             }
 
-            // Exibe a alteração
-            document.getElementById('alert-box').textContent = `Salário atualizado para ${tipo}, Nível ${nivel}: R$ ${salarioTotal.toFixed(2)}`;
-            document.getElementById('alert-box').classList.add('show');
-            setTimeout(() => {
-                document.getElementById('alert-box').classList.remove('show');
-            }, 3000);
+            // Atualizando valores
+            let valorAtual = parseFloat(elementoTotal.innerText.replace("R$", "").replace(",", "."));
+            let novoValor = valorAtual + valor;
+            elementoTotal.innerText = `R$ ${novoValor.toFixed(2).replace(".", ",")}`;
+            // Calcule novamente o total de benefícios e outros campos com base na lógica necessária (ajuste conforme os requisitos).
         }
     </script>
 </body>
