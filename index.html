@@ -3,44 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparação de Níveis Salariais</title>
+    <title>Tabela Comparativa Salarial - TRT e TJPE</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Reset de margens e preenchimento */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
+            box-sizing: border-box;
         }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        /* Container principal */
         .container {
             width: 90%;
             max-width: 1200px;
-            margin: 20px auto;
-            background-color: #fff;
+            margin: 30px auto;
+            background-color: #ffffff;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
         }
+        /* Título da página */
         h1 {
             text-align: center;
-            color: #4CAF50;
-            margin-bottom: 30px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: bold;
         }
+        /* Subtítulo explicativo */
+        h2 {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        /* Tabela */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-        }
-        table, th, td {
             border: 1px solid #ddd;
         }
         th, td {
-            padding: 12px;
+            padding: 15px;
             text-align: center;
+            border: 1px solid #ddd;
         }
         th {
-            background-color: #f2f2f2;
-            color: #333;
+            background-color: #2980b9;
+            color: #fff;
+            font-size: 14px;
+        }
+        td {
+            background-color: #f9f9f9;
+            font-size: 14px;
+        }
+        td:nth-child(even) {
+            background-color: #ecf0f1;
         }
         .button-container {
             display: flex;
@@ -49,9 +73,9 @@
             margin: 20px 0;
         }
         .button {
-            background-color: #4CAF50;
+            background-color: #27ae60;
             color: white;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: none;
             cursor: pointer;
             border-radius: 5px;
@@ -60,15 +84,8 @@
             text-align: center;
         }
         .button:disabled {
-            background-color: #ccc;
+            background-color: #7f8c8d;
             cursor: not-allowed;
-        }
-        .row {
-            margin: 15px 0;
-        }
-        .row label {
-            font-size: 16px;
-            font-weight: bold;
         }
         .level-info {
             font-size: 18px;
@@ -76,27 +93,33 @@
             text-align: center;
             margin: 10px 0;
         }
-
-        /* Estilo Responsivo */
+        .row {
+            margin: 15px 0;
+        }
+        /* Estilos para responsividade */
         @media (max-width: 768px) {
+            table {
+                font-size: 12px;
+            }
+            th, td {
+                padding: 10px;
+            }
             .button-container {
                 flex-direction: column;
                 align-items: center;
             }
-            table {
-                font-size: 14px;
-            }
-            th, td {
-                padding: 8px;
+            .level-info {
+                font-size: 16px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Comparação de Níveis Salariais</h1>
+        <h1>Tabela Comparativa Salarial - Cargos de Analista Judiciário do TRT e Técnico Judiciário do TJPE</h1>
+        <h2>Comparação de níveis e remunerações para os cargos mencionados</h2>
 
-        <!-- Analista Judiciário (TRT) -->
+        <!-- Analista Judiciário do TRT -->
         <div class="row">
             <div class="button-container">
                 <button class="button" id="nivel-dec-analista" onclick="decrementarNivelAnalista()">-</button>
@@ -134,7 +157,7 @@
             </tbody>
         </table>
 
-        <!-- Técnico Judiciário (TJPE) -->
+        <!-- Técnico Judiciário do TJPE -->
         <div class="row">
             <div class="button-container">
                 <button class="button" id="nivel-dec-tecnico" onclick="decrementarNivelTecnico()">-</button>
