@@ -124,6 +124,14 @@
             td {
                 font-size: 10px;
             }
+            .table-section {
+                display: block;
+                margin-bottom: 20px;
+            }
+            .table-left, .table-right {
+                display: block;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -178,32 +186,47 @@
                 </div>
             </div>
 
-            <table id="tabela-analista">
-                <thead>
-                    <tr>
-                        <th>Base</th>
-                        <th>GAJ</th>
-                        <th>Remuneração</th>
-                        <th>Transporte</th>
-                        <th>Alimentação</th>
-                        <th>Saúde</th>
-                        <th>Qual. Pós-Grad.</th>
-                        <th>Salário Bruto</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr id="analista-row">
-                        <td id="base-analista">R$ 6.188,61</td>
-                        <td id="gaj-analista">R$ 8.664,05</td>
-                        <td id="remuneracao-analista">R$ 14.852,66</td>
-                        <td id="transporte-analista">R$ 498,37</td>
-                        <td id="alimentacao-analista">R$ 1.393,10</td>
-                        <td id="saude-analista">R$ 1.100,00</td>
-                        <td id="qual-analista">R$ 464,15</td>
-                        <td id="salario-bruto-analista">R$ 18.308,28</td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- Tabela dividida em duas partes -->
+            <div class="table-left">
+                <table id="tabela-analista-left">
+                    <thead>
+                        <tr>
+                            <th>Base</th>
+                            <th>GAJ</th>
+                            <th>Remuneração</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="analista-left-row">
+                            <td id="base-analista">R$ 6.188,61</td>
+                            <td id="gaj-analista">R$ 8.664,05</td>
+                            <td id="remuneracao-analista">R$ 14.852,66</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-right">
+                <table id="tabela-analista-right">
+                    <thead>
+                        <tr>
+                            <th>Transporte</th>
+                            <th>Alimentação</th>
+                            <th>Saúde</th>
+                            <th>Qual. Pós-Grad.</th>
+                            <th>Salário Bruto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="analista-right-row">
+                            <td id="transporte-analista">R$ 498,37</td>
+                            <td id="alimentacao-analista">R$ 1.393,10</td>
+                            <td id="saude-analista">R$ 1.100,00</td>
+                            <td id="qual-analista">R$ 464,15</td>
+                            <td id="salario-bruto-analista">R$ 18.308,28</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
