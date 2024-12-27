@@ -3,199 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comparação Salarial - TRT e TJPE</title>
+    <title>Simulador de Remuneração</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-        header {
-            background-color: #007BFF;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        h1, h2 {
-            color: #333;
-        }
-        .data-table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin: 1.5rem 0;
-        }
-        .data-table th, .data-table td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-        .data-table th {
-            background-color: #007BFF;
-            color: white;
-        }
-        .btn-group {
-            display: flex;
-            gap: 10px;
-        }
-        .btn {
-            background-color: #007BFF;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        footer {
-            background-color: #007BFF;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            margin-top: 2rem;
-            position: relative;
         }
 
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            .data-table th, .data-table td {
-                padding: 8px;
-            }
-            .btn-group {
-                flex-direction: column;
-            }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .btn-group button {
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            margin: 0 5px;
         }
     </style>
 </head>
 <body>
+    <h1>Simulador de Remuneração</h1>
 
-    <header>
-        <h1>Comparação Salarial - TRT e TJPE</h1>
-    </header>
+    <!-- Tabela TRT -->
+    <h2>TRT - Analista Judiciário</h2>
+    <table id="tabelaTRT">
+        <thead>
+            <tr>
+                <th>Nível</th>
+                <th>Base</th>
+                <th>GAJ</th>
+                <th>Remuneração</th>
+                <th>Alimentação</th>
+                <th>Qualificação</th>
+                <th>Saúde</th>
+                <th>Transporte</th>
+                <th>Salário Bruto</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyTRT">
+        </tbody>
+    </table>
 
-    <div class="container">
-
-        <h2>Tabela Salarial - TRT</h2>
-        <table class="data-table" id="tabela-trt">
-            <thead>
-                <tr>
-                    <th>Nível</th>
-                    <th>GAJ</th>
-                    <th>Salário Total</th>
-                    <th>Alimentação</th>
-                    <th>Qualificação</th>
-                    <th>Saúde</th>
-                    <th>Transporte</th>
-                    <th>Salário Bruto</th>
-                    <th>Operações</th>
-                </tr>
-            </thead>
-            <tbody id="tbody-trt"></tbody>
-        </table>
-
-        <h2>Tabela Salarial - TJPE</h2>
-        <table class="data-table" id="tabela-tjpe">
-            <thead>
-                <tr>
-                    <th>Nível</th>
-                    <th>Salário Base</th>
-                    <th>Transporte</th>
-                    <th>Alimentação</th>
-                    <th>Saúde</th>
-                    <th>Salário Bruto</th>
-                    <th>Operações</th>
-                </tr>
-            </thead>
-            <tbody id="tbody-tjpe"></tbody>
-        </table>
-
-    </div>
-
-    <footer>
-        <p>&copy; 2024 Comparação Salarial - TRT e TJPE</p>
-    </footer>
+    <!-- Tabela TJPE -->
+    <h2>TJPE - Técnico Judiciário</h2>
+    <table id="tabelaTJPE">
+        <thead>
+            <tr>
+                <th>Nível</th>
+                <th>Base</th>
+                <th>Transporte</th>
+                <th>Alimentação</th>
+                <th>Saúde</th>
+                <th>Salário Bruto</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyTJPE">
+        </tbody>
+    </table>
 
     <script>
-        // Dados dos salários do TRT
+        // Dados para o TRT
         const trtData = [
-            { nivel: 1, salarioBase: 6188.61, gaj: 8664.05, salarioTotal: 14852.66, alimentacao: 1393.1, qualificacao: 464.15, saude: 1100, transporte: 498.37, salarioBruto: 18308.28 },
-            { nivel: 2, salarioBase: 6374.26, gaj: 8923.98, salarioTotal: 15298.24, alimentacao: 1393.1, qualificacao: 478.07, saude: 1100, transporte: 498.37, salarioBruto: 18767.78 },
-            { nivel: 3, salarioBase: 6565.49, gaj: 9191.69, salarioTotal: 15757.18, alimentacao: 1393.1, qualificacao: 492.41, saude: 1100, transporte: 498.37, salarioBruto: 19241.06 },
-            { nivel: 4, salarioBase: 6939.74, gaj: 9715.63, salarioTotal: 16655.37, alimentacao: 1393.1, qualificacao: 520.48, saude: 1100, transporte: 498.37, salarioBruto: 20167.32 },
-            { nivel: 5, salarioBase: 7147.92, gaj: 10007.09, salarioTotal: 17155.01, alimentacao: 1393.1, qualificacao: 536.09, saude: 1100, transporte: 498.37, salarioBruto: 20682.57 },
-            { nivel: 6, salarioBase: 7362.36, gaj: 10307.31, salarioTotal: 17669.67, alimentacao: 1393.1, qualificacao: 552.18, saude: 1100, transporte: 498.37, salarioBruto: 21213.32 },
-            { nivel: 7, salarioBase: 7583.23, gaj: 10616.53, salarioTotal: 18199.76, alimentacao: 1393.1, qualificacao: 568.74, saude: 1100, transporte: 498.37, salarioBruto: 21759.97 },
-            { nivel: 8, salarioBase: 7810.73, gaj: 10935.03, salarioTotal: 18745.76, alimentacao: 1393.1, qualificacao: 585.8, saude: 1100, transporte: 498.37, salarioBruto: 22323.03 },
-            { nivel: 9, salarioBase: 8255.95, gaj: 11558.32, salarioTotal: 19814.27, alimentacao: 1393.1, qualificacao: 619.2, saude: 1100, transporte: 498.37, salarioBruto: 23424.94 },
-            { nivel: 10, salarioBase: 8503.62, gaj: 11905.07, salarioTotal: 20408.69, alimentacao: 1393.1, qualificacao: 637.77, saude: 1100, transporte: 498.37, salarioBruto: 24037.93 },
-            { nivel: 11, salarioBase: 8758.73, gaj: 12262.22, salarioTotal: 21020.95, alimentacao: 1393.1, qualificacao: 656.9, saude: 1100, transporte: 498.37, salarioBruto: 24669.32 },
-            { nivel: 12, salarioBase: 9021.49, gaj: 12633.09, salarioTotal: 21654.58, alimentacao: 1393.1, qualificacao: 676.61, saude: 1100, transporte: 498.37, salarioBruto: 25322.66 },
-            { nivel: 13, salarioBase: 9292.14, gaj: 13008.99, salarioTotal: 22301.13, alimentacao: 1393.1, qualificacao: 696.91, saude: 1100, transporte: 498.37, salarioBruto: 25989.51 }
+            { nivel: 1, base: 6188.61, gaj: 8664.05, remuneracao: 14852.66, alimentacao: 1393.10, qualificacao: 464.15, saude: 1100.00, transporte: 498.37, salarioBruto: 18308.28 },
+            { nivel: 2, base: 6374.26, gaj: 8923.98, remuneracao: 15298.24, alimentacao: 1393.10, qualificacao: 478.07, saude: 1100.00, transporte: 498.37, salarioBruto: 18767.78 },
+            { nivel: 3, base: 6565.49, gaj: 9191.69, remuneracao: 15757.18, alimentacao: 1393.10, qualificacao: 492.41, saude: 1100.00, transporte: 498.37, salarioBruto: 19241.06 },
+            { nivel: 4, base: 6939.74, gaj: 9715.63, remuneracao: 16655.37, alimentacao: 1393.10, qualificacao: 520.48, saude: 1100.00, transporte: 498.37, salarioBruto: 20167.32 },
+            { nivel: 5, base: 7147.92, gaj: 10007.09, remuneracao: 17155.01, alimentacao: 1393.10, qualificacao: 536.09, saude: 1100.00, transporte: 498.37, salarioBruto: 20682.57 },
+            { nivel: 6, base: 7362.36, gaj: 10307.31, remuneracao: 17669.67, alimentacao: 1393.10, qualificacao: 552.18, saude: 1100.00, transporte: 498.37, salarioBruto: 21213.32 },
+            { nivel: 7, base: 7583.23, gaj: 10616.53, remuneracao: 18199.76, alimentacao: 1393.10, qualificacao: 568.74, saude: 1100.00, transporte: 498.37, salarioBruto: 21759.97 },
+            { nivel: 8, base: 7810.73, gaj: 10935.03, remuneracao: 18745.76, alimentacao: 1393.10, qualificacao: 585.80, saude: 1100.00, transporte: 498.37, salarioBruto: 22323.03 },
+            { nivel: 9, base: 8255.95, gaj: 11558.32, remuneracao: 19814.27, alimentacao: 1393.10, qualificacao: 619.20, saude: 1100.00, transporte: 498.37, salarioBruto: 23424.94 },
+            { nivel: 10, base: 8503.62, gaj: 11905.07, remuneracao: 20408.69, alimentacao: 1393.10, qualificacao: 637.77, saude: 1100.00, transporte: 498.37, salarioBruto: 24037.93 },
+            { nivel: 11, base: 8758.73, gaj: 12262.22, remuneracao: 21020.95, alimentacao: 1393.10, qualificacao: 656.90, saude: 1100.00, transporte: 498.37, salarioBruto: 24669.32 },
+            { nivel: 12, base: 9021.49, gaj: 12633.09, remuneracao: 21654.58, alimentacao: 1393.10, qualificacao: 676.61, saude: 1100.00, transporte: 498.37, salarioBruto: 25322.66 },
+            { nivel: 13, base: 9292.14, gaj: 13008.99, remuneracao: 22301.13, alimentacao: 1393.10, qualificacao: 696.91, saude: 1100.00, transporte: 498.37, salarioBruto: 25989.51 },
         ];
 
-        // Dados dos salários do TJPE
+        // Dados para o TJPE
         const tjpeData = [
-            { nivel: 0, salarioBase: 5563.97, transporte: 492, alimentacao: 1197.6, saude: 556.4, salarioBruto: 7809.97 },
-            { nivel: 1, salarioBase: 5703.06, transporte: 492, alimentacao: 1197.6, saude: 570.31, salarioBruto: 7962.97 },
-            { nivel: 2, salarioBase: 5854.18, transporte: 492, alimentacao: 1197.6, saude: 585.42, salarioBruto: 8129.2 },
-            { nivel: 3, salarioBase: 6018.12, transporte: 492, alimentacao: 1197.6, saude: 601.81, salarioBruto: 8309.53 },
-            { nivel: 4, salarioBase: 6195.67, transporte: 492, alimentacao: 1197.6, saude: 619.57, salarioBruto: 8504.84 },
-            { nivel: 5, salarioBase: 6387.71, transporte: 492, alimentacao: 1197.6, saude: 638.77, salarioBruto: 8716.08 },
-            { nivel: 6, salarioBase: 6595.3, transporte: 492, alimentacao: 1197.6, saude: 659.53, salarioBruto: 8944.43 },
-            { nivel: 7, salarioBase: 6819.56, transporte: 492, alimentacao: 1197.6, saude: 681.96, salarioBruto: 9191.12 },
-            { nivel: 8, salarioBase: 7061.65, transporte: 492, alimentacao: 1197.6, saude: 706.17, salarioBruto: 9457.42 },
-            { nivel: 9, salarioBase: 7322.93, transporte: 492, alimentacao: 1197.6, saude: 732.29, salarioBruto: 9744.82 },
-            { nivel: 10, salarioBase: 7604.88, transporte: 492, alimentacao: 1197.6, saude: 760.49, salarioBruto: 10054.98 },
-            { nivel: 11, salarioBase: 7909.17, transporte: 492, alimentacao: 1197.6, saude: 790.92, salarioBruto: 10389.54 },
-            { nivel: 12, salarioBase: 8383.61, transporte: 492, alimentacao: 1197.6, saude: 838.36, salarioBruto: 10911.57 },
-            { nivel: 13, salarioBase: 8970.47, transporte: 492, alimentacao: 1197.6, saude: 897.05, salarioBruto: 11557.12 }
+            { nivel: 0, base: 5563.97, transporte: 492.00, alimentacao: 1197.60, saude: 556.40, salarioBruto: 7809.97 },
+            { nivel: 1, base: 5703.06, transporte: 492.00, alimentacao: 1197.60, saude: 570.31, salarioBruto: 7962.97 },
+            { nivel: 2, base: 5854.18, transporte: 492.00, alimentacao: 1197.60, saude: 585.42, salarioBruto: 8129.20 },
+            { nivel: 3, base: 6018.12, transporte: 492.00, alimentacao: 1197.60, saude: 601.81, salarioBruto: 8309.53 },
+            { nivel: 4, base: 6195.67, transporte: 492.00, alimentacao: 1197.60, saude: 619.57, salarioBruto: 8504.84 },
+            { nivel: 5, base: 6387.71, transporte: 492.00, alimentacao: 1197.60, saude: 638.77, salarioBruto: 8716.08 },
+            { nivel: 6, base: 6595.30, transporte: 492.00, alimentacao: 1197.60, saude: 659.53, salarioBruto: 8944.43 },
+            { nivel: 7, base: 6819.56, transporte: 492.00, alimentacao: 1197.60, saude: 681.96, salarioBruto: 9191.12 },
+            { nivel: 8, base: 7061.65, transporte: 492.00, alimentacao: 1197.60, saude: 706.17, salarioBruto: 9457.42 },
+            { nivel: 9, base: 7322.93, transporte: 492.00, alimentacao: 1197.60, saude: 732.29, salarioBruto: 9744.82 },
+            { nivel: 10, base: 7604.88, transporte: 492.00, alimentacao: 1197.60, saude: 760.49, salarioBruto: 10054.97 },
+            { nivel: 11, base: 7909.04, transporte: 492.00, alimentacao: 1197.60, saude: 790.90, salarioBruto: 10389.54 },
+            { nivel: 12, base: 8383.61, transporte: 492.00, alimentacao: 1197.60, saude: 838.36, salarioBruto: 10911.57 },
+            { nivel: 13, base: 8970.47, transporte: 492.00, alimentacao: 1197.60, saude: 897.05, salarioBruto: 11557.12 },
         ];
 
-        // Inicialização das tabelas com o nível 0 de cada tribunal
-        const tbodyTRT = document.getElementById('tbody-trt');
-        const tbodyTJPE = document.getElementById('tbody-tjpe');
-
+        // Variáveis para controlar o nível selecionado
         let nivelTRT = 0;
         let nivelTJPE = 0;
 
         // Função para atualizar a tabela do TRT
         function atualizarTabelaTRT() {
+            const tbodyTRT = document.getElementById('tbodyTRT');
             tbodyTRT.innerHTML = '';
+
             const item = trtData[nivelTRT];
             const row = `
                 <tr>
                     <td>${item.nivel}</td>
+                    <td>R$ ${item.base.toFixed(2).replace('.', ',')}</td>
                     <td>R$ ${item.gaj.toFixed(2).replace('.', ',')}</td>
-                    <td>R$ ${item.salarioTotal.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.remuneracao.toFixed(2).replace('.', ',')}</td>
                     <td>R$ ${item.alimentacao.toFixed(2).replace('.', ',')}</td>
                     <td>R$ ${item.qualificacao.toFixed(2).replace('.', ',')}</td>
                     <td>R$ ${item.saude.toFixed(2).replace('.', ',')}</td>
                     <td>R$ ${item.transporte.toFixed(2).replace('.', ',')}</td>
                     <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn" onclick="incrementarTRT()">+</button>
-                            <button class="btn" onclick="decrementarTRT()">-</button>
-                        </div>
-                    </td>
                 </tr>
             `;
             tbodyTRT.innerHTML += row;
@@ -203,22 +132,18 @@
 
         // Função para atualizar a tabela do TJPE
         function atualizarTabelaTJPE() {
+            const tbodyTJPE = document.getElementById('tbodyTJPE');
             tbodyTJPE.innerHTML = '';
+
             const item = tjpeData[nivelTJPE];
             const row = `
                 <tr>
                     <td>${item.nivel}</td>
-                    <td>R$ ${item.salarioBase.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.base.toFixed(2).replace('.', ',')}</td>
                     <td>R$ ${item.transporte.toFixed(2).replace('.', ',')}</td>
                     <td>R$ ${item.alimentacao.toFixed(2).replace('.', ',')}</td>
                     <td>R$ ${item.saude.toFixed(2).replace('.', ',')}</td>
                     <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn" onclick="incrementarTJPE()">+</button>
-                            <button class="btn" onclick="decrementarTJPE()">-</button>
-                        </div>
-                    </td>
                 </tr>
             `;
             tbodyTJPE.innerHTML += row;
@@ -258,6 +183,5 @@
         atualizarTabelaTRT();
         atualizarTabelaTJPE();
     </script>
-
 </body>
 </html>
