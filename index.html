@@ -50,9 +50,10 @@
             border: 1px solid #ddd;
         }
         th, td {
-            padding: 15px;
+            padding: 10px;
             text-align: center;
             border: 1px solid #ddd;
+            font-size: 12px;
         }
         th {
             background-color: #2980b9;
@@ -61,7 +62,6 @@
         }
         td {
             background-color: #f9f9f9;
-            font-size: 14px;
         }
         td:nth-child(even) {
             background-color: #ecf0f1;
@@ -99,10 +99,10 @@
         /* Estilos para responsividade */
         @media (max-width: 768px) {
             table {
-                font-size: 12px;
+                font-size: 10px;
             }
             th, td {
-                padding: 10px;
+                padding: 8px;
             }
             .button-container {
                 flex-direction: column;
@@ -110,6 +110,9 @@
             }
             .level-info {
                 font-size: 16px;
+            }
+            table td {
+                word-wrap: break-word;
             }
         }
     </style>
@@ -229,11 +232,11 @@
             [7909.04, 492.00, 1197.60, 790.90, 962.01, 492.00, 10389.54]
         ];
 
-        // Inicializando o nível atual
+        // Inicializando os níveis
         let nivelAnalista = 0;
         let nivelTecnico = 0;
 
-        // Função para atualizar a tabela do Analista Judiciário
+        // Funções de atualização da tabela
         function atualizarTabelaAnalista() {
             const dadosAnalista = analistaDados[nivelAnalista];
             document.getElementById("nivel-analista").textContent = nivelAnalista;
@@ -245,10 +248,8 @@
             document.getElementById("saude-analista").textContent = `R$ ${dadosAnalista[5].toFixed(2)}`;
             document.getElementById("qualificacao-analista").textContent = `R$ ${dadosAnalista[6].toFixed(2)}`;
             document.getElementById("salario-bruto-analista").textContent = `R$ ${dadosAnalista[7].toFixed(2)}`;
-            document.getElementById("nivel-display-analista").textContent = `Nível ${nivelAnalista}`;
         }
 
-        // Função para atualizar a tabela do Técnico Judiciário
         function atualizarTabelaTecnico() {
             const dadosTecnico = tecnicoDados[nivelTecnico];
             document.getElementById("nivel-tecnico").textContent = nivelTecnico;
@@ -259,10 +260,9 @@
             document.getElementById("alimentacao-tecnico").textContent = `R$ ${dadosTecnico[4].toFixed(2)}`;
             document.getElementById("saude-tecnico").textContent = `R$ ${dadosTecnico[5].toFixed(2)}`;
             document.getElementById("salario-bruto-tecnico").textContent = `R$ ${dadosTecnico[6].toFixed(2)}`;
-            document.getElementById("nivel-display-tecnico").textContent = `Nível ${nivelTecnico}`;
         }
 
-        // Funções para incrementar e decrementar os níveis
+        // Funções de incremento e decremento
         function incrementarNivelAnalista() {
             if (nivelAnalista < analistaDados.length - 1) {
                 nivelAnalista++;
@@ -291,7 +291,7 @@
             }
         }
 
-        // Atualiza as tabelas no carregamento inicial
+        // Inicialização da tabela
         atualizarTabelaAnalista();
         atualizarTabelaTecnico();
     </script>
