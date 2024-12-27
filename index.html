@@ -69,11 +69,11 @@
         <h1>Comparação Salarial - TRT e TJPE</h1>
     </header>
     <div class="container">
-        <h2>Tabela Salarial - TRT</h2>
+        <h2>Analista Judiciário - TRT</h2>
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>GAJ</th>
+                    <th>Gaj</th>
                     <th>Salário Total</th>
                     <th>Alimentação</th>
                     <th>Qualificação</th>
@@ -88,7 +88,7 @@
             </tbody>
         </table>
 
-        <h2>Tabela Salarial - TJPE</h2>
+        <h2>Técnico Judiciário - TJPE</h2>
         <table class="data-table">
             <thead>
                 <tr>
@@ -116,26 +116,28 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script>
-        // Dados iniciais de TRT
+        // Dados iniciais de TRT (Analista Judiciário)
         let trtData = [
             {nivel: 0, gaj: 8664.05, salarioTotal: 14852.66, alimentacao: 1393.10, qualificacao: 464.15, saude: 1100.00, transporte: 498.37},
             {nivel: 1, gaj: 8923.98, salarioTotal: 15298.24, alimentacao: 1393.10, qualificacao: 478.07, saude: 1100.00, transporte: 498.37},
             {nivel: 2, gaj: 9191.69, salarioTotal: 15757.18, alimentacao: 1393.10, qualificacao: 492.41, saude: 1100.00, transporte: 498.37},
+            // Adicione mais níveis conforme necessário
         ];
 
-        // Dados iniciais de TJPE
+        // Dados iniciais de TJPE (Técnico Judiciário)
         let tjpeData = [
             {nivel: 0, salarioBase: 5563.97, transporte: 492.00, alimentacao: 1197.60, saude: 556.40},
-            {nivel: 1, salarioBase: 5700.00, transporte: 492.00, alimentacao: 1200.00, saude: 600.00},
-            {nivel: 2, salarioBase: 5840.00, transporte: 492.00, alimentacao: 1220.00, saude: 650.00},
+            {nivel: 1, salarioBase: 5703.06, transporte: 492.00, alimentacao: 1197.60, saude: 570.31},
+            {nivel: 2, salarioBase: 5854.18, transporte: 492.00, alimentacao: 1197.60, saude: 585.42},
+            // Adicione mais níveis conforme necessário
         ];
 
-        // Função para preencher a Tabela Salarial - TRT
+        // Função para preencher a Tabela Salarial - TRT (Analista Judiciário)
         function fillTrtTable() {
             const trtTableBody = document.getElementById('trt-table-body');
             trtTableBody.innerHTML = '';  // Limpar tabela antes de preencher novamente
 
-            const row = trtData[0]; // Sempre exibe o nível 0
+            const row = trtData[0]; // Exibe sempre o nível 0 de TRT
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>R$ ${row.gaj.toFixed(2)}</td>
@@ -147,18 +149,19 @@
                 <td>R$ ${(row.salarioTotal + row.alimentacao + row.qualificacao + row.saude + row.transporte).toFixed(2)}</td>
                 <td class="increment-btns">
                     <button onclick="incrementTrtLevel()">+</button>
+                    <button onclick="decrementTrtLevel()">-</button>
                     <span class="value">${row.nivel}</span>
                 </td>
             `;
             trtTableBody.appendChild(tr);
         }
 
-        // Função para preencher a Tabela Salarial - TJPE
+        // Função para preencher a Tabela Salarial - TJPE (Técnico Judiciário)
         function fillTjpeTable() {
             const tjpeTableBody = document.getElementById('tjpe-table-body');
             tjpeTableBody.innerHTML = '';  // Limpar tabela antes de preencher novamente
 
-            const row = tjpeData[0]; // Sempre exibe o nível 0
+            const row = tjpeData[0]; // Exibe sempre o nível 0 de TJPE
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${row.nivel}</td>
@@ -169,6 +172,7 @@
                 <td>R$ ${(row.salarioBase + row.transporte + row.alimentacao + row.saude).toFixed(2)}</td>
                 <td class="increment-btns">
                     <button onclick="incrementTjpeLevel()">+</button>
+                    <button onclick="decrementTjpeLevel()">-</button>
                     <span class="value">${row.nivel}</span>
                 </td>
             `;
@@ -185,11 +189,31 @@
             }
         }
 
+        // Função para decrementar o nível de TRT
+        function decrementTrtLevel() {
+            let currentLevel = trtData[0].nivel;
+            if (currentLevel > 0) {
+                trtData[0].nivel--;
+                fillTrtTable();
+                updateChart();
+            }
+        }
+
         // Função para incrementar o nível de TJPE
         function incrementTjpeLevel() {
             let currentLevel = tjpeData[0].nivel;
             if (currentLevel < tjpeData.length - 1) {
                 tjpeData[0].nivel++;
+                fillTjpeTable();
+                updateChart();
+            }
+        }
+
+        // Função para decrementar o nível de TJPE
+        function decrementTjpeLevel() {
+            let currentLevel = tjpeData[0].nivel;
+            if (currentLevel > 0) {
+                tjpeData[0].nivel--;
                 fillTjpeTable();
                 updateChart();
             }
