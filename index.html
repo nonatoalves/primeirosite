@@ -138,7 +138,7 @@
             <div class="row">
                 <div class="button-container">
                     <button class="button" id="nivel-dec-tjpe" onclick="decrementarNivelTJPE()">-</button>
-                    <span id="nivel-display-tjpe" class="level-info">Nível 1</span>
+                    <span id="nivel-display-tjpe" class="level-info">Nível 0</span> <!-- Exibição do nível -->
                     <button class="button" id="nivel-inc-tjpe" onclick="incrementarNivelTJPE()">+</button>
                 </div>
             </div>
@@ -146,7 +146,6 @@
             <table id="tabela-tjpe">
                 <thead>
                     <tr>
-                        <th>Nível</th>
                         <th>Base</th>
                         <th>Transporte</th>
                         <th>Alimentação</th>
@@ -156,7 +155,6 @@
                 </thead>
                 <tbody>
                     <tr id="tjpe-row">
-                        <td id="nivel-tjpe">1</td>
                         <td id="base-tjpe">R$ 5.563,97</td>
                         <td id="transporte-tjpe">R$ 492,00</td>
                         <td id="alimentacao-tjpe">R$ 1.197,60</td>
@@ -175,7 +173,7 @@
             <div class="row">
                 <div class="button-container">
                     <button class="button" id="nivel-dec-analista" onclick="decrementarNivelAnalista()">-</button>
-                    <span id="nivel-display-analista" class="level-info">Nível 1</span>
+                    <span id="nivel-display-analista" class="level-info">Nível 1</span> <!-- Exibição do nível -->
                     <button class="button" id="nivel-inc-analista" onclick="incrementarNivelAnalista()">+</button>
                 </div>
             </div>
@@ -183,7 +181,6 @@
             <table id="tabela-analista">
                 <thead>
                     <tr>
-                        <th>Nível</th>
                         <th>Base</th>
                         <th>GAJ</th>
                         <th>Remuneração</th>
@@ -196,7 +193,6 @@
                 </thead>
                 <tbody>
                     <tr id="analista-row">
-                        <td id="nivel-analista">1</td>
                         <td id="base-analista">R$ 6.188,61</td>
                         <td id="gaj-analista">R$ 8.664,05</td>
                         <td id="remuneracao-analista">R$ 14.852,66</td>
@@ -242,13 +238,12 @@
         let nivelTJPE = 0;
         function atualizarTabelaTJPE() {
             let dadosTJPE = tjpeDados[nivelTJPE];
-            document.getElementById("nivel-tjpe").textContent = nivelTJPE + 1;
             document.getElementById("base-tjpe").textContent = `R$ ${dadosTJPE[0].toFixed(2)}`;
             document.getElementById("transporte-tjpe").textContent = `R$ ${dadosTJPE[1].toFixed(2)}`;
             document.getElementById("alimentacao-tjpe").textContent = `R$ ${dadosTJPE[2].toFixed(2)}`;
             document.getElementById("saude-tjpe").textContent = `R$ ${dadosTJPE[3].toFixed(2)}`;
             document.getElementById("salario-bruto-tjpe").textContent = `R$ ${dadosTJPE[4].toFixed(2)}`;
-            document.getElementById("nivel-display-tjpe").textContent = `Nível ${nivelTJPE + 1}`;
+            document.getElementById("nivel-display-tjpe").textContent = `Nível ${nivelTJPE}`;
         }
 
         function incrementarNivelTJPE() {
@@ -286,7 +281,6 @@
         let nivelAnalista = 0;
         function atualizarTabelaAnalista() {
             let dadosAnalista = analistaDados[nivelAnalista];
-            document.getElementById("nivel-analista").textContent = nivelAnalista + 1;
             document.getElementById("base-analista").textContent = `R$ ${dadosAnalista[0].toFixed(2)}`;
             document.getElementById("gaj-analista").textContent = `R$ ${dadosAnalista[1].toFixed(2)}`;
             document.getElementById("remuneracao-analista").textContent = `R$ ${dadosAnalista[2].toFixed(2)}`;
