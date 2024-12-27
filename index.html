@@ -169,146 +169,42 @@
             { nivel: 10, salarioBase: 7604.88, transporte: 492, alimentacao: 1197.6, saude: 760.49, salarioBruto: 10054.97 },
             { nivel: 11, salarioBase: 7909.04, transporte: 492, alimentacao: 1197.6, saude: 790.9, salarioBruto: 10389.54 },
             { nivel: 12, salarioBase: 8383.61, transporte: 492, alimentacao: 1197.6, saude: 838.36, salarioBruto: 10911.57 },
-            { nivel: 13, salarioBase: 8970.47, transporte: 492, alimentacao: 1197.6, saude: 897.05, salarioBruto: 11557.12 },
-            { nivel: 14, salarioBase: 9688.07, transporte: 492, alimentacao: 1197.6, saude: 968.81, salarioBruto: 12346.48 },
-            { nivel: 15, salarioBase: 10560.03, transporte: 492, alimentacao: 1197.6, saude: 1056, salarioBruto: 13305.63 },
-            { nivel: 16, salarioBase: 11616.01, transporte: 492, alimentacao: 1197.6, saude: 1161.6, salarioBruto: 14467.21 },
-            { nivel: 17, salarioBase: 12893.77, transporte: 492, alimentacao: 1197.6, saude: 1289.38, salarioBruto: 15872.75 },
-            { nivel: 18, salarioBase: 14441.02, transporte: 492, alimentacao: 1197.6, saude: 1444.1, salarioBruto: 17574.72 },
-            { nivel: 19, salarioBase: 16318.37, transporte: 492, alimentacao: 1197.6, saude: 1631.84, salarioBruto: 19639.81 },
-            { nivel: 20, salarioBase: 18602.93, transporte: 492, alimentacao: 1197.6, saude: 1860.29, salarioBruto: 22152.82 },
-            { nivel: 21, salarioBase: 21393.38, transporte: 492, alimentacao: 1197.6, saude: 2139.34, salarioBruto: 25222.32 }
+            { nivel: 13, salarioBase: 8970.47, transporte: 492, alimentacao: 1197.6, saude: 897.05, salarioBruto: 11557.12 }
         ];
 
-        // Popula as tabelas com os dados
+        // Inicialização das tabelas com o nível 0 de cada tribunal
         const tbodyTRT = document.getElementById('tbody-trt');
         const tbodyTJPE = document.getElementById('tbody-tjpe');
 
-        // Preenche a tabela TRT
-        trtData.forEach(item => {
-            const row = `
-                <tr>
-                    <td>${item.nivel}</td>
-                    <td>R$ ${item.gaj.toFixed(2).replace('.', ',')}</td>
-                    <td>R$ ${item.salarioTotal.toFixed(2).replace('.', ',')}</td>
-                    <td>R$ ${item.alimentacao.toFixed(2).replace('.', ',')}</td>
-                    <td>R$ ${item.qualificacao.toFixed(2).replace('.', ',')}</td>
-                    <td>R$ ${item.saude.toFixed(2).replace('.', ',')}</td>
-                    <td>R$ ${item.transporte.toFixed(2).replace('.', ',')}</td>
-                    <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn" onclick="incrementarTRT(${item.nivel})">+</button>
-                            <button class="btn" onclick="decrementarTRT(${item.nivel})">-</button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-            tbodyTRT.innerHTML += row;
-        });
-
-        // Preenche a tabela TJPE
-        tjpeData.forEach(item => {
-            const row = `
-                <tr>
-                    <td>${item.nivel}</td>
-                    <td>R$ ${item.salarioBase.toFixed(2).replace('.', ',')}</td>
-                    <td>R$ ${item.transporte.toFixed(2).replace('.', ',')}</td>
-                    <td>R$ ${item.alimentacao.toFixed(2).replace('.', ',')}</td>
-                    <td>R$ ${item.saude.toFixed(2).replace('.', ',')}</td>
-                    <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
-                    <td>
-                        <div class="btn-group">
-                            <button class="btn" onclick="incrementarTJPE(${item.nivel})">+</button>
-                            <button class="btn" onclick="decrementarTJPE(${item.nivel})">-</button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-            tbodyTJPE.innerHTML += row;
-        });
-
-        // Inicialização do gráfico de evolução salarial
-        const ctx = document.getElementById('salaryChart').getContext('2d');
-        const salaryChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: trtData.map(item => `Nível ${item.nivel}`), // Etiquetas de nível
-                datasets: [{
-                    label: 'Salário Bruto TRT',
-                    data: trtData.map(item => item.salarioBruto),
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    fill: true,
-                }, {
-                    label: 'Salário Bruto TJPE',
-                    data: tjpeData.map(item => item.salarioBruto),
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    fill: true,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-
-        // Funções de incremento e decremento
-        function incrementarTRT(nivel) {
-            const item = trtData.find(d => d.nivel === nivel);
-            item.salarioBase += 100;
-            item.gaj += 100;
-            item.salarioTotal += 100;
-            item.alimentacao += 10;
-            item.qualificacao += 10;
-            item.saude += 10;
-            item.transporte += 10;
-            item.salarioBruto = item.salarioBase + item.alimentacao + item.qualificacao + item.saude + item.transporte;
-            atualizarTabela(trtData, tbodyTRT);
-            atualizarGrafico();
+        // Preenche a tabela TRT com o nível 0
+        function atualizarTabelaTRT() {
+            tbodyTRT.innerHTML = '';
+            trtData.slice(0, 1).forEach(item => {
+                const row = `
+                    <tr>
+                        <td>${item.nivel}</td>
+                        <td>R$ ${item.gaj.toFixed(2).replace('.', ',')}</td>
+                        <td>R$ ${item.salarioTotal.toFixed(2).replace('.', ',')}</td>
+                        <td>R$ ${item.alimentacao.toFixed(2).replace('.', ',')}</td>
+                        <td>R$ ${item.qualificacao.toFixed(2).replace('.', ',')}</td>
+                        <td>R$ ${item.saude.toFixed(2).replace('.', ',')}</td>
+                        <td>R$ ${item.transporte.toFixed(2).replace('.', ',')}</td>
+                        <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn" onclick="incrementarTRT(${item.nivel})">+</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tbodyTRT.innerHTML += row;
+            });
         }
 
-        function decrementarTRT(nivel) {
-            const item = trtData.find(d => d.nivel === nivel);
-            item.salarioBase -= 100;
-            item.gaj -= 100;
-            item.salarioTotal -= 100;
-            item.alimentacao -= 10;
-            item.qualificacao -= 10;
-            item.saude -= 10;
-            item.transporte -= 10;
-            item.salarioBruto = item.salarioBase + item.alimentacao + item.qualificacao + item.saude + item.transporte;
-            atualizarTabela(trtData, tbodyTRT);
-            atualizarGrafico();
-        }
-
-        function incrementarTJPE(nivel) {
-            const item = tjpeData.find(d => d.nivel === nivel);
-            item.salarioBase += 100;
-            item.transporte += 10;
-            item.alimentacao += 10;
-            item.saude += 10;
-            item.salarioBruto = item.salarioBase + item.transporte + item.alimentacao + item.saude;
-            atualizarTabela(tjpeData, tbodyTJPE);
-            atualizarGrafico();
-        }
-
-        function decrementarTJPE(nivel) {
-            const item = tjpeData.find(d => d.nivel === nivel);
-            item.salarioBase -= 100;
-            item.transporte -= 10;
-            item.alimentacao -= 10;
-            item.saude -= 10;
-            item.salarioBruto = item.salarioBase + item.transporte + item.alimentacao + item.saude;
-            atualizarTabela(tjpeData, tbodyTJPE);
-            atualizarGrafico();
-        }
-
-        // Função para atualizar a tabela após alterações
-        function atualizarTabela(data, tbody) {
-            tbody.innerHTML = '';
-            data.forEach(item => {
+        // Preenche a tabela TJPE com o nível 0
+        function atualizarTabelaTJPE() {
+            tbodyTJPE.innerHTML = '';
+            tjpeData.slice(0, 1).forEach(item => {
                 const row = `
                     <tr>
                         <td>${item.nivel}</td>
@@ -320,21 +216,74 @@
                         <td>
                             <div class="btn-group">
                                 <button class="btn" onclick="incrementarTJPE(${item.nivel})">+</button>
-                                <button class="btn" onclick="decrementarTJPE(${item.nivel})">-</button>
                             </div>
                         </td>
                     </tr>
                 `;
-                tbody.innerHTML += row;
+                tbodyTJPE.innerHTML += row;
             });
         }
 
-        // Função para atualizar o gráfico
+        // Inicializar gráfico
+        const ctx = document.getElementById('salaryChart').getContext('2d');
+        let salaryChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Nível 0'],
+                datasets: [
+                    {
+                        label: 'Salário Bruto TRT',
+                        data: [trtData[0].salarioBruto],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                    },
+                    {
+                        label: 'Salário Bruto TJPE',
+                        data: [tjpeData[0].salarioBruto],
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        fill: true,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Funções de incremento
+        function incrementarTRT(nivel) {
+            if (nivel < trtData.length - 1) {
+                const nextLevel = trtData[nivel];
+                trtData.push(nextLevel);
+                atualizarTabelaTRT();
+                atualizarGrafico();
+            }
+        }
+
+        function incrementarTJPE(nivel) {
+            if (nivel < tjpeData.length - 1) {
+                const nextLevel = tjpeData[nivel];
+                tjpeData.push(nextLevel);
+                atualizarTabelaTJPE();
+                atualizarGrafico();
+            }
+        }
+
+        // Atualiza o gráfico dinamicamente
         function atualizarGrafico() {
-            salaryChart.data.datasets[0].data = trtData.map(item => item.salarioBruto);
-            salaryChart.data.datasets[1].data = tjpeData.map(item => item.salarioBruto);
+            salaryChart.data.labels = trtData.slice(0, trtData.length).map(item => `Nível ${item.nivel}`);
+            salaryChart.data.datasets[0].data = trtData.slice(0, trtData.length).map(item => item.salarioBruto);
+            salaryChart.data.datasets[1].data = tjpeData.slice(0, tjpeData.length).map(item => item.salarioBruto);
             salaryChart.update();
         }
+
+        // Inicializar as tabelas e o gráfico
+        atualizarTabelaTRT();
+        atualizarTabelaTJPE();
     </script>
+
 </body>
 </html>
