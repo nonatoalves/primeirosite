@@ -6,66 +6,96 @@
     <title>Comparação Salarial - TRT e TJPE</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
             color: #333;
         }
         header {
-            background-color: #4a90e2;
+            background-color: #007BFF;
             color: white;
-            padding: 1rem 2rem;
+            padding: 1rem;
             text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .container {
+            width: 90%;
             max-width: 1200px;
             margin: 2rem auto;
-            padding: 1rem;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #333;
         }
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 1rem 0;
-            text-align: left;
+            margin: 1.5rem 0;
         }
         .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
             border: 1px solid #ddd;
-            padding: 8px;
         }
         .data-table th {
-            background-color: #4a90e2;
+            background-color: #007BFF;
             color: white;
         }
         .btn-group {
-            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
         }
         .btn {
-            padding: 10px 20px;
-            background-color: #4a90e2;
+            background-color: #007BFF;
             color: white;
+            padding: 10px 20px;
             border: none;
             cursor: pointer;
+            border-radius: 5px;
             font-size: 16px;
+            transition: background-color 0.3s ease;
         }
         .btn:hover {
-            background-color: #357ABD;
+            background-color: #0056b3;
         }
         footer {
-            background-color: #4a90e2;
+            background-color: #007BFF;
             color: white;
             text-align: center;
-            padding: 1rem 0;
+            padding: 1rem;
             margin-top: 2rem;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+        }
+        .alert {
+            display: none;
+            padding: 1rem;
+            margin: 1rem 0;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .alert.show {
+            display: block;
         }
     </style>
 </head>
 <body>
+
     <header>
         <h1>Comparação Salarial - TRT e TJPE</h1>
     </header>
 
     <div class="container">
+        <div class="alert" id="alert-box">Salário Atualizado!</div>
+
         <h2>Tabela Salarial - TRT</h2>
         <table class="data-table">
             <thead>
@@ -138,7 +168,6 @@
         <p>&copy; 2024 Comparação Salarial - TRT e TJPE</p>
     </footer>
 
-    <!-- Usando CDN mais leve e básica do Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script>
         const ctx = document.getElementById('salaryChart').getContext('2d');
@@ -185,7 +214,6 @@
             }
         });
 
-        // Função para alterar o valor do salário
         function alterarValor(tipo, nivel, valor) {
             let salarioTotal;
             if (tipo === 'TRT') {
@@ -193,10 +221,13 @@
             } else if (tipo === 'TJPE') {
                 salarioTotal = 7809.97 + valor; // Ajuste para TJPE
             }
-            
-            // Atualiza o gráfico ou tabela
-            console.log(`Salário atualizado para ${tipo}, Nível ${nivel}: R$ ${salarioTotal.toFixed(2)}`);
-            alert(`Novo salário para ${tipo}, Nível ${nivel}: R$ ${salarioTotal.toFixed(2)}`);
+
+            // Exibe a alteração
+            document.getElementById('alert-box').textContent = `Salário atualizado para ${tipo}, Nível ${nivel}: R$ ${salarioTotal.toFixed(2)}`;
+            document.getElementById('alert-box').classList.add('show');
+            setTimeout(() => {
+                document.getElementById('alert-box').classList.remove('show');
+            }, 3000);
         }
     </script>
 </body>
