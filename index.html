@@ -73,14 +73,14 @@
         <table class="data-table">
             <thead>
                 <tr>
-                    <th>Gaj</th>
-                    <th>Salário Total</th>
+                    <th>Nível</th>
+                    <th>Salário Base</th>
                     <th>Alimentação</th>
                     <th>Qualificação</th>
                     <th>Saúde</th>
                     <th>Transporte</th>
-                    <th>Total com Benefícios</th>
-                    <th>Incremento de Nível</th>
+                    <th>Salário Total</th>
+                    <th>Selecionar Nível</th>
                 </tr>
             </thead>
             <tbody id="trt-table-body">
@@ -97,8 +97,8 @@
                     <th>Transporte</th>
                     <th>Alimentação</th>
                     <th>Saúde</th>
-                    <th>Salário Bruto</th>
-                    <th>Incremento de Nível</th>
+                    <th>Salário Total</th>
+                    <th>Selecionar Nível</th>
                 </tr>
             </thead>
             <tbody id="tjpe-table-body">
@@ -116,141 +116,134 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script>
-        // Dados iniciais de TRT (Analista Judiciário)
+        // Dados completos de TRT (Analista Judiciário)
         let trtData = [
-            {nivel: 0, gaj: 8664.05, salarioTotal: 14852.66, alimentacao: 1393.10, qualificacao: 464.15, saude: 1100.00, transporte: 498.37},
-            {nivel: 1, gaj: 8923.98, salarioTotal: 15298.24, alimentacao: 1393.10, qualificacao: 478.07, saude: 1100.00, transporte: 498.37},
-            {nivel: 2, gaj: 9191.69, salarioTotal: 15757.18, alimentacao: 1393.10, qualificacao: 492.41, saude: 1100.00, transporte: 498.37},
-            {nivel: 3, gaj: 9391.87, salarioTotal: 16287.58, alimentacao: 1393.10, qualificacao: 506.82, saude: 1100.00, transporte: 498.37},
-            {nivel: 4, gaj: 9605.12, salarioTotal: 16739.99, alimentacao: 1393.10, qualificacao: 521.48, saude: 1100.00, transporte: 498.37},
-            {nivel: 5, gaj: 9822.94, salarioTotal: 17211.43, alimentacao: 1393.10, qualificacao: 536.09, saude: 1100.00, transporte: 498.37},
-            // Adicione mais níveis conforme necessário
+            {nivel: 0, salarioBase: 5563.97, alimentacao: 492.00, qualificacao: 1197.60, saude: 556.40, transporte: 7809.97},
+            {nivel: 1, salarioBase: 5703.06, alimentacao: 492.00, qualificacao: 1197.60, saude: 570.31, transporte: 7962.97},
+            {nivel: 2, salarioBase: 5854.18, alimentacao: 492.00, qualificacao: 1197.60, saude: 585.42, transporte: 8129.20},
+            {nivel: 3, salarioBase: 6018.12, alimentacao: 492.00, qualificacao: 1197.60, saude: 601.81, transporte: 8309.53},
+            {nivel: 4, salarioBase: 6195.67, alimentacao: 492.00, qualificacao: 1197.60, saude: 619.57, transporte: 8504.84},
+            {nivel: 5, salarioBase: 6387.71, alimentacao: 492.00, qualificacao: 1197.60, saude: 638.77, transporte: 8716.08},
+            {nivel: 6, salarioBase: 6595.30, alimentacao: 492.00, qualificacao: 1197.60, saude: 659.53, transporte: 8944.43},
+            {nivel: 7, salarioBase: 6819.56, alimentacao: 492.00, qualificacao: 1197.60, saude: 681.96, transporte: 9191.12},
+            {nivel: 8, salarioBase: 7061.65, alimentacao: 492.00, qualificacao: 1197.60, saude: 706.17, transporte: 9457.42},
+            {nivel: 9, salarioBase: 7322.93, alimentacao: 492.00, qualificacao: 1197.60, saude: 732.29, transporte: 9744.82},
+            {nivel: 10, salarioBase: 7604.88, alimentacao: 492.00, qualificacao: 1197.60, saude: 760.49, transporte: 10054.97},
+            {nivel: 11, salarioBase: 7909.04, alimentacao: 492.00, qualificacao: 1197.60, saude: 790.90, transporte: 10389.54},
+            {nivel: 12, salarioBase: 8383.61, alimentacao: 492.00, qualificacao: 1197.60, saude: 838.36, transporte: 10911.57},
+            {nivel: 13, salarioBase: 8970.47, alimentacao: 492.00, qualificacao: 1197.60, saude: 897.05, transporte: 11557.12},
+            {nivel: 14, salarioBase: 9688.07, alimentacao: 492.00, qualificacao: 1197.60, saude: 968.81, transporte: 12346.48},
+            {nivel: 15, salarioBase: 10560.03, alimentacao: 492.00, qualificacao: 1197.60, saude: 1056.00, transporte: 13305.63},
+            {nivel: 16, salarioBase: 11616.01, alimentacao: 492.00, qualificacao: 1197.60, saude: 1161.60, transporte: 14467.21},
+            {nivel: 17, salarioBase: 12893.77, alimentacao: 492.00, qualificacao: 1197.60, saude: 1289.38, transporte: 15872.75},
+            {nivel: 18, salarioBase: 14441.02, alimentacao: 492.00, qualificacao: 1197.60, saude: 1444.10, transporte: 17574.72},
+            {nivel: 19, salarioBase: 16318.37, alimentacao: 492.00, qualificacao: 1197.60, saude: 1631.84, transporte: 19639.81},
+            {nivel: 20, salarioBase: 18602.93, alimentacao: 492.00, qualificacao: 1197.60, saude: 1860.29, transporte: 22152.82},
+            {nivel: 21, salarioBase: 21393.38, alimentacao: 492.00, qualificacao: 1197.60, saude: 2139.34, transporte: 25222.32}
         ];
 
-        // Dados iniciais de TJPE (Técnico Judiciário)
+        // Dados completos de TJPE (Técnico Judiciário)
         let tjpeData = [
-            {nivel: 0, salarioBase: 5563.97, transporte: 492.00, alimentacao: 1197.60, saude: 556.40},
-            {nivel: 1, salarioBase: 5703.06, transporte: 492.00, alimentacao: 1197.60, saude: 570.31},
-            {nivel: 2, salarioBase: 5854.18, transporte: 492.00, alimentacao: 1197.60, saude: 585.42},
-            {nivel: 3, salarioBase: 6018.12, transporte: 492.00, alimentacao: 1197.60, saude: 601.81},
-            {nivel: 4, salarioBase: 6195.67, transporte: 492.00, alimentacao: 1197.60, saude: 619.57},
-            {nivel: 5, salarioBase: 6387.71, transporte: 492.00, alimentacao: 1197.60, saude: 638.77},
-            // Adicione mais níveis conforme necessário
+            {nivel: 0, salarioBase: 5563.97, transporte: 492.00, alimentacao: 1197.60, saude: 556.40, salarioTotal: 7809.97},
+            {nivel: 1, salarioBase: 5703.06, transporte: 492.00, alimentacao: 1197.60, saude: 570.31, salarioTotal: 7962.97},
+            {nivel: 2, salarioBase: 5854.18, transporte: 492.00, alimentacao: 1197.60, saude: 585.42, salarioTotal: 8129.20},
+            {nivel: 3, salarioBase: 6018.12, transporte: 492.00, alimentacao: 1197.60, saude: 601.81, salarioTotal: 8309.53},
+            {nivel: 4, salarioBase: 6195.67, transporte: 492.00, alimentacao: 1197.60, saude: 619.57, salarioTotal: 8504.84},
+            {nivel: 5, salarioBase: 6387.71, transporte: 492.00, alimentacao: 1197.60, saude: 638.77, salarioTotal: 8716.08},
+            {nivel: 6, salarioBase: 6595.30, transporte: 492.00, alimentacao: 1197.60, saude: 659.53, salarioTotal: 8944.43},
+            {nivel: 7, salarioBase: 6819.56, transporte: 492.00, alimentacao: 1197.60, saude: 681.96, salarioTotal: 9191.12},
+            {nivel: 8, salarioBase: 7061.65, transporte: 492.00, alimentacao: 1197.60, saude: 706.17, salarioTotal: 9457.42},
+            {nivel: 9, salarioBase: 7322.93, transporte: 492.00, alimentacao: 1197.60, saude: 732.29, salarioTotal: 9744.82},
+            {nivel: 10, salarioBase: 7604.88, transporte: 492.00, alimentacao: 1197.60, saude: 760.49, salarioTotal: 10054.97}
         ];
 
-        // Função para preencher a Tabela Salarial - TRT (Analista Judiciário)
+        // Função para preencher a tabela do TRT
         function fillTrtTable() {
-            const trtTableBody = document.getElementById('trt-table-body');
-            trtTableBody.innerHTML = '';  // Limpar tabela antes de preencher novamente
-
-            const row = trtData[0]; // Exibe o nível selecionado (no caso, nível 0)
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>R$ ${row.gaj.toFixed(2)}</td>
-                <td>R$ ${row.salarioTotal.toFixed(2)}</td>
-                <td>R$ ${row.alimentacao.toFixed(2)}</td>
-                <td>R$ ${row.qualificacao.toFixed(2)}</td>
-                <td>R$ ${row.saude.toFixed(2)}</td>
-                <td>R$ ${row.transporte.toFixed(2)}</td>
-                <td>R$ ${(row.salarioTotal + row.alimentacao + row.qualificacao + row.saude + row.transporte).toFixed(2)}</td>
-                <td class="increment-btns">
-                    <button onclick="incrementTrtLevel()">+</button>
-                    <button onclick="decrementTrtLevel()">-</button>
-                    <span class="value">${row.nivel}</span>
-                </td>
-            `;
-            trtTableBody.appendChild(tr);
+            let tableBody = document.getElementById('trt-table-body');
+            tableBody.innerHTML = '';
+            trtData.forEach(row => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.nivel}</td>
+                    <td>R$ ${row.salarioBase.toFixed(2)}</td>
+                    <td>R$ ${row.alimentacao.toFixed(2)}</td>
+                    <td>R$ ${row.qualificacao.toFixed(2)}</td>
+                    <td>R$ ${row.saude.toFixed(2)}</td>
+                    <td>R$ ${row.transporte.toFixed(2)}</td>
+                    <td>R$ ${(row.salarioBase + row.alimentacao + row.qualificacao + row.saude + row.transporte).toFixed(2)}</td>
+                    <td><button onclick="updateLevel(${row.nivel}, 'trt')">Selecionar Nível</button></td>
+                `;
+                tableBody.appendChild(tr);
+            });
         }
 
-        // Função para preencher a Tabela Salarial - TJPE (Técnico Judiciário)
+        // Função para preencher a tabela do TJPE
         function fillTjpeTable() {
-            const tjpeTableBody = document.getElementById('tjpe-table-body');
-            tjpeTableBody.innerHTML = '';  // Limpar tabela antes de preencher novamente
-
-            const row = tjpeData[0]; // Exibe o nível selecionado (no caso, nível 0)
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${row.nivel}</td>
-                <td>R$ ${row.salarioBase.toFixed(2)}</td>
-                <td>R$ ${row.transporte.toFixed(2)}</td>
-                <td>R$ ${row.alimentacao.toFixed(2)}</td>
-                <td>R$ ${row.saude.toFixed(2)}</td>
-                <td>R$ ${(row.salarioBase + row.transporte + row.alimentacao + row.saude).toFixed(2)}</td>
-                <td class="increment-btns">
-                    <button onclick="incrementTjpeLevel()">+</button>
-                    <button onclick="decrementTjpeLevel()">-</button>
-                    <span class="value">${row.nivel}</span>
-                </td>
-            `;
-            tjpeTableBody.appendChild(tr);
+            let tableBody = document.getElementById('tjpe-table-body');
+            tableBody.innerHTML = '';
+            tjpeData.forEach(row => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.nivel}</td>
+                    <td>R$ ${row.salarioBase.toFixed(2)}</td>
+                    <td>R$ ${row.transporte.toFixed(2)}</td>
+                    <td>R$ ${row.alimentacao.toFixed(2)}</td>
+                    <td>R$ ${row.saude.toFixed(2)}</td>
+                    <td>R$ ${(row.salarioBase + row.transporte + row.alimentacao + row.saude).toFixed(2)}</td>
+                    <td><button onclick="updateLevel(${row.nivel}, 'tjpe')">Selecionar Nível</button></td>
+                `;
+                tableBody.appendChild(tr);
+            });
         }
 
-        // Função para incrementar o nível de TRT
-        function incrementTrtLevel() {
-            let currentLevel = trtData[0].nivel;
-            if (currentLevel < trtData.length - 1) {
-                trtData[0].nivel++;
-                fillTrtTable();
-                updateChart();
+        // Função para atualizar o gráfico e tabelas ao selecionar um nível
+        function updateLevel(nivel, type) {
+            if (type === 'trt') {
+                let trtSalary = trtData[nivel].salarioBase + trtData[nivel].alimentacao + trtData[nivel].qualificacao + trtData[nivel].saude + trtData[nivel].transporte;
+                chart.data.datasets[0].data[nivel] = trtSalary;
+                chart.update();
+            } else if (type === 'tjpe') {
+                let tjpeSalary = tjpeData[nivel].salarioBase + tjpeData[nivel].transporte + tjpeData[nivel].alimentacao + tjpeData[nivel].saude;
+                chart.data.datasets[1].data[nivel] = tjpeSalary;
+                chart.update();
             }
-        }
-
-        // Função para decrementar o nível de TRT
-        function decrementTrtLevel() {
-            let currentLevel = trtData[0].nivel;
-            if (currentLevel > 0) {
-                trtData[0].nivel--;
-                fillTrtTable();
-                updateChart();
-            }
-        }
-
-        // Função para incrementar o nível de TJPE
-        function incrementTjpeLevel() {
-            let currentLevel = tjpeData[0].nivel;
-            if (currentLevel < tjpeData.length - 1) {
-                tjpeData[0].nivel++;
-                fillTjpeTable();
-                updateChart();
-            }
-        }
-
-        // Função para decrementar o nível de TJPE
-        function decrementTjpeLevel() {
-            let currentLevel = tjpeData[0].nivel;
-            if (currentLevel > 0) {
-                tjpeData[0].nivel--;
-                fillTjpeTable();
-                updateChart();
-            }
-        }
-
-        // Função para atualizar o gráfico comparativo
-        function updateChart() {
-            let trtSalary = trtData[0].salarioTotal + trtData[0].alimentacao + trtData[0].qualificacao + trtData[0].saude + trtData[0].transporte;
-            let tjpeSalary = tjpeData[0].salarioBase + tjpeData[0].transporte + tjpeData[0].alimentacao + tjpeData[0].saude;
-
-            chart.data.datasets[0].data = [trtSalary, tjpeSalary];
-            chart.update();
         }
 
         // Criar gráfico inicial
         const ctx = document.getElementById('salaryChart').getContext('2d');
         const chart = new Chart(ctx, {
-            type: 'bar',
+            type: 'line', // Altere para gráfico de linha
             data: {
-                labels: ['TRT', 'TJPE'],
+                labels: Array.from({ length: 10 }, (_, i) => `Nível ${i + 1}`), // Níveis
                 datasets: [{
-                    label: 'Salário Total',
-                    data: [0, 0], // Inicializa com valores de 0
-                    backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)'],
-                    borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
-                    borderWidth: 1
+                    label: 'TRT - Salário Total',
+                    data: trtData.map(row => row.salarioBase + row.alimentacao + row.qualificacao + row.saude + row.transporte),
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    fill: false,
+                    borderWidth: 2
+                }, {
+                    label: 'TJPE - Salário Total',
+                    data: tjpeData.map(row => row.salarioBase + row.transporte + row.alimentacao + row.saude),
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: false,
+                    borderWidth: 2
                 }]
             },
             options: {
                 scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Nível'
+                        }
+                    },
                     y: {
+                        title: {
+                            display: true,
+                            text: 'Salário (R$)'
+                        },
                         beginAtZero: true
                     }
                 }
