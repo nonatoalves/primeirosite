@@ -127,15 +127,12 @@
             <tbody id="tbody-tjpe"></tbody>
         </table>
 
-        <h2>Evolução Salarial - Gráfico Comparativo</h2>
-        <canvas id="salaryChart" width="800" height="400"></canvas>
     </div>
 
     <footer>
         <p>&copy; 2024 Comparação Salarial - TRT e TJPE</p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script>
         // Dados dos salários do TRT
         const trtData = [
@@ -166,8 +163,8 @@
             { nivel: 7, salarioBase: 6819.56, transporte: 492, alimentacao: 1197.6, saude: 681.96, salarioBruto: 9191.12 },
             { nivel: 8, salarioBase: 7061.65, transporte: 492, alimentacao: 1197.6, saude: 706.17, salarioBruto: 9457.42 },
             { nivel: 9, salarioBase: 7322.93, transporte: 492, alimentacao: 1197.6, saude: 732.29, salarioBruto: 9744.82 },
-            { nivel: 10, salarioBase: 7604.88, transporte: 492, alimentacao: 1197.6, saude: 760.49, salarioBruto: 10054.97 },
-            { nivel: 11, salarioBase: 7909.04, transporte: 492, alimentacao: 1197.6, saude: 790.9, salarioBruto: 10389.54 },
+            { nivel: 10, salarioBase: 7604.88, transporte: 492, alimentacao: 1197.6, saude: 760.49, salarioBruto: 10054.98 },
+            { nivel: 11, salarioBase: 7909.17, transporte: 492, alimentacao: 1197.6, saude: 790.92, salarioBruto: 10389.54 },
             { nivel: 12, salarioBase: 8383.61, transporte: 492, alimentacao: 1197.6, saude: 838.36, salarioBruto: 10911.57 },
             { nivel: 13, salarioBase: 8970.47, transporte: 492, alimentacao: 1197.6, saude: 897.05, salarioBruto: 11557.12 }
         ];
@@ -176,10 +173,13 @@
         const tbodyTRT = document.getElementById('tbody-trt');
         const tbodyTJPE = document.getElementById('tbody-tjpe');
 
+        let nivelMaxTRT = 0;
+        let nivelMaxTJPE = 0;
+
         // Função para atualizar a tabela do TRT
-        function atualizarTabelaTRT(nivelMax) {
+        function atualizarTabelaTRT() {
             tbodyTRT.innerHTML = '';
-            trtData.slice(0, nivelMax + 1).forEach(item => {
+            trtData.slice(0, nivelMaxTRT + 1).forEach(item => {
                 const row = `
                     <tr>
                         <td>${item.nivel}</td>
@@ -192,8 +192,8 @@
                         <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
                         <td>
                             <div class="btn-group">
-                                <button class="btn" onclick="incrementarTRT(${item.nivel})">+</button>
-                                <button class="btn" onclick="decrementarTRT(${item.nivel})">-</button>
+                                <button class="btn" onclick="incrementarTRT()">+</button>
+                                <button class="btn" onclick="decrementarTRT()">-</button>
                             </div>
                         </td>
                     </tr>
@@ -203,9 +203,9 @@
         }
 
         // Função para atualizar a tabela do TJPE
-        function atualizarTabelaTJPE(nivelMax) {
+        function atualizarTabelaTJPE() {
             tbodyTJPE.innerHTML = '';
-            tjpeData.slice(0, nivelMax + 1).forEach(item => {
+            tjpeData.slice(0, nivelMaxTJPE + 1).forEach(item => {
                 const row = `
                     <tr>
                         <td>${item.nivel}</td>
@@ -216,8 +216,8 @@
                         <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
                         <td>
                             <div class="btn-group">
-                                <button class="btn" onclick="incrementarTJPE(${item.nivel})">+</button>
-                                <button class="btn" onclick="decrementarTJPE(${item.nivel})">-</button>
+                                <button class="btn" onclick="incrementarTJPE()">+</button>
+                                <button class="btn" onclick="decrementarTJPE()">-</button>
                             </div>
                         </td>
                     </tr>
@@ -226,84 +226,39 @@
             });
         }
 
-        // Inicializar gráfico
-        const ctx = document.getElementById('salaryChart').getContext('2d');
-        let salaryChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Nível 0'],
-                datasets: [
-                    {
-                        label: 'Salário Bruto TRT',
-                        data: [trtData[0].salarioBruto],
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        fill: true,
-                    },
-                    {
-                        label: 'Salário Bruto TJPE',
-                        data: [tjpeData[0].salarioBruto],
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        fill: true,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-
-        let nivelMaxTRT = 0;
-        let nivelMaxTJPE = 0;
-
         // Funções de incremento e decremento para o TRT
-        function incrementarTRT(nivel) {
+        function incrementarTRT() {
             if (nivelMaxTRT < trtData.length - 1) {
                 nivelMaxTRT++;
-                atualizarTabelaTRT(nivelMaxTRT);
-                atualizarGrafico();
+                atualizarTabelaTRT();
             }
         }
 
-        function decrementarTRT(nivel) {
+        function decrementarTRT() {
             if (nivelMaxTRT > 0) {
                 nivelMaxTRT--;
-                atualizarTabelaTRT(nivelMaxTRT);
-                atualizarGrafico();
+                atualizarTabelaTRT();
             }
         }
 
         // Funções de incremento e decremento para o TJPE
-        function incrementarTJPE(nivel) {
+        function incrementarTJPE() {
             if (nivelMaxTJPE < tjpeData.length - 1) {
                 nivelMaxTJPE++;
-                atualizarTabelaTJPE(nivelMaxTJPE);
-                atualizarGrafico();
+                atualizarTabelaTJPE();
             }
         }
 
-        function decrementarTJPE(nivel) {
+        function decrementarTJPE() {
             if (nivelMaxTJPE > 0) {
                 nivelMaxTJPE--;
-                atualizarTabelaTJPE(nivelMaxTJPE);
-                atualizarGrafico();
+                atualizarTabelaTJPE();
             }
         }
 
-        // Atualiza o gráfico dinamicamente
-        function atualizarGrafico() {
-            salaryChart.data.labels = Array.from({ length: nivelMaxTRT + 1 }, (_, i) => `Nível ${i}`);
-            salaryChart.data.datasets[0].data = trtData.slice(0, nivelMaxTRT + 1).map(item => item.salarioBruto);
-            salaryChart.data.datasets[1].data = tjpeData.slice(0, nivelMaxTJPE + 1).map(item => item.salarioBruto);
-            salaryChart.update();
-        }
-
-        // Inicializar as tabelas e o gráfico
-        atualizarTabelaTRT(nivelMaxTRT);
-        atualizarTabelaTJPE(nivelMaxTJPE);
+        // Inicializar as tabelas
+        atualizarTabelaTRT();
+        atualizarTabelaTJPE();
     </script>
-
 </body>
 </html>
