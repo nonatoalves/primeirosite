@@ -173,85 +173,83 @@
         const tbodyTRT = document.getElementById('tbody-trt');
         const tbodyTJPE = document.getElementById('tbody-tjpe');
 
-        let nivelMaxTRT = 0;
-        let nivelMaxTJPE = 0;
+        let nivelTRT = 0;
+        let nivelTJPE = 0;
 
         // Função para atualizar a tabela do TRT
         function atualizarTabelaTRT() {
             tbodyTRT.innerHTML = '';
-            trtData.slice(0, nivelMaxTRT + 1).forEach(item => {
-                const row = `
-                    <tr>
-                        <td>${item.nivel}</td>
-                        <td>R$ ${item.gaj.toFixed(2).replace('.', ',')}</td>
-                        <td>R$ ${item.salarioTotal.toFixed(2).replace('.', ',')}</td>
-                        <td>R$ ${item.alimentacao.toFixed(2).replace('.', ',')}</td>
-                        <td>R$ ${item.qualificacao.toFixed(2).replace('.', ',')}</td>
-                        <td>R$ ${item.saude.toFixed(2).replace('.', ',')}</td>
-                        <td>R$ ${item.transporte.toFixed(2).replace('.', ',')}</td>
-                        <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
-                        <td>
-                            <div class="btn-group">
-                                <button class="btn" onclick="incrementarTRT()">+</button>
-                                <button class="btn" onclick="decrementarTRT()">-</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                tbodyTRT.innerHTML += row;
-            });
+            const item = trtData[nivelTRT];
+            const row = `
+                <tr>
+                    <td>${item.nivel}</td>
+                    <td>R$ ${item.gaj.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.salarioTotal.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.alimentacao.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.qualificacao.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.saude.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.transporte.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn" onclick="incrementarTRT()">+</button>
+                            <button class="btn" onclick="decrementarTRT()">-</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            tbodyTRT.innerHTML += row;
         }
 
         // Função para atualizar a tabela do TJPE
         function atualizarTabelaTJPE() {
             tbodyTJPE.innerHTML = '';
-            tjpeData.slice(0, nivelMaxTJPE + 1).forEach(item => {
-                const row = `
-                    <tr>
-                        <td>${item.nivel}</td>
-                        <td>R$ ${item.salarioBase.toFixed(2).replace('.', ',')}</td>
-                        <td>R$ ${item.transporte.toFixed(2).replace('.', ',')}</td>
-                        <td>R$ ${item.alimentacao.toFixed(2).replace('.', ',')}</td>
-                        <td>R$ ${item.saude.toFixed(2).replace('.', ',')}</td>
-                        <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
-                        <td>
-                            <div class="btn-group">
-                                <button class="btn" onclick="incrementarTJPE()">+</button>
-                                <button class="btn" onclick="decrementarTJPE()">-</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                tbodyTJPE.innerHTML += row;
-            });
+            const item = tjpeData[nivelTJPE];
+            const row = `
+                <tr>
+                    <td>${item.nivel}</td>
+                    <td>R$ ${item.salarioBase.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.transporte.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.alimentacao.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.saude.toFixed(2).replace('.', ',')}</td>
+                    <td>R$ ${item.salarioBruto.toFixed(2).replace('.', ',')}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn" onclick="incrementarTJPE()">+</button>
+                            <button class="btn" onclick="decrementarTJPE()">-</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            tbodyTJPE.innerHTML += row;
         }
 
         // Funções de incremento e decremento para o TRT
         function incrementarTRT() {
-            if (nivelMaxTRT < trtData.length - 1) {
-                nivelMaxTRT++;
+            if (nivelTRT < trtData.length - 1) {
+                nivelTRT++;
                 atualizarTabelaTRT();
             }
         }
 
         function decrementarTRT() {
-            if (nivelMaxTRT > 0) {
-                nivelMaxTRT--;
+            if (nivelTRT > 0) {
+                nivelTRT--;
                 atualizarTabelaTRT();
             }
         }
 
         // Funções de incremento e decremento para o TJPE
         function incrementarTJPE() {
-            if (nivelMaxTJPE < tjpeData.length - 1) {
-                nivelMaxTJPE++;
+            if (nivelTJPE < tjpeData.length - 1) {
+                nivelTJPE++;
                 atualizarTabelaTJPE();
             }
         }
 
         function decrementarTJPE() {
-            if (nivelMaxTJPE > 0) {
-                nivelMaxTJPE--;
+            if (nivelTJPE > 0) {
+                nivelTJPE--;
                 atualizarTabelaTJPE();
             }
         }
@@ -260,5 +258,6 @@
         atualizarTabelaTRT();
         atualizarTabelaTJPE();
     </script>
+
 </body>
 </html>
