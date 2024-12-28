@@ -70,13 +70,16 @@
         td:nth-child(even) {
             background-color: #ecf0f1;
         }
-        ..button-container {
- display: flex;
- justify-content: center;
- align-items: center;
- gap: 10px;
+        .button-container {
+  display: block;
+  margin: 20px auto;
+  text-align: center;
+}
 
-        }
+.button {
+  display: inline-block;
+  margin: 0 5px;
+}
         .button {
             background-color: #27ae60;
             color: white;
@@ -110,8 +113,10 @@
                 padding: 6px 8px;
             }
             .button-container {
-                flex-direction: column;
-                align-items: center;
+                display: flex;
+  justify-content: center !important;
+  align-items: center;
+  gap: 10px;
             }
             .level-info {
                 font-size: 16px;
@@ -149,6 +154,7 @@
                     <button class="button" id="nivel-dec-tjpe" onclick="decrementarNivelTJPE()">-</button>
                     <span id="nivel-display-tjpe" class="level-info">Nível 0</span> <!-- Exibição do nível -->
                     <button class="button" id="nivel-inc-tjpe" onclick="incrementarNivelTJPE()">+</button>
+                    
                 </div>
             </div>
 
