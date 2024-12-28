@@ -50,11 +50,12 @@
         /* Estilo para as tabelas */
         table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
+  border-collapse: collapse;
+  margin-top: 20px;
+  margin-left: 0; /* Adicionado */
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
         }
         th, td {
             padding: 8px 12px;
@@ -78,7 +79,8 @@
         .button-container {
   display: block;
   margin: 20px auto;
-  text-align: center;
+  text-align: left;
+  
 }
 
 .button {
@@ -111,12 +113,12 @@
         }
         /* Estilos para responsividade */
         @media (max-width: 768px) {
-            table {
-                font-size: 10px;
-            }
-            th, td {
-                padding: 6px 8px;
-            }
+  table {
+    font-size: 12px;
+  }
+  th, td {
+    padding: 4px 6px;
+  }
             .button-container {
                 display: flex;
   justify-content: center !important;
