@@ -13,8 +13,8 @@
         }
         body {
             font-family: Arial, sans-serif;
-            background-color: #2c3e50; /* Fundo escuro */
-            color: #ecf0f1; /* Texto claro */
+            background-color: #f4f6f9;
+            color: #333;
             line-height: 1.6;
         }
         /* Container principal */
@@ -22,7 +22,7 @@
             width: 90%;
             max-width: 1800px;
             margin: 30px auto;
-            background-color: #34495e; /* Cor mais escura para o fundo */
+            background-color: #ecf0f1; /* Cor mais suave para o fundo */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -30,7 +30,7 @@
         /* Título da página */
         h1 {
             text-align: center;
-            color: #ecf0f1;
+            color: #2c3e50;
             margin-bottom: 20px;
             font-size: 28px;
             font-weight: bold;
@@ -47,7 +47,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            background-color: #2c3e50; /* Cor escura para a tabela */
+            background-color: #ffffff;
             border-radius: 8px;
             overflow: hidden;
         }
@@ -65,27 +65,26 @@
             font-weight: bold;
         }
         td {
-            background-color: #34495e; /* Cor escura nas células */
-            color: #ecf0f1; /* Texto claro */
+            background-color: #f9f9f9;
         }
         td:nth-child(even) {
-            background-color: #2c3e50; /* Alternância de cores para linhas */
+            background-color: #ecf0f1;
         }
         .button-container {
             display: flex;
             justify-content: center;
-            gap: 5px; /* Reduzido o espaçamento entre os botões */
+            gap: 10px;
             margin: 20px 0;
         }
         .button {
             background-color: #27ae60;
             color: white;
-            padding: 6px 10px; /* Reduzido o tamanho do botão */
+            padding: 8px 12px;
             border: none;
             cursor: pointer;
             border-radius: 5px;
             font-size: 14px;
-            width: 30px; /* Diminuído o tamanho */
+            width: 40px;
             text-align: center;
         }
         .button:disabled {
@@ -100,9 +99,6 @@
         }
         .row {
             margin: 15px 0;
-        }
-        .reais {
-            color: black; /* Cor preta nos valores em reais */
         }
         /* Estilos para responsividade */
         @media (max-width: 768px) {
@@ -167,11 +163,11 @@
                 </thead>
                 <tbody>
                     <tr id="tjpe-row">
-                        <td id="base-tjpe" class="reais">R$ 5.563,97</td>
-                        <td id="transporte-tjpe" class="reais">R$ 492,00</td>
-                        <td id="alimentacao-tjpe" class="reais">R$ 1.197,60</td>
-                        <td id="saude-tjpe" class="reais">R$ 556,40</td>
-                        <td id="salario-bruto-tjpe" class="reais">R$ 7.809,97</td>
+                        <td id="base-tjpe">R$ 5.563,97</td>
+                        <td id="transporte-tjpe">R$ 492,00</td>
+                        <td id="alimentacao-tjpe">R$ 1.197,60</td>
+                        <td id="saude-tjpe">R$ 556,40</td>
+                        <td id="salario-bruto-tjpe">R$ 7.809,97</td>
                     </tr>
                 </tbody>
             </table>
@@ -202,9 +198,9 @@
                     </thead>
                     <tbody>
                         <tr id="analista-left-row">
-                            <td id="base-analista" class="reais">R$ 6.188,61</td>
-                            <td id="gaj-analista" class="reais">R$ 8.664,05</td>
-                            <td id="remuneracao-analista" class="reais">R$ 14.852,66</td>
+                            <td id="base-analista">R$ 6.188,61</td>
+                            <td id="gaj-analista">R$ 8.664,05</td>
+                            <td id="remuneracao-analista">R$ 14.852,66</td>
                         </tr>
                     </tbody>
                 </table>
@@ -222,11 +218,11 @@
                     </thead>
                     <tbody>
                         <tr id="analista-right-row">
-                            <td id="transporte-analista" class="reais">R$ 498,37</td>
-                            <td id="alimentacao-analista" class="reais">R$ 1.393,10</td>
-                            <td id="saude-analista" class="reais">R$ 1.100,00</td>
-                            <td id="qual-analista" class="reais">R$ 464,15</td>
-                            <td id="salario-bruto-analista" class="reais">R$ 18.308,28</td>
+                            <td id="transporte-analista">R$ 498,37</td>
+                            <td id="alimentacao-analista">R$ 1.393,10</td>
+                            <td id="saude-analista">R$ 1.100,00</td>
+                            <td id="qual-analista">R$ 464,15</td>
+                            <td id="salario-bruto-analista">R$ 18.308,28</td>
                         </tr>
                     </tbody>
                 </table>
@@ -265,12 +261,12 @@
         let nivelTJPE = 0;
         function atualizarTabelaTJPE() {
             let dadosTJPE = tjpeDados[nivelTJPE];
-            document.getElementById("base-tjpe").textContent = R$ ${dadosTJPE[0].toFixed(2)};
-            document.getElementById("transporte-tjpe").textContent = R$ ${dadosTJPE[1].toFixed(2)};
-            document.getElementById("alimentacao-tjpe").textContent = R$ ${dadosTJPE[2].toFixed(2)};
-            document.getElementById("saude-tjpe").textContent = R$ ${dadosTJPE[3].toFixed(2)};
-            document.getElementById("salario-bruto-tjpe").textContent = R$ ${dadosTJPE[4].toFixed(2)};
-            document.getElementById("nivel-display-tjpe").textContent = Nível ${nivelTJPE};
+            document.getElementById("base-tjpe").textContent = `R$ ${dadosTJPE[0].toFixed(2)}`;
+            document.getElementById("transporte-tjpe").textContent = `R$ ${dadosTJPE[1].toFixed(2)}`;
+            document.getElementById("alimentacao-tjpe").textContent = `R$ ${dadosTJPE[2].toFixed(2)}`;
+            document.getElementById("saude-tjpe").textContent = `R$ ${dadosTJPE[3].toFixed(2)}`;
+            document.getElementById("salario-bruto-tjpe").textContent = `R$ ${dadosTJPE[4].toFixed(2)}`;
+            document.getElementById("nivel-display-tjpe").textContent = `Nível ${nivelTJPE}`;
         }
 
         function incrementarNivelTJPE() {
@@ -308,15 +304,15 @@
         let nivelAnalista = 0;
         function atualizarTabelaAnalista() {
             let dadosAnalista = analistaDados[nivelAnalista];
-            document.getElementById("base-analista").textContent = R$ ${dadosAnalista[0].toFixed(2)};
-            document.getElementById("gaj-analista").textContent = R$ ${dadosAnalista[1].toFixed(2)};
-            document.getElementById("remuneracao-analista").textContent = R$ ${dadosAnalista[2].toFixed(2)};
-            document.getElementById("transporte-analista").textContent = R$ ${dadosAnalista[3].toFixed(2)};
-            document.getElementById("alimentacao-analista").textContent = R$ ${dadosAnalista[4].toFixed(2)};
-            document.getElementById("saude-analista").textContent = R$ ${dadosAnalista[5].toFixed(2)};
-            document.getElementById("qual-analista").textContent = R$ ${dadosAnalista[6].toFixed(2)};
-            document.getElementById("salario-bruto-analista").textContent = R$ ${dadosAnalista[7].toFixed(2)};
-            document.getElementById("nivel-display-analista").textContent = Nível ${nivelAnalista + 1};
+            document.getElementById("base-analista").textContent = `R$ ${dadosAnalista[0].toFixed(2)}`;
+            document.getElementById("gaj-analista").textContent = `R$ ${dadosAnalista[1].toFixed(2)}`;
+            document.getElementById("remuneracao-analista").textContent = `R$ ${dadosAnalista[2].toFixed(2)}`;
+            document.getElementById("transporte-analista").textContent = `R$ ${dadosAnalista[3].toFixed(2)}`;
+            document.getElementById("alimentacao-analista").textContent = `R$ ${dadosAnalista[4].toFixed(2)}`;
+            document.getElementById("saude-analista").textContent = `R$ ${dadosAnalista[5].toFixed(2)}`;
+            document.getElementById("qual-analista").textContent = `R$ ${dadosAnalista[6].toFixed(2)}`;
+            document.getElementById("salario-bruto-analista").textContent = `R$ ${dadosAnalista[7].toFixed(2)}`;
+            document.getElementById("nivel-display-analista").textContent = `Nível ${nivelAnalista + 1}`;
         }
 
         function incrementarNivelAnalista() {
@@ -338,4 +334,6 @@
         atualizarTabelaAnalista();
     </script>
 </body>
-</html>  
+</html>
+
+
