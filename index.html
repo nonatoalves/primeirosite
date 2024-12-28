@@ -80,7 +80,7 @@
         .button {
             background-color: #27ae60;
             color: white;
-            padding: 06px 10px; /* Reduzido o tamanho do botão */
+            padding: 6px 10px; /* Reduzido o tamanho do botão */
             border: none;
             cursor: pointer;
             border-radius: 5px;
@@ -89,7 +89,7 @@
             text-align: center;
         }
         .button:disabled {
-            background-color: #7f8d84;
+            background-color: #7f8c8d;
             cursor: not-allowed;
         }
         .level-info {
@@ -107,10 +107,10 @@
         /* Estilos para responsividade */
         @media (max-width: 768px) {
             table {
-                font-size: 14px;
+                font-size: 10px;
             }
             th, td {
-                padding: 12px 16px;
+                padding: 6px 8px;
             }
             .button-container {
                 flex-direction: column;
@@ -123,14 +123,14 @@
                 word-wrap: break-word;
             }
             th {
-                font-size: 15px;
+                font-size: 12px;
             }
             td {
-                font-size: 14px;
+                font-size: 10px;
             }
             .table-section {
                 display: block;
-                margin-bottom: 16px;
+                margin-bottom: 20px;
             }
             .table-left, .table-right {
                 display: block;
@@ -265,12 +265,12 @@
         let nivelTJPE = 0;
         function atualizarTabelaTJPE() {
             let dadosTJPE = tjpeDados[nivelTJPE];
-            document.getElementById("base-tjpe").textContent = `R$ ${dadosTJPE[0].toFixed(2)}`;
-            document.getElementById("transporte-tjpe").textContent = `R$ ${dadosTJPE[1].toFixed(2)}`;
-            document.getElementById("alimentacao-tjpe").textContent = `R$ ${dadosTJPE[2].toFixed(2)}`;
-            document.getElementById("saude-tjpe").textContent = `R$ ${dadosTJPE[3].toFixed(2)}`;
-            document.getElementById("salario-bruto-tjpe").textContent = `R$ ${dadosTJPE[4].toFixed(2)}`;
-            document.getElementById("nivel-display-tjpe").textContent = `Nível ${nivelTJPE}`;
+            document.getElementById("base-tjpe").textContent = R$ ${dadosTJPE[0].toFixed(2)};
+            document.getElementById("transporte-tjpe").textContent = R$ ${dadosTJPE[1].toFixed(2)};
+            document.getElementById("alimentacao-tjpe").textContent = R$ ${dadosTJPE[2].toFixed(2)};
+            document.getElementById("saude-tjpe").textContent = R$ ${dadosTJPE[3].toFixed(2)};
+            document.getElementById("salario-bruto-tjpe").textContent = R$ ${dadosTJPE[4].toFixed(2)};
+            document.getElementById("nivel-display-tjpe").textContent = Nível ${nivelTJPE};
         }
 
         function incrementarNivelTJPE() {
@@ -308,15 +308,15 @@
         let nivelAnalista = 0;
         function atualizarTabelaAnalista() {
             let dadosAnalista = analistaDados[nivelAnalista];
-            document.getElementById("base-analista").textContent = `R$ ${dadosAnalista[0].toFixed(2)}`;
-            document.getElementById("gaj-analista").textContent = `R$ ${dadosAnalista[1].toFixed(2)}`;
-            document.getElementById("remuneracao-analista").textContent = `R$ ${dadosAnalista[2].toFixed(2)}`;
-            document.getElementById("transporte-analista").textContent = `R$ ${dadosAnalista[3].toFixed(2)}`;
-            document.getElementById("alimentacao-analista").textContent = `R$ ${dadosAnalista[4].toFixed(2)}`;
-            document.getElementById("saude-analista").textContent = `R$ ${dadosAnalista[5].toFixed(2)}`;
-            document.getElementById("qual-analista").textContent = `R$ ${dadosAnalista[6].toFixed(2)}`;
-            document.getElementById("salario-bruto-analista").textContent = `R$ ${dadosAnalista[7].toFixed(2)}`;
-            document.getElementById("nivel-display-analista").textContent = `Nível ${nivelAnalista + 1}`;
+            document.getElementById("base-analista").textContent = R$ ${dadosAnalista[0].toFixed(2)};
+            document.getElementById("gaj-analista").textContent = R$ ${dadosAnalista[1].toFixed(2)};
+            document.getElementById("remuneracao-analista").textContent = R$ ${dadosAnalista[2].toFixed(2)};
+            document.getElementById("transporte-analista").textContent = R$ ${dadosAnalista[3].toFixed(2)};
+            document.getElementById("alimentacao-analista").textContent = R$ ${dadosAnalista[4].toFixed(2)};
+            document.getElementById("saude-analista").textContent = R$ ${dadosAnalista[5].toFixed(2)};
+            document.getElementById("qual-analista").textContent = R$ ${dadosAnalista[6].toFixed(2)};
+            document.getElementById("salario-bruto-analista").textContent = R$ ${dadosAnalista[7].toFixed(2)};
+            document.getElementById("nivel-display-analista").textContent = Nível ${nivelAnalista + 1};
         }
 
         function incrementarNivelAnalista() {
@@ -338,4 +338,4 @@
         atualizarTabelaAnalista();
     </script>
 </body>
-</html>
+</html>  
