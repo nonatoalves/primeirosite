@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat em Tempo Real</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #menu h1 {
+            margin-bottom: 20px;
+        }
+
+        #menu button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        #menu button:hover {
+            background-color: #0056b3;
+        }
+
+        #chat-container {
+            display: none;
+            width: 400px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        #chat-container h2 {
+            margin: 0 0 10px;
+        }
+
+        #messages {
+            border: 1px solid #ddd;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            text-align: left;
+            background: #fafafa;
+        }
+
+        #message-input {
+            width: calc(100% - 70px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        #send-button {
+            width: 60px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #send-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="menu">
+        <h1>Bem-vindo ao Chat</h1>
+        <button class="room-button" data-room="sala1">Entrar na Sala 1</button>
+        <button class="room-button" data-room="sala2">Entrar na Sala 2</button>
+        <button class="room-button" data-room="sala3">Entrar na Sala 3</button>
+        <button class="room-button" data-room="sala4">Entrar na Sala 4</button>
+        <button class="room-button" data-room="sala5">Entrar na Sala 5</button>
+    </div>
+
+    <div id="chat-container">
+        <h2 id="room-title">Sala</h2>
+        <div id="messages"></div>
+        <input id="message-input" type="text" placeholder="Digite sua mensagem">
+        <button id="send-button">Enviar</button>
+    </div>
+
+    <script>
+        const menu = document.getElementById("menu");
+        const chatContainer = document.getElementById("chat-container");
+        const roomTitle = document.getElementById("room-title");
+        const messagesDiv = document.getElementById("messages");
+        const messageInput = document.getElementById("message-input");
+        const sendButton = document.getElementById("send-button");
+
+        let socket; // WebSocket global
+        let currentRoom = ""; // Sala atual
+
+        // Configura evento para cada botão de sala
+        document.querySelectorAll(".room-button").forEach(button => {
+            button.addEventListener("click", () => {
+                currentRoom = button.getAttribute("data-room");
+                roomTitle.textContent = `Chat - ${currentRoom}`;
+                menu.style.display = "none";
+                chatContainer.style.display = "block";
+
+                // Conecta ao WebSocket para a sala selecionada
+                socket = new WebSocket(`ws://localhost:3000/${currentRoom}`);
+
+                socket.onopen = () => {
+                    console.log(`Conectado à sala: ${currentRoom}`);
+                };
+
+                socket.onmessage = (event) => {
+                    const message = document.createElement("div");
+                    message.textContent = event.data;
+                    messagesDiv.appendChild(message);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight; // Rola para o final
+                };
+
+                socket.onclose = () => {
+                    console.log(`Desconectado da sala: ${currentRoom}`);
+                };
+            });
+        });
+
+        // Envia mensagens ao servidor
+        sendButton.addEventListener("click", () => {
+            const message = messageInput.value.trim();
+            if (message) {
+                socket.send(`${currentRoom}: ${message}`);
+                messageInput.value = "";
+            }
+        });
+    </script>
+</body>
+</html>

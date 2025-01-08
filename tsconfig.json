@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es6",                     // Transpila para ES6
+    "module": "commonjs",                // Usa CommonJS para módulos (compatível com Node.js)
+    "outDir": "./dist",                  // Diretório de saída para os arquivos compilados
+    "rootDir": "./",                     // Diretório raiz dos arquivos TypeScript
+    "strict": true,                      // Ativa verificações estritas
+    "esModuleInterop": true              // Suporte para importação de módulos CommonJS
+  },
+  "include": ["*.ts"],                   // Compila todos os arquivos .ts no diretório atual
+  "exclude": ["node_modules"]            // Ignora a pasta node_modules
+}

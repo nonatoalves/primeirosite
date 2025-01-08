@@ -75,6 +75,43 @@
             color: #333;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
+        /* Estilo para o modal */
+        .modal {
+            display: none; /* Oculta o modal inicialmente */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
         @media (max-width: 600px) {
             .container {
                 margin: 20px;
@@ -107,6 +144,19 @@
         </form>
         <div class="result" id="resultado"></div>
         <button class="btn-secondary" onclick="pedirSenha()">Próximo</button>
+
+        <!-- Botão para abrir o chat -->
+        <button id="openChatBtn" class="btn-secondary">Abrir Chat</button>
+
+        <!-- O Modal de Chat -->
+        <div id="chatModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeChatBtn">&times;</span>
+                <h2>Bem-vindo ao Chat</h2>
+                <!-- Aqui você incluirá o conteúdo do seu chat -->
+                <iframe src="chat.html" width="100%" height="400px"></iframe>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -125,7 +175,7 @@
                 saldo += lucroMensal + aporteMensal;
             }
 
-            document.getElementById('resultado').innerHTML = `
+            document.getElementById('resultado').innerHTML = ` 
                 <p><strong>Saldo Final:</strong> R$ ${saldo.toFixed(2)}</p>
                 <p><strong>Lucro Total:</strong> R$ ${(saldo - totalInvestido).toFixed(2)}</p>
                 <p><strong>Valor Total Investido:</strong> R$ ${totalInvestido.toFixed(2)}</p>
@@ -143,6 +193,28 @@
                 window.location.href = 'sua-pagina-secundaria.html'; // Substitua pelo nome do arquivo do site secundário
             } else {
                 alert("Senha incorreta! Tente novamente.");
+            }
+        }
+
+        // Modal Chat
+        var modal = document.getElementById("chatModal");
+        var btn = document.getElementById("openChatBtn");
+        var span = document.getElementById("closeChatBtn");
+
+        // Quando o usuário clicar no botão, abre o modal
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // Quando o usuário clicar no "x", fecha o modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Quando o usuário clicar fora do modal, fecha-o
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
             }
         }
     </script>
