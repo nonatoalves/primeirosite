@@ -6,7 +6,8 @@ interface Rooms {
 
 const rooms: Rooms = {}; // Armazena conexões por sala
 
-const wss = new WebSocketServer({ port: 3000 });
+// Alteração: Escutar em todas as interfaces de rede
+const wss = new WebSocketServer({ host: '0.0.0.0', port: 3000 });
 
 wss.on("connection", (socket, req) => {
     const roomName = req.url?.replace("/", "") || "default"; // Nome da sala (ex: /sala1 -> sala1)
