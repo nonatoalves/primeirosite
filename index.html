@@ -28,9 +28,9 @@
             margin-bottom: 20px;
         }
         input {
-            width: 80%; /* Largura reduzida */
+            width: 80%;
             padding: 12px;
-            margin: 5px 0; /* Margem reduzida */
+            margin: 5px 0;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
@@ -78,7 +78,7 @@
 
         /* Estilo para o modal */
         .modal {
-            display: none; /* Oculta o modal inicialmente */
+            display: none; 
             position: fixed;
             z-index: 1;
             left: 0;
@@ -153,13 +153,18 @@
             <div class="modal-content">
                 <span class="close" id="closeChatBtn">&times;</span>
                 <h2>Bem-vindo ao Chat</h2>
-                <!-- Aqui você incluirá o conteúdo do seu chat -->
                 <iframe src="chat.html" width="100%" height="400px"></iframe>
             </div>
         </div>
+
+        <!-- Botão para simulação de moeda -->
+        <input type="number" id="numTosses" placeholder="Número de lançamentos">
+        <button onclick="enviarSimulacao()">Simular Lançamento</button>
+        <div class="result" id="resultadoSimulacao"></div>
     </div>
 
     <script>
+        // Função de calcular juros compostos
         function calcular() {
             const valorInicial = parseFloat(document.getElementById('valorInicial').value);
             const aporteMensal = parseFloat(document.getElementById('aporteMensal').value);
@@ -216,6 +221,40 @@
             if (event.target == modal) {
                 modal.style.display = "none";
             }
+        }
+
+        // Função para enviar a simulação de moeda para o Flask
+        function enviarSimulacao() {
+            const numTosses = parseInt(document.getElementById('numTosses').value);
+
+            if (isNaN(numTosses) || numTosses <= 0) {
+                alert("Por favor, insira um número válido de lançamentos.");
+                return;
+            }
+
+            console.log("Enviando requisição para simular " + numTosses + " lançamentos.");
+
+            fetch('/simular', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ num_tosses: numTosses })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);  // Adicione isso para depurar a resposta recebida
+                document.getElementById('resultadoSimulacao').innerHTML = `
+                    <p><strong>Total de Caras:</strong> ${data.total_caras}</p>
+                    <p><strong>Total de Coroas:</strong> ${data.total_coroas}</p>
+                    <p><strong>Maior sequência de Caras:</strong> ${data.max_cara_seq}</p>
+                    <p><strong>Maior sequência de Coroas:</strong> ${data.max_coroa_seq}</p>
+                    <p><strong>Maior Drawdown:</strong> ${data.max_drawdown}</p>
+                    <p><strong>Porcentagem de Caras:</strong> ${data.percentage_caras.toFixed(2)}%</p>
+                    <p><strong>Porcentagem de Coroas:</strong> ${data.percentage_coroas.toFixed(2)}%</p>
+                `;
+            })
+            .catch(error => console.error('Erro:', error));
         }
     </script>
 </body>
