@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Juros Compostos</title>
+    <title>Serviços Disponíveis</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0984e3, #74b9ff);
+            background: linear-gradient(135deg, #FF5733, #1E90FF, #32CD32);
             color: #ffffff;
-            line-height: 1.6;
             text-align: center;
             padding: 20px;
             margin: 0;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 50px auto;
-            background: rgba(255, 255, 255, 0.15);
             padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 12px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
@@ -27,10 +26,45 @@
             color: #ffffff;
             margin-bottom: 20px;
         }
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .service-button {
+            background-color: #FF5733;
+            color: white;
+            padding: 20px 30px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .service-button:hover {
+            background-color: #FF914D;
+            transform: scale(1.05);
+        }
+        .hidden {
+            display: none;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            font-size: 18px;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
         input {
             width: 80%;
             padding: 12px;
-            margin: 5px 0;
+            margin: 10px 0;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
@@ -38,7 +72,7 @@
             outline: none;
         }
         button {
-            background-color: #00cec9;
+            background-color: #FF5733;
             color: white;
             padding: 12px 20px;
             border: none;
@@ -51,120 +85,47 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         button:hover {
-            background-color: #55efc4;
+            background-color: #FF914D;
             transform: scale(1.05);
         }
-        .btn-secondary {
-            background-color: #6c5ce7;
-        }
-        .btn-secondary:hover {
-            background-color: #a29bfe;
-        }
-        .btn-clear {
-            background-color: #d63031;
-        }
-        .btn-clear:hover {
-            background-color: #ff7675;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            font-size: 18px;
-            color: #333;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Estilo para o modal */
-        .modal {
-            display: none; 
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
         @media (max-width: 600px) {
-            .container {
-                margin: 20px;
-                padding: 15px;
-            }
-            h1 {
-                font-size: 22px;
-            }
-            input, button {
-                font-size: 14px;
-                padding: 10px;
-            }
-            .result {
+            .service-button {
                 font-size: 16px;
-                padding: 15px;
+                padding: 15px 20px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Calculadora de Juros Compostos</h1>
-        <form id="calculadora">
-            <input type="number" id="valorInicial" placeholder="Valor Inicial (R$)" required>
-            <input type="number" id="aporteMensal" placeholder="Aporte Mensal (R$)" required>
-            <input type="number" id="taxaJuros" placeholder="Taxa de Juros Mensal (%)" step="0.01" required>
-            <input type="number" id="tempoMeses" placeholder="Tempo (Meses)" required>
-            <button type="button" onclick="calcular()">Calcular</button>
-            <button type="button" class="btn-clear" onclick="limpar()">Limpar</button>
-        </form>
-        <div class="result" id="resultado"></div>
-        <button class="btn-secondary" onclick="pedirSenha()">Próximo</button>
-
-        <!-- Botão para abrir o chat -->
-        <button id="openChatBtn" class="btn-secondary">Abrir Chat</button>
-
-        <!-- O Modal de Chat -->
-        <div id="chatModal" class="modal">
-            <div class="modal-content">
-                <span class="close" id="closeChatBtn">&times;</span>
-                <h2>Bem-vindo ao Chat</h2>
-                <iframe src="chat.html" width="100%" height="400px"></iframe>
-            </div>
+        <h1>Escolha um Serviço</h1>
+        <div class="buttons-container">
+            <!-- Aqui, o link para a página terceirapagina.html foi adicionado -->
+            <a href="terceirapagina.html">
+                <button class="service-button">Calc. Juros Compostos</button>
+            </a>
+            <button class="service-button" onclick="window.location.href='sua-pagina-secundaria.html'">Comparação Salários TRT vs TJPE</button>
         </div>
-
-        <!-- Botão para simulação de moeda -->
-        <input type="number" id="numTosses" placeholder="Número de lançamentos">
-        <button onclick="enviarSimulacao()">Simular Lançamento</button>
-        <div class="result" id="resultadoSimulacao"></div>
+        
+        <div id="calculadora-container" class="hidden">
+            <h2>Calculadora de Juros Compostos</h2>
+            <form id="calculadora">
+                <input type="number" id="valorInicial" placeholder="Valor Inicial (R$)" required>
+                <input type="number" id="aporteMensal" placeholder="Aporte Mensal (R$)" required>
+                <input type="number" id="taxaJuros" placeholder="Taxa de Juros Mensal (%)" step="0.01" required>
+                <input type="number" id="tempoMeses" placeholder="Tempo (Meses)" required>
+                <button type="button" onclick="calcular()">Calcular</button>
+                <button type="button" onclick="limpar()">Limpar</button>
+            </form>
+            <div class="result" id="resultado"></div>
+        </div>
     </div>
 
     <script>
-        // Função de calcular juros compostos
+        function mostrarCalculadora() {
+            document.getElementById('calculadora-container').classList.remove('hidden');
+        }
+
         function calcular() {
             const valorInicial = parseFloat(document.getElementById('valorInicial').value);
             const aporteMensal = parseFloat(document.getElementById('aporteMensal').value);
@@ -188,73 +149,8 @@
         }
 
         function limpar() {
-            document.getElementById('calculadora').reset(); // Reseta o formulário
-            document.getElementById('resultado').innerHTML = ''; // Limpa o resultado
-        }
-
-        function pedirSenha() {
-            const senha = prompt("Digite a senha para continuar:");
-            if (senha === "X") {
-                window.location.href = 'sua-pagina-secundaria.html'; // Substitua pelo nome do arquivo do site secundário
-            } else {
-                alert("Senha incorreta! Tente novamente.");
-            }
-        }
-
-        // Modal Chat
-        var modal = document.getElementById("chatModal");
-        var btn = document.getElementById("openChatBtn");
-        var span = document.getElementById("closeChatBtn");
-
-        // Quando o usuário clicar no botão, abre o modal
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
-
-        // Quando o usuário clicar no "x", fecha o modal
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        // Quando o usuário clicar fora do modal, fecha-o
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-
-        // Função para enviar a simulação de moeda para o Flask
-        function enviarSimulacao() {
-            const numTosses = parseInt(document.getElementById('numTosses').value);
-
-            if (isNaN(numTosses) || numTosses <= 0) {
-                alert("Por favor, insira um número válido de lançamentos.");
-                return;
-            }
-
-            console.log("Enviando requisição para simular " + numTosses + " lançamentos.");
-
-            fetch('/simular', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ num_tosses: numTosses })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);  // Adicione isso para depurar a resposta recebida
-                document.getElementById('resultadoSimulacao').innerHTML = `
-                    <p><strong>Total de Caras:</strong> ${data.total_caras}</p>
-                    <p><strong>Total de Coroas:</strong> ${data.total_coroas}</p>
-                    <p><strong>Maior sequência de Caras:</strong> ${data.max_cara_seq}</p>
-                    <p><strong>Maior sequência de Coroas:</strong> ${data.max_coroa_seq}</p>
-                    <p><strong>Maior Drawdown:</strong> ${data.max_drawdown}</p>
-                    <p><strong>Porcentagem de Caras:</strong> ${data.percentage_caras.toFixed(2)}%</p>
-                    <p><strong>Porcentagem de Coroas:</strong> ${data.percentage_coroas.toFixed(2)}%</p>
-                `;
-            })
-            .catch(error => console.error('Erro:', error));
+            document.getElementById('calculadora').reset();
+            document.getElementById('resultado').innerHTML = '';
         }
     </script>
 </body>
