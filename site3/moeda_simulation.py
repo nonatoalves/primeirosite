@@ -12,23 +12,22 @@ def analyze_results(results):
     total_caras = results.count("cara")
     total_coroas = results.count("coroa")
     
-    # Calcular as porcentagens de "cara" e "coroa"
     percentage_caras = (total_caras / len(results)) * 100
     percentage_coroas = (total_coroas / len(results)) * 100
     
-    # Contar a sequência em tempo real
     cara_seq = 0
     coroa_seq = 0
     max_cara_seq = 0
     max_coroa_seq = 0
     sequence = []
 
-    # Calcular o saldo acumulado (cara vs coroa)
-    balance = []  # Lista para armazenar o "balance" de caras vs coroas
+    balance = []  # Lista para armazenar o saldo acumulado
     cara_count = 0
     coroa_count = 0
+    flip_points = []  # Armazena os índices onde há uma virada
+    previous_significant_balance = 0  # Sinal significativo do saldo acumulado
 
-    for toss in results:
+    for idx, toss in enumerate(results):
         if toss == "cara":
             cara_seq += 1
             coroa_seq = 0
@@ -40,9 +39,16 @@ def analyze_results(results):
             max_coroa_seq = max(max_coroa_seq, coroa_seq)
             coroa_count += 1
         sequence.append(cara_seq if toss == "cara" else coroa_seq)
-        balance.append(cara_count - coroa_count)
+        current_balance = cara_count - coroa_count
+        balance.append(current_balance)
 
-    # Cálculo do Drawdown
+        # Detectar viradas significativas (de >0 para <0 ou de <0 para >0)
+        if (previous_significant_balance > 0 and current_balance < 0) or (previous_significant_balance < 0 and current_balance > 0):
+            flip_points.append(idx)
+            previous_significant_balance = current_balance
+        elif current_balance != 0:  # Atualizar o saldo significativo se não for 0
+            previous_significant_balance = current_balance
+
     peak = balance[0]
     drawdowns = [0]
     for value in balance[1:]:
@@ -62,7 +68,9 @@ def analyze_results(results):
         "percentage_coroas": percentage_coroas,
         "sequence": sequence,
         "balance": balance,
-        "drawdowns": drawdowns
+        "drawdowns": drawdowns,
+        "flip_points": flip_points,
+        "total_flips": len(flip_points)
     }
 
 def save_to_csv(results):
@@ -75,11 +83,11 @@ def save_to_csv(results):
     print(f"Arquivo CSV gerado: {filename}")
 
 def main():
-    num_tosses = 1000000  # Número de lançamentos
+    num_tosses = 10000  # Número de lançamentos
     results = simulate_coin_tosses(num_tosses)
     stats = analyze_results(results)
 
-    # Exibindo os resultados para o Excel sem espaços
+    # Exibindo os resultados
     print("Resultado\tSequência\tSaldo\tDrawdown")
     for result, seq, saldo, drawdown in zip(results, stats["sequence"], stats["balance"], stats["drawdowns"]):
         print(f"{result}\t\t{seq}\t\t{saldo}\t{drawdown}")
@@ -92,20 +100,23 @@ def main():
     print(f"Maior drawdown: {stats['max_drawdown']}")
     print(f"Porcentagem de caras: {stats['percentage_caras']:.2f}%")
     print(f"Porcentagem de coroas: {stats['percentage_coroas']:.2f}%")
+    print(f"Quantidade de viradas no saldo acumulado: {stats['total_flips']}")
 
-    # Gerar arquivo CSV com resultados
     save_to_csv(results)
 
     # Plotando gráfico de Saldo Acumulado e Drawdown
     plt.figure(figsize=(10, 6))
 
-    # Saldo acumulado de caras - coroas
+    # Saldo acumulado
     plt.plot(stats['balance'], label='Saldo Acumulado (Cara - Coroa)', color='blue', alpha=0.7)
-    
+
     # Drawdown
     plt.plot(stats['drawdowns'], label='Drawdown', color='red', linestyle='--')
 
-    # Marcando áreas de "Cara" dominando e "Coroa" dominando
+    # Adicionar pontos de virada no saldo acumulado
+    for flip in stats['flip_points']:
+        plt.scatter(flip, stats['balance'][flip], color='red', label='Virada no Saldo' if flip == stats['flip_points'][0] else "", zorder=5)
+
     plt.fill_between(range(len(stats['balance'])), stats['balance'], 0, where=[x >= 0 for x in stats['balance']],
                      color='green', alpha=0.2, label='Cara Dominando')
     plt.fill_between(range(len(stats['balance'])), stats['balance'], 0, where=[x < 0 for x in stats['balance']],

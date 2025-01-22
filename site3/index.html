@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serviços Disponíveis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #FF5733, #1E90FF, #32CD32);
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .service-button {
+            background-color: #FF5733;
+            color: white;
+            padding: 20px 30px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .service-button:hover {
+            background-color: #FF914D;
+            transform: scale(1.05);
+        }
+        .hidden {
+            display: none;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            font-size: 18px;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 80%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            outline: none;
+        }
+        button {
+            background-color: #FF5733;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background-color: #FF914D;
+            transform: scale(1.05);
+        }
+        @media (max-width: 600px) {
+            .service-button {
+                font-size: 16px;
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Escolha um Serviço</h1>
+        <div class="buttons-container">
+            <!-- Aqui, o link para a página terceirapagina.html foi adicionado -->
+            <a href="terceirapagina.html">
+                <button class="service-button">Calc. Juros Compostos</button>
+            </a>
+            <button class="service-button" onclick="window.location.href='sua-pagina-secundaria.html'">Comparação Salários TRT vs TJPE</button>
+        </div>
+        
+        <div id="calculadora-container" class="hidden">
+            <h2>Calculadora de Juros Compostos</h2>
+            <form id="calculadora">
+                <input type="number" id="valorInicial" placeholder="Valor Inicial (R$)" required>
+                <input type="number" id="aporteMensal" placeholder="Aporte Mensal (R$)" required>
+                <input type="number" id="taxaJuros" placeholder="Taxa de Juros Mensal (%)" step="0.01" required>
+                <input type="number" id="tempoMeses" placeholder="Tempo (Meses)" required>
+                <button type="button" onclick="calcular()">Calcular</button>
+                <button type="button" onclick="limpar()">Limpar</button>
+            </form>
+            <div class="result" id="resultado"></div>
+        </div>
+    </div>
+
+    <script>
+        function mostrarCalculadora() {
+            document.getElementById('calculadora-container').classList.remove('hidden');
+        }
+
+        function calcular() {
+            const valorInicial = parseFloat(document.getElementById('valorInicial').value);
+            const aporteMensal = parseFloat(document.getElementById('aporteMensal').value);
+            const taxaJuros = parseFloat(document.getElementById('taxaJuros').value) / 100;
+            const tempoMeses = parseInt(document.getElementById('tempoMeses').value);
+
+            let saldo = valorInicial;
+            let lucroMensal = 0;
+            const totalInvestido = valorInicial + (aporteMensal * tempoMeses);
+
+            for (let i = 1; i <= tempoMeses; i++) {
+                lucroMensal = saldo * taxaJuros;
+                saldo += lucroMensal + aporteMensal;
+            }
+
+            document.getElementById('resultado').innerHTML = ` 
+                <p><strong>Saldo Final:</strong> R$ ${saldo.toFixed(2)}</p>
+                <p><strong>Lucro Total:</strong> R$ ${(saldo - totalInvestido).toFixed(2)}</p>
+                <p><strong>Valor Total Investido:</strong> R$ ${totalInvestido.toFixed(2)}</p>
+            `;
+        }
+
+        function limpar() {
+            document.getElementById('calculadora').reset();
+            document.getElementById('resultado').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
