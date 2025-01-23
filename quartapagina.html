@@ -39,8 +39,8 @@
         <h1>Simulador de Cara ou Coroa</h1>
         <label for="numJogos">Número de jogos (máx. 100000):</label>
         <input type="number" id="numJogos" max="100000" min="1" value="1000">
-        <button onclick="JOGAR()">Simular</button>
-        <button onclick="limparResultados()">Limpar</button>
+        <button onclick="JOGAR()">JOGAR</button>
+        <button onclick="limparResultados()">LIMPAR</button>
 
         <h2>Resultados</h2>
         <div id="resultados"></div>
@@ -120,8 +120,8 @@
                 <p><strong>Quantidade de Coroas:</strong> ${qtdCoroas} (${percentualCoroas}%)</p>
                 <p><strong>Maior sequência de Caras:</strong> ${maiorSequenciaCara}</p>
                 <p><strong>Maior sequência de Coroas:</strong> ${maiorSequenciaCoroa}</p>
-                <p><strong>Maior drawdown:</strong> ${maiorDrawdown}</p>
-                <p><strong>Quantidade de viradas de saldo:</strong> ${qtdViradas}</p>
+                <p><strong>Maior Rebaixamento:</strong> ${maiorDrawdown}</p>
+                <p><strong>Quantidade de Reversões:</strong> ${qtdViradas}</p>
             `;
 
             // Gráfico de Dominância
