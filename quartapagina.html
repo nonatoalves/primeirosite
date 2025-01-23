@@ -115,7 +115,7 @@
             const percentualCaras = ((qtdCaras / numJogos) * 100).toFixed(2);
             const percentualCoroas = ((qtdCoroas / numJogos) * 100).toFixed(2);
 
-            document.getElementById('resultados').innerHTML = `
+            document.getElementById('resultados').innerHTML = ` 
                 <p><strong>Quantidade de Caras:</strong> ${qtdCaras} (${percentualCaras}%)</p>
                 <p><strong>Quantidade de Coroas:</strong> ${qtdCoroas} (${percentualCoroas}%)</p>
                 <p><strong>Maior sequência de Caras:</strong> ${maiorSequenciaCara}</p>
@@ -140,7 +140,10 @@
                         },
                         {
                             label: 'Pontos de Virada',
-                            data: pontosVirada.map(p => ({ x: p, y: 0 })),
+                            data: pontosVirada.map(p => ({
+                                x: p,
+                                y: saldos[p] > 0 ? 1 : -1 // Colocando os pontos de virada no nível 1 ou -1
+                            })),
                             borderColor: 'red',
                             backgroundColor: 'red',
                             type: 'scatter',
@@ -183,7 +186,10 @@
                 data: {
                     datasets: [{
                         label: 'Pontos de Virada',
-                        data: pontosVirada.map(p => ({ x: p, y: 0 })),
+                        data: pontosVirada.map(p => ({
+                            x: p,
+                            y: saldos[p] > 0 ? 1 : -1 // Ajustando o ponto de virada para 1 ou -1
+                        })),
                         backgroundColor: 'red',
                     }]
                 },
