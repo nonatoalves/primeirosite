@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de 10 Moedas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fbc2eb, #a1c4fd);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        canvas {
+            margin: 10px;
+            height: 150px; /* Reduced height */
+            width: 300px;  /* Reduced width */
+        }
+
+        .container {
+            max-width: 100%;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .simulador {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px;
+            background-color: white;
+            flex: 0 0 18%; /* Adjusted to fit 5 per row */
+            box-sizing: border-box;
+        }
+
+        .simulador:nth-child(5n+1) {
+            clear: none; /* Ensure proper wrapping */
+        }
+
+        button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador de 10 Moedas</h1>
+        <label for="numJogos">Número de jogos por simulador (máx. 1000):</label>
+        <input type="number" id="numJogos" max="1000" min="1" value="100">
+        <button onclick="JOGAR()">JOGAR</button>
+        <button onclick="limparResultados()">LIMPAR</button>
+
+        <div id="simuladores" class="container"></div>
+    </div>
+
+    <script>
+        function limparResultados() {
+            document.getElementById('simuladores').innerHTML = '';
+        }
+
+        function JOGAR() {
+            limparResultados();
+
+            const numJogos = parseInt(document.getElementById('numJogos').value);
+            if (isNaN(numJogos) || numJogos < 1 || numJogos > 1000) {
+                alert('Por favor, insira um número de jogos entre 1 e 1000.');
+                return;
+            }
+
+            for (let i = 1; i <= 10; i++) {
+                criarSimulador(i, numJogos);
+            }
+        }
+
+        function criarSimulador(indice, numJogos) {
+            const container = document.createElement('div');
+            container.className = 'simulador';
+
+            const titulo = document.createElement('h2');
+            titulo.textContent = `Simulador ${indice}`;
+
+            const resultados = document.createElement('div');
+            resultados.id = `resultados-${indice}`;
+
+            const canvas = document.createElement('canvas');
+            canvas.id = `graficoDominancia-${indice}`;
+
+            container.appendChild(titulo);
+            container.appendChild(resultados);
+            container.appendChild(canvas);
+            document.getElementById('simuladores').appendChild(container);
+
+            executarSimulacao(indice, numJogos);
+        }
+
+        function executarSimulacao(indice, numJogos) {
+            let saldo = 0;
+            let maiorDrawdown = 0;
+            let maiorSequenciaCara = 0;
+            let maiorSequenciaCoroa = 0;
+            let atualSequenciaCara = 0;
+            let atualSequenciaCoroa = 0;
+            let qtdCaras = 0;
+            let qtdCoroas = 0;
+            let qtdViradas = 0;
+            const saldos = [0];
+            const pontosVirada = [];
+
+            for (let i = 0; i < numJogos; i++) {
+                const jogada = Math.random() < 0.5 ? 1 : -1; // 1 para Cara, -1 para Coroa
+                saldo += jogada;
+                saldos.push(saldo);
+
+                if (jogada === 1) {
+                    qtdCaras++;
+                    atualSequenciaCara++;
+                    atualSequenciaCoroa = 0;
+                } else {
+                    qtdCoroas++;
+                    atualSequenciaCoroa++;
+                    atualSequenciaCara = 0;
+                }
+
+                if (saldo === 0 && i > 0) {
+                    pontosVirada.push(i);
+                    qtdViradas++;
+                }
+
+                maiorSequenciaCara = Math.max(maiorSequenciaCara, atualSequenciaCara);
+                maiorSequenciaCoroa = Math.max(maiorSequenciaCoroa, atualSequenciaCoroa);
+                maiorDrawdown = Math.min(maiorDrawdown, saldo);
+            }
+
+            maiorDrawdown = Math.abs(maiorDrawdown);
+            const percentualCaras = ((qtdCaras / numJogos) * 100).toFixed(2);
+            const percentualCoroas = ((qtdCoroas / numJogos) * 100).toFixed(2);
+
+            document.getElementById(`resultados-${indice}`).innerHTML = `
+                <p><strong>Quantidade de Caras:</strong> ${qtdCaras} (${percentualCaras}%)</p>
+                <p><strong>Quantidade de Coroas:</strong> ${qtdCoroas} (${percentualCoroas}%)</p>
+                <p><strong>Maior sequência de Caras:</strong> ${maiorSequenciaCara}</p>
+                <p><strong>Maior sequência de Coroas:</strong> ${maiorSequenciaCoroa}</p>
+                <p><strong>Maior Rebaixamento:</strong> ${maiorDrawdown}</p>
+                <p><strong>Quantidade de Reversões:</strong> ${qtdViradas}</p>
+            `;
+
+            const ctx = document.getElementById(`graficoDominancia-${indice}`).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: numJogos + 1 }, (_, i) => i),
+                    datasets: [
+                        {
+                            label: 'Saldo Acumulado',
+                            data: saldos,
+                            borderColor: 'blue',
+                            borderWidth: 1,
+                            fill: false
+                        },
+                        {
+                            label: 'Pontos de Virada',
+                            data: pontosVirada.map(p => ({ x: p, y: 0 })),
+                            borderColor: 'red',
+                            backgroundColor: 'red',
+                            type: 'scatter',
+                            pointRadius: 5,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        },
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Jogos'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Saldo'
+                            },
+                            grid: {
+                                color: (context) => context.tick.value === 0 ? 'black' : '#e0e0e0',
+                                lineWidth: (context) => context.tick.value === 0 ? 2 : 1,
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
