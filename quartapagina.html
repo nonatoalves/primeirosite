@@ -39,7 +39,7 @@
         <h1>Simulador de Cara ou Coroa</h1>
         <label for="numJogos">Número de jogos (máx. 100000):</label>
         <input type="number" id="numJogos" max="100000" min="1" value="1000">
-        <button onclick="simularJogos()">Simular</button>
+        <button onclick="JOGAR()">Simular</button>
         <button onclick="limparResultados()">Limpar</button>
 
         <h2>Resultados</h2>
@@ -65,7 +65,7 @@
             }
         }
 
-        function simularJogos() {
+        function JOGAR() {
             limparResultados();
 
             const numJogos = parseInt(document.getElementById('numJogos').value);
