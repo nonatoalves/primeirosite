@@ -5,126 +5,288 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Gastos</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f9;
+        /* Estilos de bloqueio de acesso */
+        #acesso-block {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
         }
-        table {
-            width: 100%;
-            margin-bottom: 20px;
-            border-collapse: collapse;
+
+        .acesso-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
-        th, td {
+
+        input {
             padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
-        input, select {
-            padding: 5px;
-            margin: 5px;
-            width: 150px;
-        }
+
         button {
-            padding: 10px 15px;
-            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
         }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilos da página original */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #9ac2d2, #b2e0d3);
+            padding: 20px;
+            color: #333;
+        }
+
+        h1, h2, h3 {
+            color: #2e4c5b;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f1f7f6;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
         .form-group {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
         }
+
+        label {
+            font-weight: 500;
+            font-size: 14px;
+            margin-right: 10px;
+            flex: 1 0 100%;
+        }
+
+        input, select {
+            padding: 12px;
+            margin: 5px 0;
+            border: 1px solid #aad8d5;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 300px;
+            font-size: 14px;
+            background-color: #d9f5f3;
+        }
+
+        input:focus, select:focus {
+            border-color: #4CAF50;
+            outline: none;
+            background-color: #e1f9f6;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #b8e0dc;
+            font-weight: 600;
+        }
+
+        td {
+            background-color: #f8f9fa;
+        }
+
+        td button {
+            padding: 6px 10px;
+            margin: 5px;
+            background-color: #f44336;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        td button:hover {
+            background-color: #e53935;
+        }
+
         .linha-total {
-            font-weight: bold;
-            background-color: #f0f0f0;
+            background-color: #f1f7f6;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            margin-top: 20px;
         }
+
+        .linha-total p {
+            margin: 5px 0;
+        }
+
         .pago {
             color: green;
             font-weight: bold;
         }
+
         .nao-pago {
             color: red;
             font-weight: bold;
         }
+
+        .responsive-table {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @media (max-width: 768px) {
+            .form-group {
+                flex-direction: column;
+            }
+
+            input, select {
+                max-width: 100%;
+            }
+
+            table, th, td {
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Controle de Gastos</h1>
-    
-    <div class="form-group">
-        <label for="categoria">Categoria:</label>
-        <select id="categoria">
-            <option value="Fixo">Fixo</option>
-            <option value="Variável">Variável</option>
-        </select>
+
+    <!-- Tela de bloqueio de acesso -->
+    <div id="acesso-block">
+        <div class="acesso-container">
+            <h2>Digite a Senha para Acessar</h2>
+            <input type="password" id="senha" placeholder="Digite a senha">
+            <button onclick="verificarSenha()">Entrar</button>
+        </div>
+    </div>
+
+    <!-- Conteúdo da página -->
+    <div id="pagina-conteudo" class="container" style="display: none;">
+        <h1>Controle de Gastos</h1>
         
-        <label for="item">Item:</label>
-        <input type="text" id="item" placeholder="Descrição do gasto" required>
-        
-        <label for="valor">Valor (R$):</label>
-        <input type="number" id="valor" placeholder="Valor" required>
-        
+        <div class="form-group">
+            <div class="input-field">
+                <label for="categoria">Categoria:</label>
+                <select id="categoria">
+                    <option value="Fixo">Fixo</option>
+                    <option value="Variável">Variável</option>
+                </select>
+            </div>
+            
+            <div class="input-field">
+                <label for="item">Item:</label>
+                <input type="text" id="item" placeholder="Descrição do gasto" required>
+            </div>
+
+            <div class="input-field">
+                <label for="valor">Valor (R$):</label>
+                <input type="number" id="valor" placeholder="Valor" required>
+            </div>
+        </div>
+
         <button onclick="adicionarGasto()">Adicionar Gasto</button>
+
+        <h2>Gastos</h2>
+        <div class="responsive-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Item</th>
+                        <th>Valor (R$)</th>
+                        <th>Ações</th>
+                        <th>Pagamento</th>
+                    </tr>
+                </thead>
+                <tbody id="gastos-lista">
+                    <!-- Aqui vão os gastos cadastrados -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="linha-total">
+            <p id="total-gastos">Total de Gastos Mensais: R$ 0,00</p>
+            <p id="saldo-parcial">Saldo Parcial (não pago): R$ 0,00</p>
+
+            <!-- Campo para adicionar fontes de renda -->
+            <div>
+                <label for="renda">Adicionar Renda:</label>
+                <input type="text" id="renda" placeholder="Fonte de Renda" required>
+                <input type="number" id="valorRenda" placeholder="Valor (R$)" required>
+                <button onclick="adicionarRenda()">Adicionar</button>
+            </div>
+
+            <!-- Saldo Mensal e Anual -->
+            <p id="saldo-mensal">Saldo Mensal: R$ 0,00</p>
+            <p id="previsao-lucro">Previsão de Lucro/Prejuízo Anual: R$ 0,00</p>
+        </div>
+
+        <button onclick="limparGastos()">Limpar Tudo</button>
     </div>
-
-    <h2>Gastos</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Categoria</th>
-                <th>Item</th>
-                <th>Valor (R$)</th>
-                <th>Ações</th>
-                <th>Pagamento</th>
-            </tr>
-        </thead>
-        <tbody id="gastos-lista">
-            <!-- Aqui vão os gastos cadastrados -->
-        </tbody>
-    </table>
-
-    <div class="linha-total">
-        <p id="total-gastos">Total de Gastos Mensais: R$ 0,00</p>
-        <p id="saldo-parcial">Saldo Parcial (não pago): R$ 0,00</p>
-    </div>
-
-    <button onclick="limparGastos()">Limpar Tudo</button>
-    
-    <h2>Fontes de Renda</h2>
-    <div class="form-group">
-        <label for="renda">Fonte de Renda:</label>
-        <input type="text" id="renda" placeholder="Descrição da fonte de renda" required>
-        
-        <label for="valorRenda">Valor (R$):</label>
-        <input type="number" id="valorRenda" placeholder="Valor da fonte" required>
-        
-        <button onclick="adicionarRenda()">Adicionar Renda</button>
-    </div>
-
-    <h2>Fontes de Renda</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Fonte de Renda</th>
-                <th>Valor (R$)</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody id="rendas-lista">
-            <!-- Aqui vão as fontes de renda cadastradas -->
-        </tbody>
-    </table>
-
-    <h3>Resumo</h3>
-    <p id="saldo-mensal">Saldo Mensal: R$ 0,00</p>
-    <p id="previsao-lucro">Previsão de Lucro/Prejuízo Anual: R$ 0,00</p>
 
     <script>
+        function verificarSenha() {
+            const senha = document.getElementById('senha').value;
+            if (senha === 'X') {
+                document.getElementById('acesso-block').style.display = 'none';
+                document.getElementById('pagina-conteudo').style.display = 'block';
+            } else {
+                alert('Senha incorreta! Tente novamente.');
+            }
+        }
+
         // Função para atualizar a tabela de gastos
         function atualizarTabela() {
             const gastos = JSON.parse(localStorage.getItem('gastos')) || [];
             const listaGastos = document.getElementById('gastos-lista');
             listaGastos.innerHTML = '';
-            
+
             gastos.forEach((gasto, index) => {
                 const pagoClass = gasto.pago ? 'pago' : 'nao-pago';
                 tr = document.createElement('tr');
@@ -137,7 +299,7 @@
                 `;
                 listaGastos.appendChild(tr);
             });
-            
+
             atualizarResumo();
         }
 
@@ -152,9 +314,16 @@
                 return;
             }
 
+            // Adicionando o novo gasto ao localStorage
             const gastos = JSON.parse(localStorage.getItem('gastos')) || [];
             gastos.push({ categoria, item, valor, pago: false });
             localStorage.setItem('gastos', JSON.stringify(gastos));
+
+            // Limpar os campos após adicionar
+            document.getElementById('item').value = '';
+            document.getElementById('valor').value = '';
+
+            // Atualizar a tabela
             atualizarTabela();
         }
 
@@ -169,8 +338,15 @@
         // Função para marcar gasto como pago
         function marcarComoPago(index) {
             const gastos = JSON.parse(localStorage.getItem('gastos')) || [];
-            gastos[index].pago = !gastos[index].pago;  // Inverte o estado de pago
+            const gasto = gastos[index];
+
+            // Alterando o status do pagamento do gasto
+            gasto.pago = !gasto.pago;
+            gastos[index] = gasto;
             localStorage.setItem('gastos', JSON.stringify(gastos));
+
+            // Atualizar o saldo mensal
+            atualizarResumo();
             atualizarTabela();
         }
 
@@ -178,25 +354,6 @@
         function limparGastos() {
             localStorage.removeItem('gastos');
             atualizarTabela();
-        }
-
-        // Função para atualizar a tabela de fontes de renda
-        function atualizarTabelaRenda() {
-            const rendas = JSON.parse(localStorage.getItem('rendas')) || [];
-            const listaRendas = document.getElementById('rendas-lista');
-            listaRendas.innerHTML = '';
-            
-            rendas.forEach((renda, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${renda.fonte}</td>
-                    <td>R$ ${renda.valor}</td>
-                    <td><button onclick="excluirRenda(${index})">Excluir</button></td>
-                `;
-                listaRendas.appendChild(tr);
-            });
-
-            atualizarResumo();
         }
 
         // Função para adicionar fonte de renda
@@ -209,42 +366,37 @@
                 return;
             }
 
-            const rendas = JSON.parse(localStorage.getItem('rendas')) || [];
-            rendas.push({ fonte, valor });
-            localStorage.setItem('rendas', JSON.stringify(rendas));
-            atualizarTabelaRenda();
-        }
+            // Limpar o saldo mensal e cache de rendas anteriores
+            localStorage.removeItem('rendas');
 
-        // Função para excluir fonte de renda
-        function excluirRenda(index) {
-            const rendas = JSON.parse(localStorage.getItem('rendas')) || [];
-            rendas.splice(index, 1);
+            // Adicionar nova fonte de renda ao localStorage
+            const rendas = [{ fonte, valor }];
             localStorage.setItem('rendas', JSON.stringify(rendas));
-            atualizarTabelaRenda();
+
+            // Atualizar resumo após adicionar nova renda
+            atualizarResumo();
         }
 
         // Função para calcular saldo e previsão de lucro/prejuízo anual
         function atualizarResumo() {
             const gastos = JSON.parse(localStorage.getItem('gastos')) || [];
             const rendas = JSON.parse(localStorage.getItem('rendas')) || [];
-            
-            const totalGastos = gastos.reduce((acc, gasto) => acc + gasto.valor, 0);
-            const totalRendas = rendas.reduce((acc, renda) => acc + renda.valor, 0);
 
-            const totalNaoPago = gastos.filter(gasto => !gasto.pago).reduce((acc, gasto) => acc + gasto.valor, 0);
-            const saldoMensal = totalRendas - totalGastos;
+            const totalRendas = rendas.reduce((acc, renda) => acc + renda.valor, 0);
+            const totalGastosPagos = gastos.reduce((acc, gasto) => acc + (gasto.pago ? gasto.valor : 0), 0);
+
+            const saldoMensal = totalRendas - totalGastosPagos;
             const previsaoLucro = (saldoMensal * 12).toFixed(2);
-            
+
             document.getElementById('saldo-mensal').innerText = `Saldo Mensal: R$ ${saldoMensal.toFixed(2)}`;
             document.getElementById('previsao-lucro').innerText = `Previsão de Lucro/Prejuízo Anual: R$ ${previsaoLucro}`;
-            document.getElementById('total-gastos').innerText = `Total de Gastos Mensais: R$ ${totalGastos.toFixed(2)}`;
-            document.getElementById('saldo-parcial').innerText = `Saldo Parcial (não pago): R$ ${totalNaoPago.toFixed(2)}`;
+            document.getElementById('total-gastos').innerText = `Total de Gastos Mensais: R$ ${totalGastosPagos.toFixed(2)}`;
+            document.getElementById('saldo-parcial').innerText = `Saldo Parcial (não pago): R$ ${totalGastosPagos.toFixed(2)}`;
         }
 
         // Inicializar a tabela ao carregar a página
         window.onload = function() {
             atualizarTabela();
-            atualizarTabelaRenda();
         };
     </script>
 </body>
