@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Trava</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #121212;
+      color: #ffffff;
+    }
+
+    h2 {
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: 6px 10px;
+      color: #ffffff;
+    }
+
+    input[type="number"], input[readonly] {
+      width: 130px;
+      padding: 4px;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      border: 1px solid #333;
+      border-radius: 4px;
+    }
+
+    label {
+      margin-right: 12px;
+    }
+
+    canvas {
+      background: #1e1e1e;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Simulador de Trava de Alta e Baixa</h2>
+
+  <div class="container">
+    <div>
+      <label><input type="radio" name="tipo" value="call" checked> CALL</label>
+      <label><input type="radio" name="tipo" value="put"> PUT</label>
+      <br><br>
+
+      <table>
+        <tr><td>Strike Comprada:</td><td><input type="number" id="strikeC" value="10"></td></tr>
+        <tr><td>Prêmio Comprada:</td><td><input type="number" id="premioC" value="1"></td></tr>
+        <tr><td>Strike Vendida:</td><td><input type="number" id="strikeV" value="12"></td></tr>
+        <tr><td>Prêmio Vendida:</td><td><input type="number" id="premioV" value="0.5"></td></tr>
+        <tr><td>Preço do Ativo:</td><td><input type="number" id="precoAtivo" value="11"></td></tr>
+        <tr><td>Lotes:</td><td><input type="number" id="lotes" value="100"></td></tr>
+        <tr><td><strong>Investimento:</strong></td><td><input type="text" id="investimento" readonly></td></tr>
+        <tr><td><strong>Lucro Máximo:</strong></td><td><input type="text" id="lucroMax" readonly></td></tr>
+        <tr><td><strong>Prejuízo Máximo:</strong></td><td><input type="text" id="prejuizoMax" readonly></td></tr>
+        <tr><td><strong>Ponto de Equilíbrio:</strong></td><td><input type="text" id="pontoEquilibrio" readonly></td></tr>
+      </table>
+    </div>
+
+    <canvas id="grafico" width="500" height="300"></canvas>
+  </div>
+
+  <script>
+    const inputs = ["strikeC", "strikeV", "premioC", "premioV", "lotes"];
+    inputs.forEach(id => document.getElementById(id).addEventListener("input", atualizar));
+    document.querySelectorAll('input[name="tipo"]').forEach(el => el.addEventListener("change", atualizar));
+
+    function atualizar() {
+      const tipo = document.querySelector('input[name="tipo"]:checked').value;
+      const strikeC = parseFloat(document.getElementById("strikeC").value);
+      const strikeV = parseFloat(document.getElementById("strikeV").value);
+      const premioC = parseFloat(document.getElementById("premioC").value);
+      const premioV = parseFloat(document.getElementById("premioV").value);
+      const lotes = parseInt(document.getElementById("lotes").value);
+
+      const custo = (premioC - premioV) * lotes;
+      document.getElementById("investimento").value = custo.toFixed(2);
+
+      let lucroMax = 0, prejuizoMax = -custo, pontoEquilibrio = 0;
+
+      if (tipo === "call") {
+        lucroMax = (strikeV - strikeC) * lotes - custo;
+        pontoEquilibrio = strikeC + (custo / lotes);
+      } else {
+        lucroMax = (strikeC - strikeV) * lotes - custo;
+        pontoEquilibrio = strikeC - (custo / lotes);
+      }
+
+      document.getElementById("lucroMax").value = lucroMax.toFixed(2);
+      document.getElementById("prejuizoMax").value = prejuizoMax.toFixed(2);
+      document.getElementById("pontoEquilibrio").value = pontoEquilibrio.toFixed(2);
+
+      desenharGrafico(tipo, strikeC, strikeV, lucroMax, prejuizoMax);
+    }
+
+    let chart;
+    function desenharGrafico(tipo, strikeC, strikeV, lucroMax, prejuizoMax) {
+      const ctx = document.getElementById('grafico').getContext('2d');
+      if (chart) chart.destroy();
+
+      let data = {};
+      let color = tipo === "call" ? "#00ff00" : "#ff4444";
+
+      if (tipo === "call") {
+        data = {
+          labels: [strikeC - 5, strikeC, strikeV, strikeV + 5],
+          datasets: [{
+            label: 'Resultado (CALL)',
+            data: [prejuizoMax, prejuizoMax, lucroMax, lucroMax],
+            borderColor: color,
+            fill: false
+          }]
+        };
+      } else {
+        data = {
+          labels: [strikeV - 5, strikeV, strikeC, strikeC + 5],
+          datasets: [{
+            label: 'Resultado (PUT)',
+            data: [lucroMax, lucroMax, prejuizoMax, prejuizoMax],
+            borderColor: color,
+            fill: false
+          }]
+        };
+      }
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+          responsive: false,
+          plugins: {
+            legend: {
+              labels: { color: '#fff' }
+            },
+            title: {
+              display: true,
+              text: tipo === 'call' ? 'Trava de Alta (CALL)' : 'Trava de Baixa (PUT)',
+              color: '#ffffff'
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Preço do Ativo no Vencimento',
+                color: '#ffffff'
+              },
+              ticks: {
+                color: '#ffffff'
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Lucro / Prejuízo (R$)',
+                color: '#ffffff'
+              },
+              ticks: {
+                color: '#ffffff'
+              },
+              beginAtZero: false
+            }
+          }
+        }
+      });
+    }
+
+    atualizar();
+  </script>
+</body>
+</html>
