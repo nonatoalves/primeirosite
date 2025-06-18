@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Plano de Corte MDF Inteligente</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      margin: 0;
+      padding: 20px;
+      color: #eee;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      text-align: center;
+      color: #00aaff;
+      margin-bottom: 30px;
+    }
+
+    form, .layout-buttons, .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    input, button {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+    }
+
+    input {
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    button {
+      background: #00aaff;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #007acc;
+    }
+
+    .folha {
+      width: 550px;
+      height: 370px;
+      border: 2px dashed #888;
+      background: #222;
+      position: relative;
+      margin: 0 auto 20px auto;
+    }
+
+    .peca {
+      position: absolute;
+      background: rgba(0, 170, 255, 0.85);
+      border: 1px solid #00aaff;
+      font-size: 10px;
+      color: white;
+      text-align: center;
+      overflow: hidden;
+      padding: 2px;
+    }
+
+    .resultados {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #fff;
+      border-left: 4px solid #00aaff;
+    }
+
+    .resultados strong {
+      color: #0df;
+    }
+
+    .lista-pecas {
+      background: #2b2b2b;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .peca-lista {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid #444;
+    }
+
+    .peca-lista button {
+      background: #c0392b;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .success { color: #27ae60; font-weight: bold; }
+    .error { color: #e74c3c; font-weight: bold; }
+
+    @media (min-width: 900px) {
+      .top-layout {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .folha {
+        margin: 0;
+      }
+
+      .resultados {
+        width: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Plano de Corte MDF Inteligente</h1>
+
+    <form id="formPeca">
+      <input type="number" id="largura" placeholder="Largura (cm)" required min="1">
+      <input type="number" id="comprimento" placeholder="Comprimento (cm)" required min="1">
+      <input type="number" id="quantidade" placeholder="Qtd por móvel" required min="1">
+      <button type="submit">Adicionar Peça</button>
+    </form>
+
+    <div class="controls">
+      <label for="qtdMoveis">Qtd de móveis:</label>
+      <input type="number" id="qtdMoveis" value="1" min="1">
+      <button onclick="limparTudo()">🔄 Limpar Tudo</button>
+    </div>
+
+    <div class="lista-pecas" id="listaPecas"></div>
+
+    <div class="layout-buttons">
+      <button onclick="atualizarResultados('horizontal')">Disposição 1</button>
+      <button onclick="atualizarResultados('vertical')">Disposição 2</button>
+      <button onclick="atualizarResultados('misturado')">Disposição 3</button>
+      <button onclick="atualizarResultados('empilhado')">Disposição 4</button>
+      <button onclick="atualizarResultados('rotação')">Disposição 5</button>
+    </div>
+
+    <div class="top-layout">
+      <div class="resultados" id="info"></div>
+      <div class="folha" id="folha"></div>
+    </div>
+  </div>
+
+  <script>
+    const FOLHA = { largura: 275, comprimento: 185 };
+    const ESCALA = 2;
+    let pecas = [];
+
+    document.getElementById("formPeca").addEventListener("submit", e => {
+      e.preventDefault();
+      const largura = parseFloat(document.getElementById("largura").value);
+      const comprimento = parseFloat(document.getElementById("comprimento").value);
+      const quantidade = parseInt(document.getElementById("quantidade").value);
+      if (largura > 0 && comprimento > 0 && quantidade > 0) {
+        pecas.push({ largura, comprimento, quantidade });
+        renderizarLista();
+        atualizarResultados('horizontal');
+      }
+    });
+
+    document.getElementById("qtdMoveis").addEventListener("input", () => {
+      atualizarResultados('horizontal');
+    });
+
+    function renderizarLista() {
+      const lista = document.getElementById("listaPecas");
+      lista.innerHTML = "<strong>Peças adicionadas:</strong><br>";
+      pecas.forEach((peca, index) => {
+        const div = document.createElement("div");
+        div.className = "peca-lista";
+        div.innerHTML = `📐 ${peca.largura}x${peca.comprimento} cm (x${peca.quantidade})
+          <button onclick="removerPeca(${index})">Remover</button>`;
+        lista.appendChild(div);
+      });
+    }
+
+    function removerPeca(index) {
+      pecas.splice(index, 1);
+      renderizarLista();
+      atualizarResultados('horizontal');
+    }
+
+    function limparTudo() {
+      pecas = [];
+      document.getElementById("folha").innerHTML = "";
+      document.getElementById("info").innerHTML = "";
+      document.getElementById("listaPecas").innerHTML = "";
+    }
+
+    function atualizarResultados(layout) {
+      const folhaDiv = document.getElementById("folha");
+      const info = document.getElementById("info");
+      folhaDiv.innerHTML = "";
+
+      const qtdMoveis = parseInt(document.getElementById("qtdMoveis").value);
+      if (!qtdMoveis || qtdMoveis < 1) return;
+
+      const areaFolha = (FOLHA.largura * FOLHA.comprimento) / 10000;
+      let areaMovel = 0;
+      pecas.forEach(p => {
+        areaMovel += (p.largura * p.comprimento * p.quantidade) / 10000;
+      });
+
+      const areaTotal = areaMovel * qtdMoveis;
+      const moveisPorFolha = Math.floor(areaFolha / areaMovel);
+      const folhasNecessarias = Math.ceil(areaTotal / areaFolha);
+      const sobra = (folhasNecessarias * areaFolha - areaTotal).toFixed(2);
+
+      desenharPlano(layout, pecas, qtdMoveis);
+
+      info.innerHTML = `
+        ${areaTotal <= areaFolha ? '<div class="success">✅ Cabe em uma folha!</div>' :
+        '<div class="error">❌ Precisa de mais folhas!</div>'}
+        <strong>Área da folha MDF:</strong> ${areaFolha.toFixed(2)} m²<br>
+        <strong>Área de 1 móvel:</strong> ${areaMovel.toFixed(2)} m²<br>
+        <strong>Qtd de móveis:</strong> ${qtdMoveis}<br>
+        <strong>Área total:</strong> ${areaTotal.toFixed(2)} m²<br>
+        <strong>Folhas necessárias:</strong> ${folhasNecessarias}<br>
+        <strong>Sobra total:</strong> ${sobra} m²
+      `;
+    }
+
+    function desenharPlano(layout, pecas, qtdMoveis) {
+      const folhaDiv = document.getElementById("folha");
+      let x = 0, y = 0, linhaAltura = 0;
+
+      for (let m = 0; m < qtdMoveis; m++) {
+        for (let peca of pecas) {
+          for (let i = 0; i < peca.quantidade; i++) {
+            let w = peca.largura;
+            let h = peca.comprimento;
+
+            if (layout === 'vertical') [w, h] = [h, w];
+            if (layout === 'rotação' && w > h) [w, h] = [h, w];
+            if (layout === 'misturado' && (m + i) % 2 === 0) [w, h] = [h, w];
+
+            if (x + w > FOLHA.largura) {
+              x = 0;
+              y += linhaAltura;
+              linhaAltura = 0;
+            }
+
+            if (y + h > FOLHA.comprimento) return;
+
+            const div = document.createElement("div");
+            div.className = "peca";
+            div.style.width = `${w * ESCALA}px`;
+            div.style.height = `${h * ESCALA}px`;
+            div.style.left = `${x * ESCALA}px`;
+            div.style.top = `${y * ESCALA}px`;
+            div.innerText = `${w}x${h}`;
+            folhaDiv.appendChild(div);
+
+            x += w;
+            if (h > linhaAltura) linhaAltura = h;
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>
