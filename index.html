@@ -22,7 +22,6 @@
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(10px);
     }
-   
 
     h1 {
       color: #ffffff;
@@ -90,11 +89,23 @@
       background-color: #FF914D;
       transform: scale(1.05);
     }
-    @media (max-width: 600px) {
-      .service-button {
-        font-size: 16px;
-        padding: 15px 20px;
-      }
+    .security-section {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .security-icon svg {
+      width: 60px;
+      height: 60px;
+      fill: #fff;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .security-icon svg:hover {
+      transform: scale(1.1);
+      fill: #FFDD57;
     }
   </style>
 </head>
@@ -130,10 +141,9 @@
       </a>
     </div>
     <!-- Novo botão Canal de IoT -->
-<a href="https://www.youtube.com/@M4V3RICC" target="_blank">
-  <button class="service-button">INTERNET DAS COISAS - IOT</button>
-</a>
-
+    <a href="https://www.youtube.com/@M4V3RICC" target="_blank">
+      <button class="service-button">INTERNET DAS COISAS - IOT</button>
+    </a>
 
     <div id="calculadora-container" class="hidden">
       <h2>Calculadora de Juros Compostos</h2>
@@ -147,6 +157,22 @@
       </form>
       <div class="result" id="resultado"></div>
     </div>
+
+    <!-- Nova seção de segurança -->
+    <div class="security-section">
+      <h2>Segurança do Site</h2>
+      <p>Nosso site adota práticas modernas de segurança, incluindo comunicação criptografada por HTTPS/TLS, versionamento de código no GitHub e uso de certificados digitais. Clique no cadeado abaixo para saber mais sobre nossas políticas de segurança:</p>
+      <div class="security-icon">
+        <a href="segurancadigital.html" title="Políticas de Segurança">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M6 10V8a6 6 0 1 1 12 0v2" stroke="white" stroke-width="2" fill="none"/>
+            <rect x="3" y="10" width="18" height="11" rx="2" stroke="white" stroke-width="2" fill="none"/>
+            <circle cx="12" cy="15.5" r="1.5" fill="white"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -180,7 +206,6 @@
       document.getElementById('resultado').innerHTML = '';
     }
   </script>
-
 
 </body>
 </html>
