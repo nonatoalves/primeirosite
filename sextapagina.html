@@ -10,7 +10,10 @@
       margin: 0;
       background-color: #f5f5f5;
       color: #333;
-      user-select: none; /* Desabilita seleção de texto */
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
     }
 
     header {
@@ -53,7 +56,6 @@
       flex-wrap: wrap;
       gap: 1rem;
       margin-top: 2rem;
-      position: relative;
     }
 
     .projeto-galeria img {
@@ -62,20 +64,23 @@
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       object-fit: cover;
-      pointer-events: none; /* Bloqueia clique direto na imagem */
-      -webkit-user-drag: none; /* Bloqueia arrastar no Chrome/Safari */
-      user-drag: none;
+      pointer-events: none;
     }
 
-    /* Sobreposição transparente para dificultar prints */
-    .overlay {
+    .image-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .image-container::after {
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none; /* permite clicar nos botões */
+      right: 0;
+      bottom: 0;
       background: transparent;
+      z-index: 1;
     }
 
     footer {
@@ -100,57 +105,324 @@
   </header>
 
   <main>
+    <!-- Lista de Projetos -->
     <div class="projeto-lista">
       <button onclick="mostrarGaleria('aquario')">Aquário</button>
       <button onclick="mostrarGaleria('cnc')">CNC Caseira</button>
       <button onclick="mostrarGaleria('parapeito')">Parapeito</button>
+      <button onclick="mostrarGaleria('casa-san-martin')">Casa San Martin</button>
+      <button onclick="mostrarGaleria('ceramica-na-laje')">Cerâmica na Laje</button>
+      <button onclick="mostrarGaleria('escada-de-luxo')">Escada de Luxo</button>
+      <button onclick="mostrarGaleria('escada-da-laje')">Escada da Laje</button>
+      <button onclick="mostrarGaleria('casa-de-surubim')">Casa de Surubim</button>
+      <button onclick="mostrarGaleria('bancos-de-madeira')">Bancos de Madeira</button>
+      <button onclick="mostrarGaleria('guarda-roupas')">Guarda Roupas</button>
     </div>
 
+    <!-- Todas as galerias de fotos -->
+    <!-- Galeria de Fotos do Projeto - Aquário (34 fotos) -->
     <div id="aquario" class="projeto-galeria">
       <h2>Aquário</h2>
-      <div class="overlay"></div>
-      <img src="imagens/aquario/1.jpg" alt="Aquário 1">
-      <img src="imagens/aquario/2.jpg" alt="Aquário 2">
-      <img src="imagens/aquario/3.jpg" alt="Aquário 3">
+      <!-- Aqui entram as 34 imagens do Aquário -->
+      <div class="image-container"><img src="imagens/aquario/1.jpg" alt="Aquário 1"></div>
+      <div class="image-container"><img src="imagens/aquario/2.jpg" alt="Aquário 2"></div>
+      <div class="image-container"><img src="imagens/aquario/3.jpg" alt="Aquário 3"></div>
+      <div class="image-container"><img src="imagens/aquario/4.jpg" alt="Aquário 4"></div>
+      <div class="image-container"><img src="imagens/aquario/5.jpg" alt="Aquário 5"></div>
+      <div class="image-container"><img src="imagens/aquario/6.jpg" alt="Aquário 6"></div>
+      <div class="image-container"><img src="imagens/aquario/7.jpg" alt="Aquário 7"></div>
+      <div class="image-container"><img src="imagens/aquario/8.jpg" alt="Aquário 8"></div>
+      <div class="image-container"><img src="imagens/aquario/9.jpg" alt="Aquário 9"></div>
+      <div class="image-container"><img src="imagens/aquario/10.jpg" alt="Aquário 10"></div>
+      <div class="image-container"><img src="imagens/aquario/11.jpg" alt="Aquário 11"></div>
+      <div class="image-container"><img src="imagens/aquario/12.jpg" alt="Aquário 12"></div>
+      <div class="image-container"><img src="imagens/aquario/13.jpg" alt="Aquário 13"></div>
+      <div class="image-container"><img src="imagens/aquario/14.jpg" alt="Aquário 14"></div>
+      <div class="image-container"><img src="imagens/aquario/15.jpg" alt="Aquário 15"></div>
+      <div class="image-container"><img src="imagens/aquario/16.jpg" alt="Aquário 16"></div>
+      <div class="image-container"><img src="imagens/aquario/17.jpg" alt="Aquário 17"></div>
+      <div class="image-container"><img src="imagens/aquario/18.jpg" alt="Aquário 18"></div>
+      <div class="image-container"><img src="imagens/aquario/19.jpg" alt="Aquário 19"></div>
+      <div class="image-container"><img src="imagens/aquario/20.jpg" alt="Aquário 20"></div>
+      <div class="image-container"><img src="imagens/aquario/21.jpg" alt="Aquário 21"></div>
+      <div class="image-container"><img src="imagens/aquario/22.jpg" alt="Aquário 22"></div>
+      <div class="image-container"><img src="imagens/aquario/23.jpg" alt="Aquário 23"></div>
+      <div class="image-container"><img src="imagens/aquario/24.jpg" alt="Aquário 24"></div>
+      <div class="image-container"><img src="imagens/aquario/25.jpg" alt="Aquário 25"></div>
+      <div class="image-container"><img src="imagens/aquario/26.jpg" alt="Aquário 26"></div>
+      <div class="image-container"><img src="imagens/aquario/27.jpg" alt="Aquário 27"></div>
+      <div class="image-container"><img src="imagens/aquario/28.jpg" alt="Aquário 28"></div>
+      <div class="image-container"><img src="imagens/aquario/29.jpg" alt="Aquário 29"></div>
+      <div class="image-container"><img src="imagens/aquario/30.jpg" alt="Aquário 30"></div>
+      <div class="image-container"><img src="imagens/aquario/31.jpg" alt="Aquário 31"></div>
+      <div class="image-container"><img src="imagens/aquario/32.jpg" alt="Aquário 32"></div>
+      <div class="image-container"><img src="imagens/aquario/33.jpg" alt="Aquário 33"></div>
+      <div class="image-container"><img src="imagens/aquario/34.jpg" alt="Aquário 34"></div>
     </div>
 
+    <!-- Galeria de Fotos do Projeto - CNC Caseira (45 fotos) -->
     <div id="cnc" class="projeto-galeria">
       <h2>CNC Caseira</h2>
-      <div class="overlay"></div>
-      <img src="imagens/cnc/1.jpg" alt="CNC 1">
-      <img src="imagens/cnc/2.jpg" alt="CNC 2">
+      <!-- Aqui entram as 45 imagens da CNC -->
+      <div class="image-container"><img src="imagens/cnc/1.jpg" alt="CNC 1"></div>
+      <div class="image-container"><img src="imagens/cnc/2.jpg" alt="CNC 2"></div>
+      <div class="image-container"><img src="imagens/cnc/3.jpg" alt="CNC 3"></div>
+      <div class="image-container"><img src="imagens/cnc/4.jpg" alt="CNC 4"></div>
+      <div class="image-container"><img src="imagens/cnc/5.jpg" alt="CNC 5"></div>
+      <div class="image-container"><img src="imagens/cnc/6.jpg" alt="CNC 6"></div>
+      <div class="image-container"><img src="imagens/cnc/7.jpg" alt="CNC 7"></div>
+      <div class="image-container"><img src="imagens/cnc/8.jpg" alt="CNC 8"></div>
+      <div class="image-container"><img src="imagens/cnc/9.jpg" alt="CNC 9"></div>
+      <div class="image-container"><img src="imagens/cnc/10.jpg" alt="CNC 10"></div>
+      <div class="image-container"><img src="imagens/cnc/11.jpg" alt="CNC 11"></div>
+      <div class="image-container"><img src="imagens/cnc/12.jpg" alt="CNC 12"></div>
+      <div class="image-container"><img src="imagens/cnc/13.jpg" alt="CNC 13"></div>
+      <div class="image-container"><img src="imagens/cnc/14.jpg" alt="CNC 14"></div>
+      <div class="image-container"><img src="imagens/cnc/15.jpg" alt="CNC 15"></div>
+      <div class="image-container"><img src="imagens/cnc/16.jpg" alt="CNC 16"></div>
+      <div class="image-container"><img src="imagens/cnc/17.jpg" alt="CNC 17"></div>
+      <div class="image-container"><img src="imagens/cnc/18.jpg" alt="CNC 18"></div>
+      <div class="image-container"><img src="imagens/cnc/19.jpg" alt="CNC 19"></div>
+      <div class="image-container"><img src="imagens/cnc/20.jpg" alt="CNC 20"></div>
+      <div class="image-container"><img src="imagens/cnc/21.jpg" alt="CNC 21"></div>
+      <div class="image-container"><img src="imagens/cnc/22.jpg" alt="CNC 22"></div>
+      <div class="image-container"><img src="imagens/cnc/23.jpg" alt="CNC 23"></div>
+      <div class="image-container"><img src="imagens/cnc/24.jpg" alt="CNC 24"></div>
+      <div class="image-container"><img src="imagens/cnc/25.jpg" alt="CNC 25"></div>
+      <div class="image-container"><img src="imagens/cnc/26.jpg" alt="CNC 26"></div>
+      <div class="image-container"><img src="imagens/cnc/27.jpg" alt="CNC 27"></div>
+      <div class="image-container"><img src="imagens/cnc/28.jpg" alt="CNC 28"></div>
+      <div class="image-container"><img src="imagens/cnc/29.jpg" alt="CNC 29"></div>
+      <div class="image-container"><img src="imagens/cnc/30.jpg" alt="CNC 30"></div>
+      <div class="image-container"><img src="imagens/cnc/31.jpg" alt="CNC 31"></div>
+      <div class="image-container"><img src="imagens/cnc/32.jpg" alt="CNC 32"></div>
+      <div class="image-container"><img src="imagens/cnc/33.jpg" alt="CNC 33"></div>
+      <div class="image-container"><img src="imagens/cnc/34.jpg" alt="CNC 34"></div>
+      <div class="image-container"><img src="imagens/cnc/35.jpg" alt="CNC 35"></div>
+      <div class="image-container"><img src="imagens/cnc/36.jpg" alt="CNC 36"></div>
+      <div class="image-container"><img src="imagens/cnc/37.jpg" alt="CNC 37"></div>
+      <div class="image-container"><img src="imagens/cnc/38.jpg" alt="CNC 38"></div>
+      <div class="image-container"><img src="imagens/cnc/39.jpg" alt="CNC 39"></div>
+      <div class="image-container"><img src="imagens/cnc/40.jpg" alt="CNC 40"></div>
+      <div class="image-container"><img src="imagens/cnc/41.jpg" alt="CNC 41"></div>
+      <div class="image-container"><img src="imagens/cnc/42.jpg" alt="CNC 42"></div>
+      <div class="image-container"><img src="imagens/cnc/43.jpg" alt="CNC 43"></div>
+      <div class="image-container"><img src="imagens/cnc/44.jpg" alt="CNC 44"></div>
+      <div class="image-container"><img src="imagens/cnc/45.jpg" alt="CNC 45"></div>
     </div>
 
+    <!-- Galeria de Fotos do Projeto - Parapeito (14 fotos) -->
     <div id="parapeito" class="projeto-galeria">
       <h2>Parapeito</h2>
-      <div class="overlay"></div>
-      <img src="imagens/parapeito/1.jpg" alt="Parapeito 1">
-      <img src="imagens/parapeito/2.jpg" alt="Parapeito 2">
+      <!-- Aqui entram as 14 imagens do Parapeito -->
+      <div class="image-container"><img src="imagens/parapeito/1.jpg" alt="Parapeito 1"></div>
+      <div class="image-container"><img src="imagens/parapeito/2.jpg" alt="Parapeito 2"></div>
+      <div class="image-container"><img src="imagens/parapeito/3.jpg" alt="Parapeito 3"></div>
+      <div class="image-container"><img src="imagens/parapeito/4.jpg" alt="Parapeito 4"></div>
+      <div class="image-container"><img src="imagens/parapeito/5.jpg" alt="Parapeito 5"></div>
+      <div class="image-container"><img src="imagens/parapeito/6.jpg" alt="Parapeito 6"></div>
+      <div class="image-container"><img src="imagens/parapeito/7.jpg" alt="Parapeito 7"></div>
+      <div class="image-container"><img src="imagens/parapeito/8.jpg" alt="Parapeito 8"></div>
+      <div class="image-container"><img src="imagens/parapeito/9.jpg" alt="Parapeito 9"></div>
+      <div class="image-container"><img src="imagens/parapeito/10.jpg" alt="Parapeito 10"></div>
+      <div class="image-container"><img src="imagens/parapeito/11.jpg" alt="Parapeito 11"></div>
+      <div class="image-container"><img src="imagens/parapeito/12.jpg" alt="Parapeito 12"></div>
+      <div class="image-container"><img src="imagens/parapeito/13.jpg" alt="Parapeito 13"></div>
+      <div class="image-container"><img src="imagens/parapeito/14.jpg" alt="Parapeito 14"></div>
     </div>
+    
+    <!-- Demais galerias (mantidas da mesma forma) -->
+    <div id="casa-san-martin" class="projeto-galeria">
+      <h2>Casa San Martin</h2>
+      <div class="imagens">
+        <div class="image-container"><img src="imagens/casa-san-martin/1.jpg" alt="Casa San Martin 1"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/2.jpg" alt="Casa San Martin 2"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/3.jpg" alt="Casa San Martin 3"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/4.jpg" alt="Casa San Martin 4"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/5.jpg" alt="Casa San Martin 5"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/6.jpg" alt="Casa San Martin 6"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/7.jpg" alt="Casa San Martin 7"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/8.jpg" alt="Casa San Martin 8"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/9.jpg" alt="Casa San Martin 9"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/10.jpg" alt="Casa San Martin 10"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/11.jpg" alt="Casa San Martin 11"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/12.jpg" alt="Casa San Martin 12"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/13.jpg" alt="Casa San Martin 13"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/14.jpg" alt="Casa San Martin 14"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/15.jpg" alt="Casa San Martin 15"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/16.jpg" alt="Casa San Martin 16"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/17.jpg" alt="Casa San Martin 17"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/18.jpg" alt="Casa San Martin 18"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/19.jpg" alt="Casa San Martin 19"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/20.jpg" alt="Casa San Martin 20"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/21.jpg" alt="Casa San Martin 21"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/22.jpg" alt="Casa San Martin 22"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/23.jpg" alt="Casa San Martin 23"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/24.jpg" alt="Casa San Martin 24"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/25.jpg" alt="Casa San Martin 25"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/26.jpg" alt="Casa San Martin 26"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/27.jpg" alt="Casa San Martin 27"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/28.jpg" alt="Casa San Martin 28"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/29.jpg" alt="Casa San Martin 29"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/30.jpg" alt="Casa San Martin 30"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/31.jpg" alt="Casa San Martin 31"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/32.jpg" alt="Casa San Martin 32"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/33.jpg" alt="Casa San Martin 33"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/34.jpg" alt="Casa San Martin 34"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/35.jpg" alt="Casa San Martin 35"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/36.jpg" alt="Casa San Martin 36"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/37.jpg" alt="Casa San Martin 37"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/38.jpg" alt="Casa San Martin 38"></div>
+        <div class="image-container"><img src="imagens/casa-san-martin/39.jpg" alt="Casa San Martin 39"></div>
+      </div>
+    </div>
+    
+    <!-- As demais galerias seguem o mesmo padrão -->
+    <div id="ceramica-na-laje" class="projeto-galeria">
+      <h2>Cerâmica na Laje</h2>
+      <div class="imagens">
+        <div class="image-container"><img src="imagens/ceramica-na-laje/1.jpg" alt="Cerâmica na Laje 1"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/2.jpg" alt="Cerâmica na Laje 2"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/3.jpg" alt="Cerâmica na Laje 3"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/4.jpg" alt="Cerâmica na Laje 4"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/5.jpg" alt="Cerâmica na Laje 5"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/6.jpg" alt="Cerâmica na Laje 6"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/7.jpg" alt="Cerâmica na Laje 7"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/8.jpg" alt="Cerâmica na Laje 8"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/9.jpg" alt="Cerâmica na Laje 9"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/10.jpg" alt="Cerâmica na Laje 10"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/11.jpg" alt="Cerâmica na Laje 11"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/12.jpg" alt="Cerâmica na Laje 12"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/13.jpg" alt="Cerâmica na Laje 13"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/14.jpg" alt="Cerâmica na Laje 14"></div>
+        <div class="image-container"><img src="imagens/ceramica-na-laje/15.jpg" alt="Cerâmica na Laje 15"></div>
+      </div>
+    </div>
+    
+    <!-- As demais galerias seguem o mesmo padrão -->
+    <div id="escada-de-luxo" class="projeto-galeria">
+      <h2>Escada de Luxo</h2>
+      <div class="imagens">
+        <div class="image-container"><img src="imagens/escada-de-luxo/1.jpg" alt="Escada de Luxo 1"></div>
+        <div class="image-container"><img src="imagens/escada-de-luxo/2.jpg" alt="Escada de Luxo 2"></div>
+        <div class="image-container"><img src="imagens/escada-de-luxo/3.jpg" alt="Escada de Luxo 3"></div>
+        <div class="image-container"><img src="imagens/escada-de-luxo/4.jpg" alt="Escada de Luxo 4"></div>
+        <div class="image-container"><img src="imagens/escada-de-luxo/5.jpg" alt="Escada de Luxo 5"></div>
+        <div class="image-container"><img src="imagens/escada-de-luxo/6.jpg" alt="Escada de Luxo 6"></div>
+        <div class="image-container"><img src="imagens/escada-de-luxo/7.jpg" alt="Escada de Luxo 7"></div>
+        <div class="image-container"><img src="imagens/escada-de-luxo/8.jpg" alt="Escada de Luxo 8"></div>
+        <div class="image-container"><img src="imagens/escada-de-luxo/9.jpg" alt="Escada de Luxo 9"></div>
+      </div>
+    </div>
+    
+    <!-- As demais galerias seguem o mesmo padrão -->
+    <div id="escada-da-laje" class="projeto-galeria">
+      <h2>Escada da Laje</h2>
+      <div class="imagens">
+        <div class="image-container"><img src="imagens/escada-da-laje/1.jpg" alt="Escada da Laje 1"></div>
+        <div class="image-container"><img src="imagens/escada-da-laje/2.jpg" alt="Escada da Laje 2"></div>
+        <div class="image-container"><img src="imagens/escada-da-laje/3.jpg" alt="Escada da Laje 3"></div>
+        <div class="image-container"><img src="imagens/escada-da-laje/4.jpg" alt="Escada da Laje 4"></div>
+        <div class="image-container"><img src="imagens/escada-da-laje/5.jpg" alt="Escada da Laje 5"></div>
+        <div class="image-container"><img src="imagens/escada-da-laje/6.jpg" alt="Escada da Laje 6"></div>
+        <div class="image-container"><img src="imagens/escada-da-laje/7.jpg" alt="Escada da Laje 7"></div>
+        <div class="image-container"><img src="imagens/escada-da-laje/8.jpg" alt="Escada da Laje 8"></div>
+        <div class="image-container"><img src="imagens/escada-da-laje/9.jpg" alt="Escada da Laje 9"></div>
+        <div class="image-container"><img src="imagens/escada-da-laje/10.jpg" alt="Escada da Laje 10"></div>
+        <div class="image-container"><img src="imagens/escada-da-laje/11.jpg" alt="Escada da Laje 11"></div>
+        <div class="image-container"><img src="imagens/escada-da-laje/12.jpg" alt="Escada da Laje 12"></div>
+      </div>
+    </div>
+    
+    <!-- As demais galerias seguem o mesmo padrão -->
+    <div id="casa-de-surubim" class="projeto-galeria">
+      <h2>Casa de Surubim</h2>
+      <div class="imagens">
+        <div class="image-container"><img src="imagens/casa-de-surubim/1.jpg" alt="Casa de Surubim 1"></div>
+        <div class="image-container"><img src="imagens/casa-de-surubim/2.jpg" alt="Casa de Surubim 2"></div>
+        <div class="image-container"><img src="imagens/casa-de-surubim/3.jpg" alt="Casa de Surubim 3"></div>
+        <div class="image-container"><img src="imagens/casa-de-surubim/4.jpg" alt="Casa de Surubim 4"></div>
+        <div class="image-container"><img src="imagens/casa-de-surubim/5.jpg" alt="Casa de Surubim 5"></div>
+        <div class="image-container"><img src="imagens/casa-de-surubim/6.jpg" alt="Casa de Surubim 6"></div>
+      </div>
+    </div>
+    
+    <!-- As demais galerias seguem o mesmo padrão -->
+    <div id="bancos-de-madeira" class="projeto-galeria">
+      <h2>Bancos-de-madeira</h2>
+      <div class="imagens">
+        <div class="image-container"><img src="imagens/bancos-de-madeira/1.jpg" alt="Bancos de Madeira"></div>
+      </div>
+    </div>
+    
+    <!-- As demais galerias seguem o mesmo padrão -->
+    <div id="guarda-roupas" class="projeto-galeria">
+      <h2>guarda-roupas</h2>
+      <div class="imagens">
+        <div class="image-container"><img src="imagens/guarda-roupas/1.jpg" alt="guarda-roupas 1"></div>
+        <div class="image-container"><img src="imagens/guarda-roupas/3.jpg" alt="guarda-roupas 2"></div>
+        <div class="image-container"><img src="imagens/guarda-roupas/2.jpg" alt="guarda-roupas 3"></div>
+        <div class="image-container"><img src="imagens/guarda-roupas/5.jpg" alt="guarda-roupas 4"></div>
+        <div class="image-container"><img src="imagens/guarda-roupas/4.jpg" alt="guarda-roupas 5"></div>
+      </div>
+    </div>
+                              
   </main>
 
   <footer>
-    &copy; 2025 Projetos DIY
+    <p>© 2025 - Todos os direitos reservados.</p>
   </footer>
 
   <script>
-    // Mostrar galeria
-    function mostrarGaleria(id) {
+    // Função para mostrar a galeria do projeto selecionado
+    function mostrarGaleria(projeto) {
+      // Esconde todas as galerias
       const galerias = document.querySelectorAll('.projeto-galeria');
-      galerias.forEach(g => g.style.display = 'none');
-      document.getElementById(id).style.display = 'flex';
+      galerias.forEach(galeria => {
+        galeria.style.display = 'none';
+      });
+
+      // Exibe a galeria do projeto selecionado
+      const galeriaSelecionada = document.getElementById(projeto);
+      galeriaSelecionada.style.display = 'flex';
     }
 
-    // Bloquear clique direito
-    document.addEventListener('contextmenu', event => event.preventDefault());
+    // Desabilitar o menu de contexto (botão direito do mouse)
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      alert('Menu de contexto desabilitado para proteger as imagens.');
+    });
 
-    // Bloquear Ctrl+S e Ctrl+Shift+I (salvar página e abrir devtools)
-    document.addEventListener('keydown', function(e) {
-      if ((e.ctrlKey && e.key === 's') || 
-          (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i')) {
+    // Desabilitar arrastar imagens
+    document.addEventListener('dragstart', function(e) {
+      if (e.target.tagName === 'IMG') {
         e.preventDefault();
       }
     });
+
+    // Desabilitar teclas de print screen
+    document.addEventListener('keydown', function(e) {
+      // Bloqueia Print Screen
+      if (e.key === 'PrintScreen') {
+        e.preventDefault();
+        alert('Captura de tela desabilitada.');
+      }
+      
+      // Bloqueia combinações de teclas (Ctrl+P, Ctrl+S, etc.)
+      if (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'c')) {
+        e.preventDefault();
+        alert('Esta ação foi desabilitada para proteger o conteúdo.');
+      }
+    });
+
+    // Proteção adicional contra ferramentas de desenvolvedor
+    setInterval(function() {
+      if (window.outerWidth - window.innerWidth > 100 || 
+          window.outerHeight - window.innerHeight > 100) {
+        // Possível abertura de ferramentas de desenvolvedor
+        document.body.innerHTML = '<h1 style="color:red;text-align:center;">Acesso não autorizado detectado</h1>';
+      }
+    }, 1000);
   </script>
 </body>
 </html>
