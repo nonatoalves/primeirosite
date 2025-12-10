@@ -1,3 +1,13 @@
+<script>
+// Solicita senha antes de exibir a página
+const senha = prompt("Digite a senha para acessar a tabela:");
+
+if (senha !== "X") {
+    document.write("<h2 style='font-family: Arial; color: red; text-align:center;'>Senha incorreta.</h2>");
+    throw new Error("Acesso negado");
+}
+</script>
+
 <style>
     .tabela-salarios {
         width: 100%;
