@@ -109,103 +109,159 @@
     }
   </style>
 </head>
+
 <body>
-  <!-- Mensagem de TCC no topo -->
-  <p style="color: #333333; font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 10px;">
-  © 2025 - SITE DESENVOLVIDO COMO PARTE DE UM PROJETO DE TCC DA UNIVERSIDADE CATÓLICA DOM BOSCO.
+
+<p style="color: #333333; font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 10px;">
+© 2025 - SITE DESENVOLVIDO COMO PARTE DE UM PROJETO DE TCC DA UNIVERSIDADE CATÓLICA DOM BOSCO.
 </p>
 
-  <div class="container">
-    <h1>Escolha um Serviço</h1>
-    <div class="buttons-container">
-      <a href="terceirapagina.html">
-        <button class="service-button">Calc. Juros Compostos</button>
-      </a>
-      <button class="service-button" onclick="window.location.href='sua-pagina-secundaria.html'">PROGRESSÃO TJPE</button>
-      <a href="quartapagina.html">
-        <button class="service-button">CARA &amp; COROA</button>
-      </a>
-      <a href="quintapagina.html">
-        <button class="service-button">Orçamento Doméstico</button>
-      </a>
-      <a href="sextapagina.html">
-        <button class="service-button">PROJETOS DIY</button>
-      </a>
-      <a href="setimapagina.html">
-        <button class="service-button">TRAVAS DE OPÇÕES</button>
-      </a>
+<div class="container">
 
-      <!-- Novo botão Plano de Corte MDF -->
-      <a href="oitavapagina.html">
-        <button class="service-button">Plano de Corte MDF</button>
-      </a>
-    </div>
-    <!-- Novo botão Canal de IoT -->
-    <a href="https://www.youtube.com/@M4V3RICC" target="_blank">
-      <button class="service-button">INTERNET DAS COISAS - IOT</button>
-    </a>
+<h1>Escolha um Serviço</h1>
 
-    <div id="calculadora-container" class="hidden">
-      <h2>Calculadora de Juros Compostos</h2>
-      <form id="calculadora">
-        <input type="number" id="valorInicial" placeholder="Valor Inicial (R$)" required />
-        <input type="number" id="aporteMensal" placeholder="Aporte Mensal (R$)" required />
-        <input type="number" id="taxaJuros" placeholder="Taxa de Juros Mensal (%)" step="0.01" required />
-        <input type="number" id="tempoMeses" placeholder="Tempo (Meses)" required />
-        <button type="button" onclick="calcular()">Calcular</button>
-        <button type="button" onclick="limpar()">Limpar</button>
-      </form>
-      <div class="result" id="resultado"></div>
-    </div>
+<div class="buttons-container">
 
-    <!-- Nova seção de segurança -->
-    <div class="security-section">
-      <h2>Segurança do Site</h2>
-      <p>Nosso site adota práticas modernas de segurança, incluindo comunicação criptografada por HTTPS/TLS, versionamento de código no GitHub e uso de certificados digitais. Clique no cadeado abaixo para saber mais sobre nossas políticas de segurança:</p>
-      <div class="security-icon">
-        <a href="segurancadigital.html" title="Políticas de Segurança">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M6 10V8a6 6 0 1 1 12 0v2" stroke="white" stroke-width="2" fill="none"/>
-            <rect x="3" y="10" width="18" height="11" rx="2" stroke="white" stroke-width="2" fill="none"/>
-            <circle cx="12" cy="15.5" r="1.5" fill="white"/>
-          </svg>
-        </a>
-      </div>
-    </div>
+<a href="terceirapagina.html">
+<button class="service-button">Calc. Juros Compostos</button>
+</a>
 
-  </div>
+<button class="service-button" onclick="window.location.href='sua-pagina-secundaria.html'">Comparação Salários TRT vs TJPE</button>
 
-  <script>
-    function mostrarCalculadora() {
-      document.getElementById('calculadora-container').classList.remove('hidden');
-    }
+<a href="quartapagina.html">
+<button class="service-button">CARA & COROA</button>
+</a>
 
-    function calcular() {
-      const valorInicial = parseFloat(document.getElementById('valorInicial').value);
-      const aporteMensal = parseFloat(document.getElementById('aporteMensal').value);
-      const taxaJuros = parseFloat(document.getElementById('taxaJuros').value) / 100;
-      const tempoMeses = parseInt(document.getElementById('tempoMeses').value);
+<a href="quintapagina.html">
+<button class="service-button">Orçamento Doméstico</button>
+</a>
 
-      let saldo = valorInicial;
-      const totalInvestido = valorInicial + aporteMensal * tempoMeses;
+<a href="sextapagina.html">
+<button class="service-button">PROJETOS DIY</button>
+</a>
 
-      for (let i = 1; i <= tempoMeses; i++) {
-        const lucroMensal = saldo * taxaJuros;
-        saldo += lucroMensal + aporteMensal;
-      }
+<a href="setimapagina.html">
+<button class="service-button">TRAVAS DE OPÇÕES</button>
+</a>
 
-      document.getElementById('resultado').innerHTML = `
-        <p><strong>Saldo Final:</strong> R$ ${saldo.toFixed(2)}</p>
-        <p><strong>Lucro Total:</strong> R$ ${(saldo - totalInvestido).toFixed(2)}</p>
-        <p><strong>Valor Total Investido:</strong> R$ ${totalInvestido.toFixed(2)}</p>
-      `;
-    }
+<a href="oitavapagina.html">
+<button class="service-button">Plano de Corte MDF</button>
+</a>
 
-    function limpar() {
-      document.getElementById('calculadora').reset();
-      document.getElementById('resultado').innerHTML = '';
-    }
-  </script>
+</div>
+
+<a href="https://www.youtube.com/@M4V3RICC" target="_blank">
+<button class="service-button">INTERNET DAS COISAS - IOT</button>
+</a>
+
+<!-- CAIXA FILMES ONLINE -->
+
+<div style="
+margin-top:40px;
+padding:20px;
+background: rgba(255,255,255,0.2);
+border-radius:12px;
+box-shadow:0 4px 8px rgba(0,0,0,0.2);
+">
+
+<h2>FILMES ONLINE</h2>
+
+<a href="filme.html">
+<button class="service-button">🎬 Assistir Filme Eternidade</button>
+</a>
+
+</div>
+
+<div id="calculadora-container" class="hidden">
+
+<h2>Calculadora de Juros Compostos</h2>
+
+<form id="calculadora">
+
+<input type="number" id="valorInicial" placeholder="Valor Inicial (R$)" required />
+
+<input type="number" id="aporteMensal" placeholder="Aporte Mensal (R$)" required />
+
+<input type="number" id="taxaJuros" placeholder="Taxa de Juros Mensal (%)" step="0.01" required />
+
+<input type="number" id="tempoMeses" placeholder="Tempo (Meses)" required />
+
+<button type="button" onclick="calcular()">Calcular</button>
+
+<button type="button" onclick="limpar()">Limpar</button>
+
+</form>
+
+<div class="result" id="resultado"></div>
+
+</div>
+
+<div class="security-section">
+
+<h2>Segurança do Site</h2>
+
+<p>
+Nosso site adota práticas modernas de segurança, incluindo comunicação criptografada por HTTPS/TLS,
+versionamento de código no GitHub e uso de certificados digitais. Clique no cadeado abaixo para saber mais.
+</p>
+
+<div class="security-icon">
+
+<a href="segurancadigital.html" title="Políticas de Segurança">
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+
+<path d="M6 10V8a6 6 0 1 1 12 0v2" stroke="white" stroke-width="2" fill="none"/>
+
+<rect x="3" y="10" width="18" height="11" rx="2" stroke="white" stroke-width="2" fill="none"/>
+
+<circle cx="12" cy="15.5" r="1.5" fill="white"/>
+
+</svg>
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function mostrarCalculadora() {
+document.getElementById('calculadora-container').classList.remove('hidden');
+}
+
+function calcular() {
+
+const valorInicial = parseFloat(document.getElementById('valorInicial').value);
+const aporteMensal = parseFloat(document.getElementById('aporteMensal').value);
+const taxaJuros = parseFloat(document.getElementById('taxaJuros').value) / 100;
+const tempoMeses = parseInt(document.getElementById('tempoMeses').value);
+
+let saldo = valorInicial;
+const totalInvestido = valorInicial + aporteMensal * tempoMeses;
+
+for (let i = 1; i <= tempoMeses; i++) {
+const lucroMensal = saldo * taxaJuros;
+saldo += lucroMensal + aporteMensal;
+}
+
+document.getElementById('resultado').innerHTML = `
+<p><strong>Saldo Final:</strong> R$ ${saldo.toFixed(2)}</p>
+<p><strong>Lucro Total:</strong> R$ ${(saldo - totalInvestido).toFixed(2)}</p>
+<p><strong>Valor Total Investido:</strong> R$ ${totalInvestido.toFixed(2)}</p>
+`;
+
+}
+
+function limpar() {
+document.getElementById('calculadora').reset();
+document.getElementById('resultado').innerHTML = '';
+}
+
+</script>
 
 </body>
 </html>
