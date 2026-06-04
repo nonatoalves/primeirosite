@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consulta de Domínios</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    margin:20px;
+}
+
+button{
+    padding:10px 15px;
+    margin-right:5px;
+    cursor:pointer;
+}
+
+table{
+    border-collapse:collapse;
+    width:100%;
+}
+
+th,td{
+    border:1px solid #ccc;
+    padding:6px;
+}
+
+th{
+    background:#f2f2f2;
+}
+
+#entrada td{
+    min-height:24px;
+    height:24px;
+}
+
+#entrada td[contenteditable]{
+    background:#fff;
+}
+
+.disponivel{
+    background:#c6efce;
+}
+
+.registrado{
+    background:#ffc7ce;
+}
+
+.verificar{
+    background:#ffeb9c;
+}
+
+.erro{
+    background:#ffeb9c;
+}
+
+#status{
+    margin-left:15px;
+    font-weight:bold;
+}
+
+#resultado{
+    margin-top:20px;
+}
+
+</style>
+</head>
+<body>
+
+<h2>Consulta de Domínios Registro.br</h2>
+
+<button onclick="adicionarLinha()">Adicionar Linha</button>
+<button onclick="consultar()">Consultar</button>
+
+<span id="status"></span>
+
+<br><br>
+
+<table id="entrada">
+
+<thead>
+<tr>
+<th>Domínio</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr><td contenteditable="true"></td></tr>
+<tr><td contenteditable="true"></td></tr>
+<tr><td contenteditable="true"></td></tr>
+<tr><td contenteditable="true"></td></tr>
+<tr><td contenteditable="true"></td></tr>
+
+</tbody>
+
+</table>
+
+<h3>Resultado</h3>
+
+<table id="resultado">
+
+<thead>
+<tr>
+<th>Domínio Original</th>
+<th>Status</th>
+<th>Domínio Consultado</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+<script>
+
+function adicionarLinha(){
+
+    const tbody =
+        document.querySelector("#entrada tbody");
+
+    const tr =
+        document.createElement("tr");
+
+    tr.innerHTML =
+        '<td contenteditable="true"></td>';
+
+    tbody.appendChild(tr);
+}
+
+async function consultaDominio(dominio){
+
+    dominio = dominio.trim().toLowerCase();
+
+    if(dominio === "")
+        return null;
+
+    let dominioConsultado = dominio;
+
+    if(!dominio.includes(".")){
+        dominioConsultado += ".com.br";
+    }
+
+    try{
+
+        const resposta =
+            await fetch(
+                "https://rdap.registro.br/domain/" +
+                dominioConsultado
+            );
+
+        if(resposta.status === 200){
+
+            const txt =
+                await resposta.text();
+
+            if(txt.includes('"ldhName"')){
+
+                return {
+                    status:"REGISTRADO",
+                    dominio:dominioConsultado
+                };
+            }
+
+            return {
+                status:"VERIFICAR",
+                dominio:dominioConsultado
+            };
+        }
+
+        if(resposta.status === 404){
+
+            return {
+                status:"DISPONIVEL",
+                dominio:dominioConsultado
+            };
+        }
+
+        return {
+            status:"VERIFICAR",
+            dominio:dominioConsultado
+        };
+
+    }catch(e){
+
+        return {
+            status:"ERRO",
+            dominio:dominioConsultado
+        };
+    }
+}
+
+async function consultar(){
+
+    const linhas =
+        document.querySelectorAll(
+            "#entrada tbody td"
+        );
+
+    const tbodyResultado =
+        document.querySelector(
+            "#resultado tbody"
+        );
+
+    tbodyResultado.innerHTML = "";
+
+    let total = 0;
+
+    linhas.forEach(celula => {
+
+        if(celula.innerText.trim() !== "")
+            total++;
+
+    });
+
+    let atual = 0;
+
+    for(const celula of linhas){
+
+        const dominio =
+            celula.innerText.trim();
+
+        if(dominio === "")
+            continue;
+
+        atual++;
+
+        document.getElementById("status")
+            .innerText =
+            "Consultando " +
+            atual +
+            " de " +
+            total;
+
+        const resultado =
+            await consultaDominio(dominio);
+
+        const tr =
+            document.createElement("tr");
+
+        let classe = "";
+
+        switch(resultado.status){
+
+            case "DISPONIVEL":
+                classe = "disponivel";
+                break;
+
+            case "REGISTRADO":
+                classe = "registrado";
+                break;
+
+            case "ERRO":
+                classe = "erro";
+                break;
+
+            default:
+                classe = "verificar";
+        }
+
+        tr.innerHTML = `
+            <td>${dominio}</td>
+            <td class="${classe}">
+                ${resultado.status}
+            </td>
+            <td>${resultado.dominio}</td>
+        `;
+
+        tbodyResultado.appendChild(tr);
+    }
+
+    document.getElementById("status")
+        .innerText =
+        "Consulta concluída";
+}
+
+document.addEventListener("paste", function(e){
+
+    const alvo =
+        document.activeElement;
+
+    if(
+        alvo.tagName === "TD" &&
+        alvo.isContentEditable
+    ){
+
+        e.preventDefault();
+
+        const texto =
+            (e.clipboardData ||
+             window.clipboardData)
+            .getData("text");
+
+        const linhas =
+            texto.split(/\r?\n/);
+
+        const tbody =
+            document.querySelector(
+                "#entrada tbody"
+            );
+
+        let linhaAtual =
+            alvo.parentElement.rowIndex - 1;
+
+        linhas.forEach((valor, i)=>{
+
+            if(valor.trim()==="")
+                return;
+
+            while(
+                tbody.rows.length <=
+                linhaAtual + i
+            ){
+                adicionarLinha();
+            }
+
+            tbody.rows[
+                linhaAtual + i
+            ].cells[0].innerText =
+                valor.trim();
+
+        });
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
