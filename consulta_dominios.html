@@ -66,6 +66,26 @@ th{
     margin-top:20px;
 }
 
+/* Estilo do botão exportar */
+#btnExportar {
+    background-color: #2E8B57;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+#btnExportar:hover {
+    background-color: #3CB371;
+    transform: scale(1.05);
+}
+
 </style>
 </head>
 <body>
@@ -117,54 +137,43 @@ th{
 
 <script>
 
+// ============================================
+// FUNÇÃO PARA ADICIONAR LINHA
+// ============================================
+
 function adicionarLinha(){
-
-    const tbody =
-        document.querySelector("#entrada tbody");
-
-    const tr =
-        document.createElement("tr");
-
-    tr.innerHTML =
-        '<td contenteditable="true"></td>';
-
+    const tbody = document.querySelector("#entrada tbody");
+    const tr = document.createElement("tr");
+    tr.innerHTML = '<td contenteditable="true"></td>';
     tbody.appendChild(tr);
 }
 
+// ============================================
+// FUNÇÃO PARA CONSULTAR DOMÍNIO NA API
+// ============================================
+
 async function consultaDominio(dominio){
-
     dominio = dominio.trim().toLowerCase();
-
-    if(dominio === "")
-        return null;
+    if(dominio === "") return null;
 
     let dominioConsultado = dominio;
-
     if(!dominio.includes(".")){
         dominioConsultado += ".com.br";
     }
 
     try{
-
-        const resposta =
-            await fetch(
-                "https://rdap.registro.br/domain/" +
-                dominioConsultado
-            );
+        const resposta = await fetch(
+            "https://rdap.registro.br/domain/" + dominioConsultado
+        );
 
         if(resposta.status === 200){
-
-            const txt =
-                await resposta.text();
-
+            const txt = await resposta.text();
             if(txt.includes('"ldhName"')){
-
                 return {
                     status:"REGISTRADO",
                     dominio:dominioConsultado
                 };
             }
-
             return {
                 status:"VERIFICAR",
                 dominio:dominioConsultado
@@ -172,7 +181,6 @@ async function consultaDominio(dominio){
         }
 
         if(resposta.status === 404){
-
             return {
                 status:"DISPONIVEL",
                 dominio:dominioConsultado
@@ -185,7 +193,6 @@ async function consultaDominio(dominio){
         };
 
     }catch(e){
-
         return {
             status:"ERRO",
             dominio:dominioConsultado
@@ -193,139 +200,191 @@ async function consultaDominio(dominio){
     }
 }
 
+// ============================================
+// FUNÇÃO CONSULTAR (VERSÃO ORIGINAL MELHORADA)
+// ============================================
+
 async function consultar(){
-
-    const linhas =
-        document.querySelectorAll(
-            "#entrada tbody td"
-        );
-
-    const tbodyResultado =
-        document.querySelector(
-            "#resultado tbody"
-        );
-
+    const linhas = document.querySelectorAll("#entrada tbody td");
+    const tbodyResultado = document.querySelector("#resultado tbody");
     tbodyResultado.innerHTML = "";
 
     let total = 0;
-
     linhas.forEach(celula => {
-
-        if(celula.innerText.trim() !== "")
-            total++;
-
+        if(celula.innerText.trim() !== "") total++;
     });
 
     let atual = 0;
 
     for(const celula of linhas){
-
-        const dominio =
-            celula.innerText.trim();
-
-        if(dominio === "")
-            continue;
+        const dominio = celula.innerText.trim();
+        if(dominio === "") continue;
 
         atual++;
+        document.getElementById("status").innerText =
+            "Consultando " + atual + " de " + total;
 
-        document.getElementById("status")
-            .innerText =
-            "Consultando " +
-            atual +
-            " de " +
-            total;
+        const resultado = await consultaDominio(dominio);
 
-        const resultado =
-            await consultaDominio(dominio);
-
-        const tr =
-            document.createElement("tr");
-
+        const tr = document.createElement("tr");
         let classe = "";
 
         switch(resultado.status){
-
             case "DISPONIVEL":
                 classe = "disponivel";
                 break;
-
             case "REGISTRADO":
                 classe = "registrado";
                 break;
-
             case "ERRO":
                 classe = "erro";
                 break;
-
             default:
                 classe = "verificar";
         }
 
         tr.innerHTML = `
             <td>${dominio}</td>
-            <td class="${classe}">
-                ${resultado.status}
-            </td>
+            <td class="${classe}">${resultado.status}</td>
             <td>${resultado.dominio}</td>
         `;
 
         tbodyResultado.appendChild(tr);
     }
 
-    document.getElementById("status")
-        .innerText =
-        "Consulta concluída";
-}
+    document.getElementById("status").innerText = "Consulta concluída";
 
-document.addEventListener("paste", function(e){
-
-    const alvo =
-        document.activeElement;
-
-    if(
-        alvo.tagName === "TD" &&
-        alvo.isContentEditable
-    ){
-
-        e.preventDefault();
-
-        const texto =
-            (e.clipboardData ||
-             window.clipboardData)
-            .getData("text");
-
-        const linhas =
-            texto.split(/\r?\n/);
-
-        const tbody =
-            document.querySelector(
-                "#entrada tbody"
-            );
-
-        let linhaAtual =
-            alvo.parentElement.rowIndex - 1;
-
-        linhas.forEach((valor, i)=>{
-
-            if(valor.trim()==="")
-                return;
-
-            while(
-                tbody.rows.length <=
-                linhaAtual + i
-            ){
-                adicionarLinha();
-            }
-
-            tbody.rows[
-                linhaAtual + i
-            ].cells[0].innerText =
-                valor.trim();
-
-        });
-
+    // Após a consulta, conta quantos disponíveis foram encontrados
+    const linhasResultado = document.querySelectorAll("#resultado tbody tr");
+    let disponiveis = 0;
+    
+    linhasResultado.forEach(linha => {
+        const colunas = linha.querySelectorAll("td");
+        if (colunas.length >= 3 && colunas[1].textContent.trim() === "DISPONIVEL") {
+            disponiveis++;
+        }
+    });
+    
+    const statusElement = document.getElementById("status");
+    if (statusElement) {
+        if (disponiveis > 0) {
+            statusElement.innerText = `✅ Consulta concluída | 🟢 ${disponiveis} domínio(s) disponível(eis)! Clique em "Baixar Relatório" para salvar.`;
+        } else {
+            statusElement.innerText = `✅ Consulta concluída | ❌ Nenhum domínio disponível encontrado.`;
+        }
     }
 
+    // Garante que o botão de exportar apareça
+    adicionarBotaoExportar();
+}
+
+// ============================================
+// FUNÇÃO PARA EXPORTAR DOMÍNIOS DISPONÍVEIS
+// ============================================
+
+function exportarDisponiveis() {
+    const linhasResultado = document.querySelectorAll("#resultado tbody tr");
+    
+    if (linhasResultado.length === 0) {
+        alert("⚠️ Nenhum domínio foi consultado ainda. Faça uma consulta primeiro.");
+        return;
+    }
+
+    const disponiveis = [];
+
+    linhasResultado.forEach(linha => {
+        const colunas = linha.querySelectorAll("td");
+        if (colunas.length >= 3) {
+            const dominio = colunas[0].textContent.trim();
+            const status = colunas[1].textContent.trim();
+            if (status === "DISPONIVEL") {
+                disponiveis.push(dominio);
+            }
+        }
+    });
+
+    if (disponiveis.length === 0) {
+        alert("✅ Nenhum domínio disponível encontrado na lista consultada.");
+        return;
+    }
+
+    const dataAtual = new Date();
+    const dataFormatada = dataAtual.toISOString().slice(0, 10);
+    const horaFormatada = dataAtual.toTimeString().slice(0, 8).replace(/:/g, "-");
+    
+    let conteudo = `RELATÓRIO DE DOMÍNIOS DISPONÍVEIS\n`;
+    conteudo += `Gerado em: ${dataAtual.toLocaleString()}\n`;
+    conteudo += `Total de domínios disponíveis: ${disponiveis.length}\n`;
+    conteudo += `${"=".repeat(50)}\n\n`;
+    conteudo += disponiveis.join("\n");
+    conteudo += `\n\n${"=".repeat(50)}\n`;
+    conteudo += `Fim do relatório`;
+
+    const blob = new Blob([conteudo], { 
+        type: 'text/plain;charset=utf-8' 
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `dominios_disponiveis_${dataFormatada}_${horaFormatada}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+// ============================================
+// FUNÇÃO PARA ADICIONAR BOTÃO EXPORTAR
+// ============================================
+
+function adicionarBotaoExportar() {
+    if (document.getElementById("btnExportar")) {
+        return;
+    }
+
+    const botaoExportar = document.createElement("button");
+    botaoExportar.id = "btnExportar";
+    botaoExportar.textContent = "📥 Baixar Relatório de Disponíveis";
+    botaoExportar.onclick = exportarDisponiveis;
+
+    // Insere o botão depois do botão "Consultar"
+    const botoes = document.querySelectorAll("button");
+    if (botoes.length > 1) {
+        botoes[1].insertAdjacentElement("afterend", botaoExportar);
+    } else {
+        document.querySelector("h2").insertAdjacentElement("afterend", botaoExportar);
+    }
+}
+
+// ============================================
+// PASTE MULTILINHA (JÁ EXISTENTE)
+// ============================================
+
+document.addEventListener("paste", function(e){
+    const alvo = document.activeElement;
+    if(alvo.tagName === "TD" && alvo.isContentEditable){
+        e.preventDefault();
+        const texto = (e.clipboardData || window.clipboardData).getData("text");
+        const linhas = texto.split(/\r?\n/);
+        const tbody = document.querySelector("#entrada tbody");
+        let linhaAtual = alvo.parentElement.rowIndex - 1;
+
+        linhas.forEach((valor, i)=>{
+            if(valor.trim()==="") return;
+            while(tbody.rows.length <= linhaAtual + i){
+                adicionarLinha();
+            }
+            tbody.rows[linhaAtual + i].cells[0].innerText = valor.trim();
+        });
+    }
+});
+
+// ============================================
+// INICIALIZAÇÃO
+// ============================================
+
+document.addEventListener("DOMContentLoaded", function() {
+    adicionarBotaoExportar();
 });
 
 </script>
