@@ -55,7 +55,6 @@
       transform: scale(1.05);
     }
 
-    /* Botão PROJETOS DIVERSOS em destaque */
     .projeto-lista button.diversos {
       background: linear-gradient(135deg, #e65100, #f57c00);
       font-weight: bold;
@@ -65,7 +64,6 @@
       background: linear-gradient(135deg, #bf360c, #e65100);
     }
 
-    /* ESTILO PRINCIPAL DA GALERIA - CORRIGIDO */
     .projeto-galeria {
       display: none;
       flex-wrap: wrap;
@@ -89,7 +87,6 @@
       color: #e65100;
     }
 
-    /* Ajuste para as imagens quebrarem em várias linhas */
     .projeto-galeria .img-protection {
       flex: 0 0 auto;
       width: 200px;
@@ -98,6 +95,7 @@
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       transition: transform 0.3s ease;
+      cursor: pointer;
     }
 
     .projeto-galeria .img-protection:hover {
@@ -138,14 +136,102 @@
       border-radius: 8px;
     }
 
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-      background-color: #e0e0e0;
-      font-size: 0.9rem;
-      margin-top: 2rem;
+    /* ========================================== */
+    /* MODAL PARA AMPLIAR IMAGEM */
+    /* ========================================== */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      padding-top: 50px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.9);
+      overflow: auto;
+      cursor: pointer;
     }
 
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 8px;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+      animation: zoomIn 0.3s ease;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      z-index: 1001;
+    }
+
+    .modal-close:hover {
+      color: #ff5722;
+      transform: scale(1.2);
+    }
+
+    .modal-caption {
+      margin: auto;
+      display: block;
+      width: 80%;
+      max-width: 700px;
+      text-align: center;
+      color: #ccc;
+      padding: 10px 0;
+      font-size: 16px;
+    }
+
+    /* Botões de navegação no modal */
+    .modal-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      font-size: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 15px;
+      transition: 0.3s;
+      z-index: 1001;
+      background: rgba(0,0,0,0.3);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .modal-nav:hover {
+      background: rgba(255,255,255,0.2);
+      color: #ff5722;
+    }
+
+    .modal-prev {
+      left: 20px;
+    }
+
+    .modal-next {
+      right: 20px;
+    }
+
+    /* Responsividade */
     @media (max-width: 600px) {
       .projeto-lista {
         flex-direction: column;
@@ -162,6 +248,35 @@
         padding: 1rem;
         gap: 0.8rem;
       }
+      .modal-content {
+        max-width: 95%;
+        max-height: 80%;
+      }
+      .modal-nav {
+        font-size: 30px;
+        width: 40px;
+        height: 40px;
+        padding: 10px;
+      }
+      .modal-prev {
+        left: 5px;
+      }
+      .modal-next {
+        right: 5px;
+      }
+      .modal-close {
+        top: 10px;
+        right: 15px;
+        font-size: 30px;
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background-color: #e0e0e0;
+      font-size: 0.9rem;
+      margin-top: 2rem;
     }
   </style>
 </head>
@@ -185,47 +300,47 @@
       <button onclick="mostrarGaleria('bancos-de-madeira')">🪑 Bancos de Madeira</button>
       <button onclick="mostrarGaleria('guarda-roupas')">👔 Guarda Roupas</button>
       
-      <!-- NOVO BOTÃO: PROJETOS DIVERSOS -->
+      <!-- BOTÃO PROJETOS DIVERSOS -->
       <button onclick="mostrarGaleria('projetos-diversos')" class="diversos">📸 PROJETOS DIVERSOS</button>
     </div>
 
     <!-- ========================================== -->
-    <!-- GALERIA PROJETOS DIVERSOS (IMAGENS LOCAIS) -->
+    <!-- GALERIA PROJETOS DIVERSOS -->
     <!-- ========================================== -->
     <div id="projetos-diversos" class="projeto-galeria diversos">
       <h2>📸 PROJETOS DIVERSOS</h2>
       <p style="width:100%; text-align:center; color:#666; margin-bottom:0.5rem;">
-        Fotos diversas de projetos e trabalhos variados
+        Clique em qualquer foto para ampliar
       </p>
 
-      <div class="img-protection"><img src="imagens/20220805_162251.jpg" alt="Diversos 1"></div>
-      <div class="img-protection"><img src="imagens/20230123_173933.jpg" alt="Diversos 2"></div>
-      <div class="img-protection"><img src="imagens/20230124_192350.jpg" alt="Diversos 3"></div>
-      <div class="img-protection"><img src="imagens/20230125_180406.jpg" alt="Diversos 4"></div>
-      <div class="img-protection"><img src="imagens/20230125_200019.jpg" alt="Diversos 5"></div>
-      <div class="img-protection"><img src="imagens/20250331_141606.jpg" alt="Diversos 6"></div>
-      <div class="img-protection"><img src="imagens/20250331_141617.jpg" alt="Diversos 7"></div>
-      <div class="img-protection"><img src="imagens/20250513_132408.jpg" alt="Diversos 8"></div>
-      <div class="img-protection"><img src="imagens/20250513_132412.jpg" alt="Diversos 9"></div>
-      <div class="img-protection"><img src="imagens/20250513_175752.jpg" alt="Diversos 10"></div>
-      <div class="img-protection"><img src="imagens/20250513_194140.jpg" alt="Diversos 11"></div>
-      <div class="img-protection"><img src="imagens/20250513_194148.jpg" alt="Diversos 12"></div>
-      <div class="img-protection"><img src="imagens/20250602_162013.jpg" alt="Diversos 13"></div>
-      <div class="img-protection"><img src="imagens/20250602_172255.jpg" alt="Diversos 14"></div>
-      <div class="img-protection"><img src="imagens/20250602_172313.jpg" alt="Diversos 15"></div>
-      <div class="img-protection"><img src="imagens/20250602_174102.jpg" alt="Diversos 16"></div>
-      <div class="img-protection"><img src="imagens/IMG_20190620_154518003_HDR.jpg" alt="Diversos 17"></div>
-      <div class="img-protection"><img src="imagens/IMG_20190620_154733742.jpg" alt="Diversos 18"></div>
-      <div class="img-protection"><img src="imagens/IMG_20191010_153741160.jpg" alt="Diversos 19"></div>
-      <div class="img-protection"><img src="imagens/IMG_20200212_201132591.jpg" alt="Diversos 20"></div>
-      <div class="img-protection"><img src="imagens/IMG_20200212_203050157.jpg" alt="Diversos 21"></div>
-      <div class="img-protection"><img src="imagens/IMG_20200517_130525779.jpg" alt="Diversos 22"></div>
-      <div class="img-protection"><img src="imagens/IMG_20201209_212949061.jpg" alt="Diversos 23"></div>
-      <div class="img-protection"><img src="imagens/IMG_20210919_095042492_HDR.jpg" alt="Diversos 24"></div>
-      <div class="img-protection"><img src="imagens/IMG_20211028_093742871.jpg" alt="Diversos 25"></div>
-      <div class="img-protection"><img src="imagens/IMG-20191009-WA0036.jpeg" alt="Diversos 26"></div>
-      <div class="img-protection"><img src="imagens/IMG-20200508-WA0015.jpeg" alt="Diversos 27"></div>
-      <div class="img-protection"><img src="imagens/IMG-20200519-WA0031.jpg" alt="Diversos 28"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20220805_162251.jpg" alt="Diversos 1"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20230123_173933.jpg" alt="Diversos 2"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20230124_192350.jpg" alt="Diversos 3"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20230125_180406.jpg" alt="Diversos 4"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20230125_200019.jpg" alt="Diversos 5"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20250331_141606.jpg" alt="Diversos 6"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20250331_141617.jpg" alt="Diversos 7"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20250513_132408.jpg" alt="Diversos 8"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20250513_132412.jpg" alt="Diversos 9"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20250513_175752.jpg" alt="Diversos 10"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20250513_194140.jpg" alt="Diversos 11"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20250513_194148.jpg" alt="Diversos 12"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20250602_162013.jpg" alt="Diversos 13"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20250602_172255.jpg" alt="Diversos 14"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20250602_172313.jpg" alt="Diversos 15"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/20250602_174102.jpg" alt="Diversos 16"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG_20190620_154518003_HDR.jpg" alt="Diversos 17"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG_20190620_154733742.jpg" alt="Diversos 18"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG_20191010_153741160.jpg" alt="Diversos 19"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG_20200212_201132591.jpg" alt="Diversos 20"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG_20200212_203050157.jpg" alt="Diversos 21"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG_20200517_130525779.jpg" alt="Diversos 22"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG_20201209_212949061.jpg" alt="Diversos 23"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG_20210919_095042492_HDR.jpg" alt="Diversos 24"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG_20211028_093742871.jpg" alt="Diversos 25"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG-20191009-WA0036.jpeg" alt="Diversos 26"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG-20200508-WA0015.jpeg" alt="Diversos 27"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/IMG-20200519-WA0031.jpg" alt="Diversos 28"></div>
 
       <div class="contador-fotos">
         📸 Total de fotos: 28
@@ -239,266 +354,362 @@
     <!-- Galeria Aquário -->
     <div id="aquario" class="projeto-galeria">
       <h2>🐠 Aquário</h2>
-      <div class="img-protection"><img src="imagens/aquario/1.jpg" alt="Aquário 1"></div>
-      <div class="img-protection"><img src="imagens/aquario/2.jpg" alt="Aquário 2"></div>
-      <div class="img-protection"><img src="imagens/aquario/3.jpg" alt="Aquário 3"></div>
-      <div class="img-protection"><img src="imagens/aquario/4.jpg" alt="Aquário 4"></div>
-      <div class="img-protection"><img src="imagens/aquario/5.jpg" alt="Aquário 5"></div>
-      <div class="img-protection"><img src="imagens/aquario/6.jpg" alt="Aquário 6"></div>
-      <div class="img-protection"><img src="imagens/aquario/7.jpg" alt="Aquário 7"></div>
-      <div class="img-protection"><img src="imagens/aquario/8.jpg" alt="Aquário 8"></div>
-      <div class="img-protection"><img src="imagens/aquario/9.jpg" alt="Aquário 9"></div>
-      <div class="img-protection"><img src="imagens/aquario/10.jpg" alt="Aquário 10"></div>
-      <div class="img-protection"><img src="imagens/aquario/11.jpg" alt="Aquário 11"></div>
-      <div class="img-protection"><img src="imagens/aquario/12.jpg" alt="Aquário 12"></div>
-      <div class="img-protection"><img src="imagens/aquario/13.jpg" alt="Aquário 13"></div>
-      <div class="img-protection"><img src="imagens/aquario/14.jpg" alt="Aquário 14"></div>
-      <div class="img-protection"><img src="imagens/aquario/15.jpg" alt="Aquário 15"></div>
-      <div class="img-protection"><img src="imagens/aquario/16.jpg" alt="Aquário 16"></div>
-      <div class="img-protection"><img src="imagens/aquario/17.jpg" alt="Aquário 17"></div>
-      <div class="img-protection"><img src="imagens/aquario/18.jpg" alt="Aquário 18"></div>
-      <div class="img-protection"><img src="imagens/aquario/19.jpg" alt="Aquário 19"></div>
-      <div class="img-protection"><img src="imagens/aquario/20.jpg" alt="Aquário 20"></div>
-      <div class="img-protection"><img src="imagens/aquario/21.jpg" alt="Aquário 21"></div>
-      <div class="img-protection"><img src="imagens/aquario/22.jpg" alt="Aquário 22"></div>
-      <div class="img-protection"><img src="imagens/aquario/23.jpg" alt="Aquário 23"></div>
-      <div class="img-protection"><img src="imagens/aquario/24.jpg" alt="Aquário 24"></div>
-      <div class="img-protection"><img src="imagens/aquario/25.jpg" alt="Aquário 25"></div>
-      <div class="img-protection"><img src="imagens/aquario/26.jpg" alt="Aquário 26"></div>
-      <div class="img-protection"><img src="imagens/aquario/27.jpg" alt="Aquário 27"></div>
-      <div class="img-protection"><img src="imagens/aquario/28.jpg" alt="Aquário 28"></div>
-      <div class="img-protection"><img src="imagens/aquario/29.jpg" alt="Aquário 29"></div>
-      <div class="img-protection"><img src="imagens/aquario/30.jpg" alt="Aquário 30"></div>
-      <div class="img-protection"><img src="imagens/aquario/31.jpg" alt="Aquário 31"></div>
-      <div class="img-protection"><img src="imagens/aquario/32.jpg" alt="Aquário 32"></div>
-      <div class="img-protection"><img src="imagens/aquario/33.jpg" alt="Aquário 33"></div>
-      <div class="img-protection"><img src="imagens/aquario/34.jpg" alt="Aquário 34"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/1.jpg" alt="Aquário 1"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/2.jpg" alt="Aquário 2"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/3.jpg" alt="Aquário 3"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/4.jpg" alt="Aquário 4"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/5.jpg" alt="Aquário 5"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/6.jpg" alt="Aquário 6"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/7.jpg" alt="Aquário 7"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/8.jpg" alt="Aquário 8"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/9.jpg" alt="Aquário 9"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/10.jpg" alt="Aquário 10"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/11.jpg" alt="Aquário 11"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/12.jpg" alt="Aquário 12"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/13.jpg" alt="Aquário 13"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/14.jpg" alt="Aquário 14"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/15.jpg" alt="Aquário 15"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/16.jpg" alt="Aquário 16"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/17.jpg" alt="Aquário 17"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/18.jpg" alt="Aquário 18"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/19.jpg" alt="Aquário 19"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/20.jpg" alt="Aquário 20"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/21.jpg" alt="Aquário 21"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/22.jpg" alt="Aquário 22"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/23.jpg" alt="Aquário 23"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/24.jpg" alt="Aquário 24"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/25.jpg" alt="Aquário 25"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/26.jpg" alt="Aquário 26"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/27.jpg" alt="Aquário 27"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/28.jpg" alt="Aquário 28"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/29.jpg" alt="Aquário 29"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/30.jpg" alt="Aquário 30"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/31.jpg" alt="Aquário 31"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/32.jpg" alt="Aquário 32"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/33.jpg" alt="Aquário 33"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/aquario/34.jpg" alt="Aquário 34"></div>
       <div class="contador-fotos">📸 Total de fotos: 34</div>
     </div>
 
     <!-- Galeria CNC -->
     <div id="cnc" class="projeto-galeria">
       <h2>⚙️ CNC Caseira</h2>
-      <div class="img-protection"><img src="imagens/cnc/1.jpg" alt="CNC 1"></div>
-      <div class="img-protection"><img src="imagens/cnc/2.jpg" alt="CNC 2"></div>
-      <div class="img-protection"><img src="imagens/cnc/3.jpg" alt="CNC 3"></div>
-      <div class="img-protection"><img src="imagens/cnc/4.jpg" alt="CNC 4"></div>
-      <div class="img-protection"><img src="imagens/cnc/5.jpg" alt="CNC 5"></div>
-      <div class="img-protection"><img src="imagens/cnc/6.jpg" alt="CNC 6"></div>
-      <div class="img-protection"><img src="imagens/cnc/7.jpg" alt="CNC 7"></div>
-      <div class="img-protection"><img src="imagens/cnc/8.jpg" alt="CNC 8"></div>
-      <div class="img-protection"><img src="imagens/cnc/9.jpg" alt="CNC 9"></div>
-      <div class="img-protection"><img src="imagens/cnc/10.jpg" alt="CNC 10"></div>
-      <div class="img-protection"><img src="imagens/cnc/11.jpg" alt="CNC 11"></div>
-      <div class="img-protection"><img src="imagens/cnc/12.jpg" alt="CNC 12"></div>
-      <div class="img-protection"><img src="imagens/cnc/13.jpg" alt="CNC 13"></div>
-      <div class="img-protection"><img src="imagens/cnc/14.jpg" alt="CNC 14"></div>
-      <div class="img-protection"><img src="imagens/cnc/15.jpg" alt="CNC 15"></div>
-      <div class="img-protection"><img src="imagens/cnc/16.jpg" alt="CNC 16"></div>
-      <div class="img-protection"><img src="imagens/cnc/17.jpg" alt="CNC 17"></div>
-      <div class="img-protection"><img src="imagens/cnc/18.jpg" alt="CNC 18"></div>
-      <div class="img-protection"><img src="imagens/cnc/19.jpg" alt="CNC 19"></div>
-      <div class="img-protection"><img src="imagens/cnc/20.jpg" alt="CNC 20"></div>
-      <div class="img-protection"><img src="imagens/cnc/21.jpg" alt="CNC 21"></div>
-      <div class="img-protection"><img src="imagens/cnc/22.jpg" alt="CNC 22"></div>
-      <div class="img-protection"><img src="imagens/cnc/23.jpg" alt="CNC 23"></div>
-      <div class="img-protection"><img src="imagens/cnc/24.jpg" alt="CNC 24"></div>
-      <div class="img-protection"><img src="imagens/cnc/25.jpg" alt="CNC 25"></div>
-      <div class="img-protection"><img src="imagens/cnc/26.jpg" alt="CNC 26"></div>
-      <div class="img-protection"><img src="imagens/cnc/27.jpg" alt="CNC 27"></div>
-      <div class="img-protection"><img src="imagens/cnc/28.jpg" alt="CNC 28"></div>
-      <div class="img-protection"><img src="imagens/cnc/29.jpg" alt="CNC 29"></div>
-      <div class="img-protection"><img src="imagens/cnc/30.jpg" alt="CNC 30"></div>
-      <div class="img-protection"><img src="imagens/cnc/31.jpg" alt="CNC 31"></div>
-      <div class="img-protection"><img src="imagens/cnc/32.jpg" alt="CNC 32"></div>
-      <div class="img-protection"><img src="imagens/cnc/33.jpg" alt="CNC 33"></div>
-      <div class="img-protection"><img src="imagens/cnc/34.jpg" alt="CNC 34"></div>
-      <div class="img-protection"><img src="imagens/cnc/35.jpg" alt="CNC 35"></div>
-      <div class="img-protection"><img src="imagens/cnc/36.jpg" alt="CNC 36"></div>
-      <div class="img-protection"><img src="imagens/cnc/37.jpg" alt="CNC 37"></div>
-      <div class="img-protection"><img src="imagens/cnc/38.jpg" alt="CNC 38"></div>
-      <div class="img-protection"><img src="imagens/cnc/39.jpg" alt="CNC 39"></div>
-      <div class="img-protection"><img src="imagens/cnc/40.jpg" alt="CNC 40"></div>
-      <div class="img-protection"><img src="imagens/cnc/41.jpg" alt="CNC 41"></div>
-      <div class="img-protection"><img src="imagens/cnc/42.jpg" alt="CNC 42"></div>
-      <div class="img-protection"><img src="imagens/cnc/43.jpg" alt="CNC 43"></div>
-      <div class="img-protection"><img src="imagens/cnc/44.jpg" alt="CNC 44"></div>
-      <div class="img-protection"><img src="imagens/cnc/45.jpg" alt="CNC 45"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/1.jpg" alt="CNC 1"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/2.jpg" alt="CNC 2"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/3.jpg" alt="CNC 3"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/4.jpg" alt="CNC 4"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/5.jpg" alt="CNC 5"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/6.jpg" alt="CNC 6"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/7.jpg" alt="CNC 7"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/8.jpg" alt="CNC 8"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/9.jpg" alt="CNC 9"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/10.jpg" alt="CNC 10"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/11.jpg" alt="CNC 11"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/12.jpg" alt="CNC 12"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/13.jpg" alt="CNC 13"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/14.jpg" alt="CNC 14"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/15.jpg" alt="CNC 15"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/16.jpg" alt="CNC 16"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/17.jpg" alt="CNC 17"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/18.jpg" alt="CNC 18"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/19.jpg" alt="CNC 19"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/20.jpg" alt="CNC 20"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/21.jpg" alt="CNC 21"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/22.jpg" alt="CNC 22"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/23.jpg" alt="CNC 23"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/24.jpg" alt="CNC 24"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/25.jpg" alt="CNC 25"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/26.jpg" alt="CNC 26"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/27.jpg" alt="CNC 27"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/28.jpg" alt="CNC 28"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/29.jpg" alt="CNC 29"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/30.jpg" alt="CNC 30"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/31.jpg" alt="CNC 31"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/32.jpg" alt="CNC 32"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/33.jpg" alt="CNC 33"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/34.jpg" alt="CNC 34"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/35.jpg" alt="CNC 35"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/36.jpg" alt="CNC 36"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/37.jpg" alt="CNC 37"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/38.jpg" alt="CNC 38"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/39.jpg" alt="CNC 39"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/40.jpg" alt="CNC 40"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/41.jpg" alt="CNC 41"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/42.jpg" alt="CNC 42"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/43.jpg" alt="CNC 43"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/44.jpg" alt="CNC 44"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/cnc/45.jpg" alt="CNC 45"></div>
       <div class="contador-fotos">📸 Total de fotos: 45</div>
     </div>
 
     <!-- Galeria Parapeito -->
     <div id="parapeito" class="projeto-galeria">
       <h2>🏠 Parapeito</h2>
-      <div class="img-protection"><img src="imagens/parapeito/1.jpg" alt="Parapeito 1"></div>
-      <div class="img-protection"><img src="imagens/parapeito/2.jpg" alt="Parapeito 2"></div>
-      <div class="img-protection"><img src="imagens/parapeito/3.jpg" alt="Parapeito 3"></div>
-      <div class="img-protection"><img src="imagens/parapeito/4.jpg" alt="Parapeito 4"></div>
-      <div class="img-protection"><img src="imagens/parapeito/5.jpg" alt="Parapeito 5"></div>
-      <div class="img-protection"><img src="imagens/parapeito/6.jpg" alt="Parapeito 6"></div>
-      <div class="img-protection"><img src="imagens/parapeito/7.jpg" alt="Parapeito 7"></div>
-      <div class="img-protection"><img src="imagens/parapeito/8.jpg" alt="Parapeito 8"></div>
-      <div class="img-protection"><img src="imagens/parapeito/9.jpg" alt="Parapeito 9"></div>
-      <div class="img-protection"><img src="imagens/parapeito/10.jpg" alt="Parapeito 10"></div>
-      <div class="img-protection"><img src="imagens/parapeito/11.jpg" alt="Parapeito 11"></div>
-      <div class="img-protection"><img src="imagens/parapeito/12.jpg" alt="Parapeito 12"></div>
-      <div class="img-protection"><img src="imagens/parapeito/13.jpg" alt="Parapeito 13"></div>
-      <div class="img-protection"><img src="imagens/parapeito/14.jpg" alt="Parapeito 14"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/1.jpg" alt="Parapeito 1"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/2.jpg" alt="Parapeito 2"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/3.jpg" alt="Parapeito 3"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/4.jpg" alt="Parapeito 4"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/5.jpg" alt="Parapeito 5"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/6.jpg" alt="Parapeito 6"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/7.jpg" alt="Parapeito 7"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/8.jpg" alt="Parapeito 8"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/9.jpg" alt="Parapeito 9"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/10.jpg" alt="Parapeito 10"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/11.jpg" alt="Parapeito 11"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/12.jpg" alt="Parapeito 12"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/13.jpg" alt="Parapeito 13"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/parapeito/14.jpg" alt="Parapeito 14"></div>
       <div class="contador-fotos">📸 Total de fotos: 14</div>
     </div>
 
     <!-- Galeria Casa San Martin -->
     <div id="casa-san-martin" class="projeto-galeria">
       <h2>🏡 Casa San Martin</h2>
-      <div class="img-protection"><img src="imagens/casa-san-martin/1.jpg" alt="Casa San Martin 1"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/2.jpg" alt="Casa San Martin 2"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/3.jpg" alt="Casa San Martin 3"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/4.jpg" alt="Casa San Martin 4"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/5.jpg" alt="Casa San Martin 5"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/6.jpg" alt="Casa San Martin 6"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/7.jpg" alt="Casa San Martin 7"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/8.jpg" alt="Casa San Martin 8"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/9.jpg" alt="Casa San Martin 9"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/10.jpg" alt="Casa San Martin 10"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/11.jpg" alt="Casa San Martin 11"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/12.jpg" alt="Casa San Martin 12"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/13.jpg" alt="Casa San Martin 13"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/14.jpg" alt="Casa San Martin 14"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/15.jpg" alt="Casa San Martin 15"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/16.jpg" alt="Casa San Martin 16"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/17.jpg" alt="Casa San Martin 17"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/18.jpg" alt="Casa San Martin 18"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/19.jpg" alt="Casa San Martin 19"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/20.jpg" alt="Casa San Martin 20"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/21.jpg" alt="Casa San Martin 21"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/22.jpg" alt="Casa San Martin 22"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/23.jpg" alt="Casa San Martin 23"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/24.jpg" alt="Casa San Martin 24"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/25.jpg" alt="Casa San Martin 25"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/26.jpg" alt="Casa San Martin 26"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/27.jpg" alt="Casa San Martin 27"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/28.jpg" alt="Casa San Martin 28"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/29.jpg" alt="Casa San Martin 29"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/30.jpg" alt="Casa San Martin 30"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/31.jpg" alt="Casa San Martin 31"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/32.jpg" alt="Casa San Martin 32"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/33.jpg" alt="Casa San Martin 33"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/34.jpg" alt="Casa San Martin 34"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/35.jpg" alt="Casa San Martin 35"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/36.jpg" alt="Casa San Martin 36"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/37.jpg" alt="Casa San Martin 37"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/38.jpg" alt="Casa San Martin 38"></div>
-      <div class="img-protection"><img src="imagens/casa-san-martin/39.jpg" alt="Casa San Martin 39"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/1.jpg" alt="Casa San Martin 1"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/2.jpg" alt="Casa San Martin 2"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/3.jpg" alt="Casa San Martin 3"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/4.jpg" alt="Casa San Martin 4"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/5.jpg" alt="Casa San Martin 5"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/6.jpg" alt="Casa San Martin 6"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/7.jpg" alt="Casa San Martin 7"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/8.jpg" alt="Casa San Martin 8"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/9.jpg" alt="Casa San Martin 9"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/10.jpg" alt="Casa San Martin 10"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/11.jpg" alt="Casa San Martin 11"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/12.jpg" alt="Casa San Martin 12"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/13.jpg" alt="Casa San Martin 13"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/14.jpg" alt="Casa San Martin 14"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/15.jpg" alt="Casa San Martin 15"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/16.jpg" alt="Casa San Martin 16"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/17.jpg" alt="Casa San Martin 17"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/18.jpg" alt="Casa San Martin 18"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/19.jpg" alt="Casa San Martin 19"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/20.jpg" alt="Casa San Martin 20"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/21.jpg" alt="Casa San Martin 21"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/22.jpg" alt="Casa San Martin 22"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/23.jpg" alt="Casa San Martin 23"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/24.jpg" alt="Casa San Martin 24"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/25.jpg" alt="Casa San Martin 25"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/26.jpg" alt="Casa San Martin 26"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/27.jpg" alt="Casa San Martin 27"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/28.jpg" alt="Casa San Martin 28"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/29.jpg" alt="Casa San Martin 29"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/30.jpg" alt="Casa San Martin 30"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/31.jpg" alt="Casa San Martin 31"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/32.jpg" alt="Casa San Martin 32"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/33.jpg" alt="Casa San Martin 33"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/34.jpg" alt="Casa San Martin 34"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/35.jpg" alt="Casa San Martin 35"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/36.jpg" alt="Casa San Martin 36"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/37.jpg" alt="Casa San Martin 37"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/38.jpg" alt="Casa San Martin 38"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-san-martin/39.jpg" alt="Casa San Martin 39"></div>
       <div class="contador-fotos">📸 Total de fotos: 39</div>
     </div>
 
     <!-- Galeria Cerâmica na Laje -->
     <div id="ceramica-na-laje" class="projeto-galeria">
       <h2>🧱 Cerâmica na Laje</h2>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/1.jpg" alt="Cerâmica na Laje 1"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/2.jpg" alt="Cerâmica na Laje 2"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/3.jpg" alt="Cerâmica na Laje 3"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/4.jpg" alt="Cerâmica na Laje 4"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/5.jpg" alt="Cerâmica na Laje 5"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/6.jpg" alt="Cerâmica na Laje 6"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/7.jpg" alt="Cerâmica na Laje 7"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/8.jpg" alt="Cerâmica na Laje 8"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/9.jpg" alt="Cerâmica na Laje 9"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/10.jpg" alt="Cerâmica na Laje 10"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/11.jpg" alt="Cerâmica na Laje 11"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/12.jpg" alt="Cerâmica na Laje 12"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/13.jpg" alt="Cerâmica na Laje 13"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/14.jpg" alt="Cerâmica na Laje 14"></div>
-      <div class="img-protection"><img src="imagens/ceramica-na-laje/15.jpg" alt="Cerâmica na Laje 15"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/1.jpg" alt="Cerâmica na Laje 1"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/2.jpg" alt="Cerâmica na Laje 2"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/3.jpg" alt="Cerâmica na Laje 3"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/4.jpg" alt="Cerâmica na Laje 4"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/5.jpg" alt="Cerâmica na Laje 5"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/6.jpg" alt="Cerâmica na Laje 6"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/7.jpg" alt="Cerâmica na Laje 7"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/8.jpg" alt="Cerâmica na Laje 8"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/9.jpg" alt="Cerâmica na Laje 9"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/10.jpg" alt="Cerâmica na Laje 10"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/11.jpg" alt="Cerâmica na Laje 11"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/12.jpg" alt="Cerâmica na Laje 12"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/13.jpg" alt="Cerâmica na Laje 13"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/14.jpg" alt="Cerâmica na Laje 14"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/ceramica-na-laje/15.jpg" alt="Cerâmica na Laje 15"></div>
       <div class="contador-fotos">📸 Total de fotos: 15</div>
     </div>
 
     <!-- Galeria Escada de Luxo -->
     <div id="escada-de-luxo" class="projeto-galeria">
       <h2>✨ Escada de Luxo</h2>
-      <div class="img-protection"><img src="imagens/escada-de-luxo/1.jpg" alt="Escada de Luxo 1"></div>
-      <div class="img-protection"><img src="imagens/escada-de-luxo/2.jpg" alt="Escada de Luxo 2"></div>
-      <div class="img-protection"><img src="imagens/escada-de-luxo/3.jpg" alt="Escada de Luxo 3"></div>
-      <div class="img-protection"><img src="imagens/escada-de-luxo/4.jpg" alt="Escada de Luxo 4"></div>
-      <div class="img-protection"><img src="imagens/escada-de-luxo/5.jpg" alt="Escada de Luxo 5"></div>
-      <div class="img-protection"><img src="imagens/escada-de-luxo/6.jpg" alt="Escada de Luxo 6"></div>
-      <div class="img-protection"><img src="imagens/escada-de-luxo/7.jpg" alt="Escada de Luxo 7"></div>
-      <div class="img-protection"><img src="imagens/escada-de-luxo/8.jpg" alt="Escada de Luxo 8"></div>
-      <div class="img-protection"><img src="imagens/escada-de-luxo/9.jpg" alt="Escada de Luxo 9"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-de-luxo/1.jpg" alt="Escada de Luxo 1"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-de-luxo/2.jpg" alt="Escada de Luxo 2"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-de-luxo/3.jpg" alt="Escada de Luxo 3"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-de-luxo/4.jpg" alt="Escada de Luxo 4"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-de-luxo/5.jpg" alt="Escada de Luxo 5"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-de-luxo/6.jpg" alt="Escada de Luxo 6"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-de-luxo/7.jpg" alt="Escada de Luxo 7"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-de-luxo/8.jpg" alt="Escada de Luxo 8"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-de-luxo/9.jpg" alt="Escada de Luxo 9"></div>
       <div class="contador-fotos">📸 Total de fotos: 9</div>
     </div>
 
     <!-- Galeria Escada da Laje -->
     <div id="escada-da-laje" class="projeto-galeria">
       <h2>🪜 Escada da Laje</h2>
-      <div class="img-protection"><img src="imagens/escada-da-laje/1.jpg" alt="Escada da Laje 1"></div>
-      <div class="img-protection"><img src="imagens/escada-da-laje/2.jpg" alt="Escada da Laje 2"></div>
-      <div class="img-protection"><img src="imagens/escada-da-laje/3.jpg" alt="Escada da Laje 3"></div>
-      <div class="img-protection"><img src="imagens/escada-da-laje/4.jpg" alt="Escada da Laje 4"></div>
-      <div class="img-protection"><img src="imagens/escada-da-laje/5.jpg" alt="Escada da Laje 5"></div>
-      <div class="img-protection"><img src="imagens/escada-da-laje/6.jpg" alt="Escada da Laje 6"></div>
-      <div class="img-protection"><img src="imagens/escada-da-laje/7.jpg" alt="Escada da Laje 7"></div>
-      <div class="img-protection"><img src="imagens/escada-da-laje/8.jpg" alt="Escada da Laje 8"></div>
-      <div class="img-protection"><img src="imagens/escada-da-laje/9.jpg" alt="Escada da Laje 9"></div>
-      <div class="img-protection"><img src="imagens/escada-da-laje/10.jpg" alt="Escada da Laje 10"></div>
-      <div class="img-protection"><img src="imagens/escada-da-laje/11.jpg" alt="Escada da Laje 11"></div>
-      <div class="img-protection"><img src="imagens/escada-da-laje/12.jpg" alt="Escada da Laje 12"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/1.jpg" alt="Escada da Laje 1"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/2.jpg" alt="Escada da Laje 2"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/3.jpg" alt="Escada da Laje 3"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/4.jpg" alt="Escada da Laje 4"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/5.jpg" alt="Escada da Laje 5"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/6.jpg" alt="Escada da Laje 6"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/7.jpg" alt="Escada da Laje 7"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/8.jpg" alt="Escada da Laje 8"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/9.jpg" alt="Escada da Laje 9"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/10.jpg" alt="Escada da Laje 10"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/11.jpg" alt="Escada da Laje 11"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/escada-da-laje/12.jpg" alt="Escada da Laje 12"></div>
       <div class="contador-fotos">📸 Total de fotos: 12</div>
     </div>
 
     <!-- Galeria Casa de Surubim -->
     <div id="casa-de-surubim" class="projeto-galeria">
       <h2>🏠 Casa de Surubim</h2>
-      <div class="img-protection"><img src="imagens/casa-de-surubim/1.jpg" alt="Casa de Surubim 1"></div>
-      <div class="img-protection"><img src="imagens/casa-de-surubim/2.jpg" alt="Casa de Surubim 2"></div>
-      <div class="img-protection"><img src="imagens/casa-de-surubim/3.jpg" alt="Casa de Surubim 3"></div>
-      <div class="img-protection"><img src="imagens/casa-de-surubim/4.jpg" alt="Casa de Surubim 4"></div>
-      <div class="img-protection"><img src="imagens/casa-de-surubim/5.jpg" alt="Casa de Surubim 5"></div>
-      <div class="img-protection"><img src="imagens/casa-de-surubim/6.jpg" alt="Casa de Surubim 6"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-de-surubim/1.jpg" alt="Casa de Surubim 1"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-de-surubim/2.jpg" alt="Casa de Surubim 2"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-de-surubim/3.jpg" alt="Casa de Surubim 3"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-de-surubim/4.jpg" alt="Casa de Surubim 4"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-de-surubim/5.jpg" alt="Casa de Surubim 5"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/casa-de-surubim/6.jpg" alt="Casa de Surubim 6"></div>
       <div class="contador-fotos">📸 Total de fotos: 6</div>
     </div>
 
     <!-- Galeria Bancos de Madeira -->
     <div id="bancos-de-madeira" class="projeto-galeria">
       <h2>🪑 Bancos de Madeira</h2>
-      <div class="img-protection"><img src="imagens/bancos-de-madeira/1.jpg" alt="Bancos de Madeira"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/bancos-de-madeira/1.jpg" alt="Bancos de Madeira"></div>
       <div class="contador-fotos">📸 Total de fotos: 1</div>
     </div>
 
     <!-- Galeria Guarda Roupas -->
     <div id="guarda-roupas" class="projeto-galeria">
       <h2>👔 Guarda Roupas</h2>
-      <div class="img-protection"><img src="imagens/guarda-roupas/1.jpg" alt="Guarda Roupas 1"></div>
-      <div class="img-protection"><img src="imagens/guarda-roupas/2.jpg" alt="Guarda Roupas 2"></div>
-      <div class="img-protection"><img src="imagens/guarda-roupas/3.jpg" alt="Guarda Roupas 3"></div>
-      <div class="img-protection"><img src="imagens/guarda-roupas/4.jpg" alt="Guarda Roupas 4"></div>
-      <div class="img-protection"><img src="imagens/guarda-roupas/5.jpg" alt="Guarda Roupas 5"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/guarda-roupas/1.jpg" alt="Guarda Roupas 1"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/guarda-roupas/2.jpg" alt="Guarda Roupas 2"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/guarda-roupas/3.jpg" alt="Guarda Roupas 3"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/guarda-roupas/4.jpg" alt="Guarda Roupas 4"></div>
+      <div class="img-protection" onclick="abrirModal(this)"><img src="imagens/guarda-roupas/5.jpg" alt="Guarda Roupas 5"></div>
       <div class="contador-fotos">📸 Total de fotos: 5</div>
     </div>
 
   </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL PARA AMPLIAR IMAGEM -->
+  <!-- ========================================== -->
+  <div id="modal" class="modal" onclick="fecharModal()">
+    <span class="modal-close" onclick="fecharModal()">&times;</span>
+    <span class="modal-nav modal-prev" onclick="event.stopPropagation(); navegarModal(-1)">&#10094;</span>
+    <span class="modal-nav modal-next" onclick="event.stopPropagation(); navegarModal(1)">&#10095;</span>
+    <img class="modal-content" id="modalImg" alt="Imagem ampliada">
+    <div class="modal-caption" id="modalCaption"></div>
+  </div>
 
   <footer>
     <p>© 2025 - Todos os direitos reservados.</p>
   </footer>
 
   <script>
-    // Função para mostrar a galeria do projeto selecionado
+    // ============================================
+    // VARIÁVEIS DO MODAL
+    // ============================================
+    let imagensAtuais = [];
+    let indiceAtual = 0;
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modalImg');
+    const modalCaption = document.getElementById('modalCaption');
+
+    // ============================================
+    // FUNÇÃO PARA ABRIR O MODAL
+    // ============================================
+    function abrirModal(elemento) {
+      const img = elemento.querySelector('img');
+      if (!img) return;
+
+      // Pega todas as imagens da galeria atual
+      const galeria = elemento.closest('.projeto-galeria');
+      if (galeria) {
+        const todasImagens = galeria.querySelectorAll('.img-protection img');
+        imagensAtuais = Array.from(todasImagens);
+        indiceAtual = imagensAtuais.indexOf(img);
+        if (indiceAtual === -1) indiceAtual = 0;
+      } else {
+        imagensAtuais = [img];
+        indiceAtual = 0;
+      }
+
+      // Exibe a imagem
+      modal.style.display = 'block';
+      modalImg.src = img.src;
+      modalCaption.textContent = img.alt || 'Foto';
+      
+      // Impede scroll da página
+      document.body.style.overflow = 'hidden';
+    }
+
+    // ============================================
+    // FUNÇÃO PARA FECHAR O MODAL
+    // ============================================
+    function fecharModal() {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    // ============================================
+    // FUNÇÃO PARA NAVEGAR ENTRE AS FOTOS
+    // ============================================
+    function navegarModal(direcao) {
+      if (imagensAtuais.length === 0) return;
+      
+      indiceAtual += direcao;
+      
+      if (indiceAtual < 0) {
+        indiceAtual = imagensAtuais.length - 1;
+      } else if (indiceAtual >= imagensAtuais.length) {
+        indiceAtual = 0;
+      }
+      
+      const img = imagensAtuais[indiceAtual];
+      if (img) {
+        modalImg.src = img.src;
+        modalCaption.textContent = img.alt || `Foto ${indiceAtual + 1}`;
+      }
+    }
+
+    // ============================================
+    // TECLADO: ESC fecha, SETAS navegam
+    // ============================================
+    document.addEventListener('keydown', function(e) {
+      if (modal.style.display === 'block') {
+        if (e.key === 'Escape') {
+          fecharModal();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          navegarModal(-1);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          navegarModal(1);
+        }
+      }
+    });
+
+    // ============================================
+    // FUNÇÃO PARA MOSTRAR GALERIA
+    // ============================================
     function mostrarGaleria(projeto) {
-      // Esconde todas as galerias
       const galerias = document.querySelectorAll('.projeto-galeria');
       galerias.forEach(galeria => {
         galeria.style.display = 'none';
       });
 
-      // Exibe a galeria do projeto selecionado
       const galeriaSelecionada = document.getElementById(projeto);
       if (galeriaSelecionada) {
         galeriaSelecionada.style.display = 'flex';
       }
     }
 
-    // Bloqueia o menu de contexto (botão direito) em imagens
+    // ============================================
+    // BLOQUEIO DE SEGURANÇA
+    // ============================================
     document.addEventListener('contextmenu', function(e) {
       if (e.target.tagName === 'IMG') {
         e.preventDefault();
@@ -506,29 +717,23 @@
       }
     });
 
-    // Impede arrastar imagens
     document.addEventListener('dragstart', function(e) {
       if (e.target.tagName === 'IMG') {
         e.preventDefault();
       }
     });
 
-    // Bloqueia combinações de teclas para print (Ctrl+P, PrintScreen)
     document.addEventListener('keydown', function(e) {
-      // Bloqueia Ctrl+P
       if (e.ctrlKey && e.key === 'p') {
         e.preventDefault();
         alert('Impressão/Print do conteúdo não permitida.');
       }
-      
-      // Bloqueia PrintScreen (não funciona em todos os navegadores)
       if (e.key === 'PrintScreen') {
         e.preventDefault();
         alert('Captura de tela não permitida.');
       }
     });
 
-    // Adiciona uma mensagem ao sair da página
     window.onbeforeunload = function() {
       return "Todo o conteúdo deste site é protegido por direitos autorais.";
     };
