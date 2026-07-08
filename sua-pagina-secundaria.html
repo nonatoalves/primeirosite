@@ -1,84 +1,654 @@
-<script>
-// Solicita senha antes de exibir a página
-const senha = prompt("Digite a senha para acessar a tabela:");
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparativo Salarial - Técnico vs Analista</title>
 
-if (senha !== "X") {
-    document.write("<h2 style='font-family: Arial; color: red; text-align:center;'>Senha incorreta.</h2>");
-    throw new Error("Acesso negado");
-}
-</script>
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
 
-<style>
-    .tabela-salarios {
-        width: 100%;
-        border-collapse: collapse;
-        font-family: Arial, Helvetica, sans-serif;
-        margin: 20px 0;
-        font-size: 15px;
-    }
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .tabela-salarios th {
-        background: #2c3e50;
-        color: white;
-        padding: 10px;
-        text-align: center;
-        font-weight: bold;
-    }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            min-height: 100vh;
+        }
 
-    .tabela-salarios td {
-        border: 1px solid #ccc;
-        padding: 8px;
-        text-align: center;
-    }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-    .tabela-salarios tr:nth-child(even) {
-        background: #f5f5f5;
-    }
+        /* CABEÇALHO */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #1a2a6c, #2d4373);
+            border-radius: 16px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
 
-    .tabela-salarios tr:hover {
-        background: #e8f0fe;
-    }
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
 
-    .titulo-tabela {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 22px;
-        font-weight: bold;
-        margin-top: 30px;
-        margin-bottom: 10px;
-    }
-</style>
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 8px;
+        }
 
-<div class="titulo-tabela">Tabela de Carreira Anual</div>
+        .header .ano {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
 
-<table class="tabela-salarios">
-    <tr>
-        <th>Classe</th>
-        <th>Técnico Judiciário</th>
-        <th>Diferença</th>
-        <th>Analista / Of. de Justiça</th>
-        <th>Diferença</th>
-    </tr>
+        /* GRID DE GRÁFICOS */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
 
-    <tr><td>P00</td><td>5.858,86</td><td>—</td><td>7.634,45</td><td>—</td></tr>
-    <tr><td>P01</td><td>6.005,32</td><td>146,46</td><td>7.825,32</td><td>190,87</td></tr>
-    <tr><td>P02</td><td>6.164,45</td><td>159,13</td><td>8.032,69</td><td>207,37</td></tr>
-    <tr><td>P03</td><td>6.337,08</td><td>172,63</td><td>8.257,59</td><td>224,90</td></tr>
-    <tr><td>P04</td><td>6.524,04</td><td>186,96</td><td>8.501,20</td><td>243,61</td></tr>
-    <tr><td>P05</td><td>6.726,26</td><td>202,22</td><td>8.764,72</td><td>263,52</td></tr>
-    <tr><td>P06</td><td>6.944,85</td><td>218,59</td><td>9.049,60</td><td>284,88</td></tr>
-    <tr><td>P07</td><td>7.181,00</td><td>236,15</td><td>9.357,29</td><td>307,69</td></tr>
-    <tr><td>P08</td><td>7.435,92</td><td>254,92</td><td>9.689,45</td><td>332,16</td></tr>
-    <tr><td>P09</td><td>7.711,05</td><td>275,13</td><td>10.047,97</td><td>358,52</td></tr>
-    <tr><td>P10</td><td>8.007,94</td><td>296,89</td><td>10.434,83</td><td>386,86</td></tr>
-    <tr><td>P11</td><td>8.328,22</td><td>320,28</td><td>10.852,20</td><td>417,37</td></tr>
-    <tr><td>P12</td><td>8.827,94</td><td>499,72</td><td>11.503,34</td><td>651,14</td></tr>
-    <tr><td>P13</td><td>9.445,90</td><td>617,96</td><td>12.308,58</td><td>805,24</td></tr>
-    <tr><td>P14</td><td>10.201,54</td><td>755,64</td><td>13.293,27</td><td>984,69</td></tr>
-    <tr><td>P15</td><td>11.119,71</td><td>918,17</td><td>14.489,66</td><td>1.196,39</td></tr>
-    <tr><td>P16</td><td>12.231,66</td><td>1.111,95</td><td>15.938,64</td><td>1.448,98</td></tr>
-    <tr><td>P17</td><td>13.577,14</td><td>1.345,48</td><td>17.691,87</td><td>1.753,23</td></tr>
-    <tr><td>P18</td><td>15.206,39</td><td>1.629,25</td><td>19.814,88</td><td>2.123,01</td></tr>
-    <tr><td>P19</td><td>17.183,24</td><td>1.976,85</td><td>22.390,82</td><td>2.575,94</td></tr>
-    <tr><td>P20</td><td>19.588,89</td><td>2.405,65</td><td>25.525,53</td><td>3.134,71</td></tr>
-    <tr><td>P21</td><td>22.527,23</td><td>2.938,34</td><td>29.354,38</td><td>3.828,85</td></tr>
-</table>
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .card h3 {
+            font-size: 18px;
+            color: #1a2a6c;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 .badge {
+            background: #1a2a6c;
+            color: white;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+
+        .card-full {
+            grid-column: 1 / -1;
+        }
+
+        /* GRÁFICOS */
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .chart-container-small {
+            position: relative;
+            height: 280px;
+        }
+
+        /* TABELA RESUMO */
+        .resumo {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .resumo-item {
+            background: white;
+            border-radius: 12px;
+            padding: 18px 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid #1a2a6c;
+        }
+
+        .resumo-item .label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .resumo-item .valor {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2a6c;
+            margin-top: 4px;
+        }
+
+        .resumo-item .sub {
+            font-size: 13px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .resumo-item.verde .valor {
+            color: #27ae60;
+        }
+        .resumo-item.vermelho .valor {
+            color: #e74c3c;
+        }
+        .resumo-item.dourado .valor {
+            color: #f39c12;
+        }
+
+        /* VERBAS INDENIZATÓRIAS */
+        .verbas {
+            background: white;
+            border-radius: 16px;
+            padding: 25px 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-top: 20px;
+        }
+
+        .verbas h3 {
+            font-size: 18px;
+            color: #1a2a6c;
+            margin-bottom: 15px;
+        }
+
+        .verbas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .verbas-item {
+            background: #f8f9fa;
+            padding: 12px 18px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid #1a2a6c;
+        }
+
+        .verbas-item .nome {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .verbas-item .valor {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a2a6c;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .resumo {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .resumo {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .resumo-item .valor {
+                font-size: 18px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .verbas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ANIMAÇÃO DE CARREGAMENTO */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        /* RODAPÉ */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #888;
+            font-size: 13px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- CABEÇALHO -->
+        <div class="header">
+            <h1>📊 Comparativo Salarial</h1>
+            <p>Técnico Judiciário vs Analista Judiciário / Oficial de Justiça</p>
+            <span class="ano">📅 Valores atualizados em 2025</span>
+        </div>
+
+        <!-- RESUMO RÁPIDO -->
+        <div class="resumo" id="resumo">
+            <div class="resumo-item">
+                <div class="label">Técnico - P00</div>
+                <div class="valor">R$ 6.169,38</div>
+                <div class="sub">Início de carreira</div>
+            </div>
+            <div class="resumo-item dourado">
+                <div class="label">Técnico - P21</div>
+                <div class="valor">R$ 23.721,17</div>
+                <div class="sub">Topo da carreira</div>
+            </div>
+            <div class="resumo-item">
+                <div class="label">Analista - P00</div>
+                <div class="valor">R$ 8.039,08</div>
+                <div class="sub">Início de carreira</div>
+            </div>
+            <div class="resumo-item verde">
+                <div class="label">Analista - P21</div>
+                <div class="valor">R$ 30.910,16</div>
+                <div class="sub">Topo da carreira</div>
+            </div>
+        </div>
+
+        <!-- GRÁFICOS -->
+        <div class="grid">
+
+            <!-- GRÁFICO 1: Comparativo por Classe -->
+            <div class="card card-full">
+                <h3>📈 Comparativo Salarial por Classe</h3>
+                <div class="chart-container">
+                    <canvas id="graficoComparativo"></canvas>
+                </div>
+            </div>
+
+            <!-- GRÁFICO 2: Evolução Técnico -->
+            <div class="card">
+                <h3>📈 Evolução - Técnico Judiciário</h3>
+                <div class="chart-container-small">
+                    <canvas id="graficoTecnico"></canvas>
+                </div>
+            </div>
+
+            <!-- GRÁFICO 3: Evolução Analista -->
+            <div class="card">
+                <h3>📈 Evolução - Analista Judiciário</h3>
+                <div class="chart-container-small">
+                    <canvas id="graficoAnalista"></canvas>
+                </div>
+            </div>
+
+            <!-- GRÁFICO 4: Diferença Percentual -->
+            <div class="card card-full">
+                <h3>📊 Diferença Percentual: Analista vs Técnico</h3>
+                <div class="chart-container">
+                    <canvas id="graficoDiferenca"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- VERBAS INDENIZATÓRIAS -->
+        <div class="verbas">
+            <h3>💰 Verbas Indenizatórias (mensais)</h3>
+            <div class="verbas-grid">
+                <div class="verbas-item">
+                    <span class="nome">🍽️ Auxílio-alimentação</span>
+                    <span class="valor">R$ 1.431,32</span>
+                </div>
+                <div class="verbas-item">
+                    <span class="nome">🚌 Auxílio-transporte</span>
+                    <span class="valor">R$ 246,40</span>
+                </div>
+                <div class="verbas-item">
+                    <span class="nome">👶 Auxílio-creche</span>
+                    <span class="valor">R$ 315,90</span>
+                </div>
+                <div class="verbas-item">
+                    <span class="nome">🚗 Indenização de transporte</span>
+                    <span class="valor">R$ 2.789,71</span>
+                </div>
+                <div class="verbas-item">
+                    <span class="nome">🛡️ Risco de vida (Oficial de Justiça)</span>
+                    <span class="valor">R$ 721,68</span>
+                </div>
+            </div>
+            <p style="margin-top:15px;font-size:13px;color:#888;text-align:center;">
+                ⚠️ Valores quando aplicáveis, conforme legislação vigente.
+            </p>
+        </div>
+
+        <div class="footer">
+            Dados atualizados com base nas tabelas oficiais • Projeto TCC
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================
+        // DADOS
+        // ============================================
+
+        const classes = [
+            'P00', 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09',
+            'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18', 'P19',
+            'P20', 'P21'
+        ];
+
+        const tecnico = [
+            6169.38, 6323.60, 6491.17, 6672.95, 6869.81, 7082.75, 7312.93, 7561.59,
+            7830.02, 8119.74, 8432.36, 8769.62, 9295.82, 9946.53, 10742.22, 11709.05,
+            12879.94, 14296.73, 16012.33, 18093.95, 20627.10, 23721.17
+        ];
+
+        const analista = [
+            8039.08, 8240.06, 8458.42, 8695.24, 8951.76, 9229.25, 9529.23, 9853.23,
+            10202.99, 10580.51, 10987.88, 11427.37, 12113.02, 12960.93, 13997.81,
+            15257.61, 16783.39, 18629.54, 20865.07, 23577.53, 26878.38, 30910.16
+        ];
+
+        // Calcula diferenças
+        const diffTecnico = [];
+        const diffAnalista = [];
+        const diffCargos = [];
+
+        for (let i = 0; i < classes.length; i++) {
+            // Diferença entre classes (evolução)
+            if (i === 0) {
+                diffTecnico.push(0);
+                diffAnalista.push(0);
+            } else {
+                diffTecnico.push(tecnico[i] - tecnico[i - 1]);
+                diffAnalista.push(analista[i] - analista[i - 1]);
+            }
+            // Diferença entre cargos
+            diffCargos.push(analista[i] - tecnico[i]);
+        }
+
+        // Diferença percentual
+        const diffPercentual = [];
+        for (let i = 0; i < classes.length; i++) {
+            diffPercentual.push(((analista[i] - tecnico[i]) / tecnico[i] * 100));
+        }
+
+        // ============================================
+        // CORES
+        // ============================================
+
+        const corTecnico = '#2d4373';
+        const corTecnicoClaro = 'rgba(45, 67, 115, 0.7)';
+        const corAnalista = '#27ae60';
+        const corAnalistaClaro = 'rgba(39, 174, 96, 0.7)';
+        const corDiferenca = '#e67e22';
+        const corDiferencaClaro = 'rgba(230, 126, 34, 0.6)';
+
+        // ============================================
+        // CONFIGURAÇÃO GERAL DOS GRÁFICOS
+        // ============================================
+
+        Chart.defaults.font.family = "'Segoe UI', Arial, sans-serif";
+        Chart.defaults.font.size = 12;
+
+        // ============================================
+        // GRÁFICO 1: COMPARATIVO POR CLASSE
+        // ============================================
+
+        const ctx1 = document.getElementById('graficoComparativo').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: classes,
+                datasets: [{
+                    label: 'Técnico Judiciário',
+                    data: tecnico,
+                    backgroundColor: corTecnicoClaro,
+                    borderColor: corTecnico,
+                    borderWidth: 2,
+                    borderRadius: 4,
+                }, {
+                    label: 'Analista / Oficial de Justiça',
+                    data: analista,
+                    backgroundColor: corAnalistaClaro,
+                    borderColor: corAnalista,
+                    borderWidth: 2,
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: { weight: 'bold' }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': R$ ' + context.parsed.y.toFixed(2)
+                                    .replace('.', ',');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + value.toLocaleString('pt-BR');
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // ============================================
+        // GRÁFICO 2: EVOLUÇÃO TÉCNICO
+        // ============================================
+
+        const ctx2 = document.getElementById('graficoTecnico').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: classes,
+                datasets: [{
+                    label: 'Técnico Judiciário',
+                    data: tecnico,
+                    borderColor: corTecnico,
+                    backgroundColor: 'rgba(45, 67, 115, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: corTecnico,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'R$ ' + context.parsed.y.toFixed(2).replace('.', ',');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + value.toLocaleString('pt-BR');
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // ============================================
+        // GRÁFICO 3: EVOLUÇÃO ANALISTA
+        // ============================================
+
+        const ctx3 = document.getElementById('graficoAnalista').getContext('2d');
+        new Chart(ctx3, {
+            type: 'line',
+            data: {
+                labels: classes,
+                datasets: [{
+                    label: 'Analista / Oficial de Justiça',
+                    data: analista,
+                    borderColor: corAnalista,
+                    backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: corAnalista,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'R$ ' + context.parsed.y.toFixed(2).replace('.', ',');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + value.toLocaleString('pt-BR');
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // ============================================
+        // GRÁFICO 4: DIFERENÇA PERCENTUAL
+        // ============================================
+
+        const ctx4 = document.getElementById('graficoDiferenca').getContext('2d');
+        new Chart(ctx4, {
+            type: 'bar',
+            data: {
+                labels: classes,
+                datasets: [{
+                    label: 'Diferença % (Analista vs Técnico)',
+                    data: diffPercentual,
+                    backgroundColor: diffPercentual.map(v =>
+                        v > 30 ? 'rgba(39, 174, 96, 0.7)' :
+                        v > 20 ? 'rgba(241, 196, 15, 0.7)' :
+                        'rgba(230, 126, 34, 0.7)'
+                    ),
+                    borderColor: diffPercentual.map(v =>
+                        v > 30 ? '#27ae60' :
+                        v > 20 ? '#f1c40f' :
+                        '#e67e22'
+                    ),
+                    borderWidth: 2,
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Diferença: ' + context.parsed.y.toFixed(1) + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toFixed(0) + '%';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
