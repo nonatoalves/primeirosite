@@ -65,37 +65,56 @@
       background: linear-gradient(135deg, #bf360c, #e65100);
     }
 
+    /* ESTILO PRINCIPAL DA GALERIA - CORRIGIDO */
     .projeto-galeria {
       display: none;
       flex-wrap: wrap;
       gap: 1rem;
       margin-top: 2rem;
       justify-content: center;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
 
     .projeto-galeria h2 {
       width: 100%;
       text-align: center;
       color: #004d40;
+      margin-bottom: 1rem;
     }
 
     .projeto-galeria.diversos h2 {
       color: #e65100;
     }
 
+    /* Ajuste para as imagens quebrarem em várias linhas */
+    .projeto-galeria .img-protection {
+      flex: 0 0 auto;
+      width: 200px;
+      height: 150px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .projeto-galeria .img-protection:hover {
+      transform: scale(1.05);
+      z-index: 2;
+    }
+
     .projeto-galeria img {
       width: 100%;
-      max-width: 280px;
-      height: 200px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      height: 100%;
       object-fit: cover;
+      display: block;
       pointer-events: none;
     }
 
     .img-protection {
       position: relative;
-      display: inline-block;
     }
 
     .img-protection::after {
@@ -113,7 +132,10 @@
       text-align: center;
       color: #888;
       font-size: 0.9rem;
-      margin-top: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.5rem;
+      background: #f5f5f5;
+      border-radius: 8px;
     }
 
     footer {
@@ -132,9 +154,13 @@
       .projeto-lista button {
         width: 90%;
       }
-      .projeto-galeria img {
-        max-width: 100%;
-        height: 180px;
+      .projeto-galeria .img-protection {
+        width: 150px;
+        height: 120px;
+      }
+      .projeto-galeria {
+        padding: 1rem;
+        gap: 0.8rem;
       }
     }
   </style>
@@ -168,94 +194,38 @@
     <!-- ========================================== -->
     <div id="projetos-diversos" class="projeto-galeria diversos">
       <h2>📸 PROJETOS DIVERSOS</h2>
-      <p style="width:100%; text-align:center; color:#666; margin-bottom:1rem;">
+      <p style="width:100%; text-align:center; color:#666; margin-bottom:0.5rem;">
         Fotos diversas de projetos e trabalhos variados
       </p>
 
-      <div class="img-protection">
-        <img src="imagens/20220805_162251.jpg" alt="Diversos 1">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20230123_173933.jpg" alt="Diversos 2">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20230124_192350.jpg" alt="Diversos 3">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20230125_180406.jpg" alt="Diversos 4">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20230125_200019.jpg" alt="Diversos 5">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20250331_141606.jpg" alt="Diversos 6">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20250331_141617.jpg" alt="Diversos 7">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20250513_132408.jpg" alt="Diversos 8">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20250513_132412.jpg" alt="Diversos 9">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20250513_175752.jpg" alt="Diversos 10">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20250513_194140.jpg" alt="Diversos 11">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20250513_194148.jpg" alt="Diversos 12">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20250602_162013.jpg" alt="Diversos 13">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20250602_172255.jpg" alt="Diversos 14">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20250602_172313.jpg" alt="Diversos 15">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/20250602_174102.jpg" alt="Diversos 16">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG_20190620_154518003_HDR.jpg" alt="Diversos 17">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG_20190620_154733742.jpg" alt="Diversos 18">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG_20191010_153741160.jpg" alt="Diversos 19">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG_20200212_201132591.jpg" alt="Diversos 20">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG_20200212_203050157.jpg" alt="Diversos 21">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG_20200517_130525779.jpg" alt="Diversos 22">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG_20201209_212949061.jpg" alt="Diversos 23">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG_20210919_095042492_HDR.jpg" alt="Diversos 24">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG_20211028_093742871.jpg" alt="Diversos 25">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG-20191009-WA0036.jpeg" alt="Diversos 26">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG-20200508-WA0015.jpeg" alt="Diversos 27">
-      </div>
-      <div class="img-protection">
-        <img src="imagens/IMG-20200519-WA0031.jpg" alt="Diversos 28">
-      </div>
+      <div class="img-protection"><img src="imagens/20220805_162251.jpg" alt="Diversos 1"></div>
+      <div class="img-protection"><img src="imagens/20230123_173933.jpg" alt="Diversos 2"></div>
+      <div class="img-protection"><img src="imagens/20230124_192350.jpg" alt="Diversos 3"></div>
+      <div class="img-protection"><img src="imagens/20230125_180406.jpg" alt="Diversos 4"></div>
+      <div class="img-protection"><img src="imagens/20230125_200019.jpg" alt="Diversos 5"></div>
+      <div class="img-protection"><img src="imagens/20250331_141606.jpg" alt="Diversos 6"></div>
+      <div class="img-protection"><img src="imagens/20250331_141617.jpg" alt="Diversos 7"></div>
+      <div class="img-protection"><img src="imagens/20250513_132408.jpg" alt="Diversos 8"></div>
+      <div class="img-protection"><img src="imagens/20250513_132412.jpg" alt="Diversos 9"></div>
+      <div class="img-protection"><img src="imagens/20250513_175752.jpg" alt="Diversos 10"></div>
+      <div class="img-protection"><img src="imagens/20250513_194140.jpg" alt="Diversos 11"></div>
+      <div class="img-protection"><img src="imagens/20250513_194148.jpg" alt="Diversos 12"></div>
+      <div class="img-protection"><img src="imagens/20250602_162013.jpg" alt="Diversos 13"></div>
+      <div class="img-protection"><img src="imagens/20250602_172255.jpg" alt="Diversos 14"></div>
+      <div class="img-protection"><img src="imagens/20250602_172313.jpg" alt="Diversos 15"></div>
+      <div class="img-protection"><img src="imagens/20250602_174102.jpg" alt="Diversos 16"></div>
+      <div class="img-protection"><img src="imagens/IMG_20190620_154518003_HDR.jpg" alt="Diversos 17"></div>
+      <div class="img-protection"><img src="imagens/IMG_20190620_154733742.jpg" alt="Diversos 18"></div>
+      <div class="img-protection"><img src="imagens/IMG_20191010_153741160.jpg" alt="Diversos 19"></div>
+      <div class="img-protection"><img src="imagens/IMG_20200212_201132591.jpg" alt="Diversos 20"></div>
+      <div class="img-protection"><img src="imagens/IMG_20200212_203050157.jpg" alt="Diversos 21"></div>
+      <div class="img-protection"><img src="imagens/IMG_20200517_130525779.jpg" alt="Diversos 22"></div>
+      <div class="img-protection"><img src="imagens/IMG_20201209_212949061.jpg" alt="Diversos 23"></div>
+      <div class="img-protection"><img src="imagens/IMG_20210919_095042492_HDR.jpg" alt="Diversos 24"></div>
+      <div class="img-protection"><img src="imagens/IMG_20211028_093742871.jpg" alt="Diversos 25"></div>
+      <div class="img-protection"><img src="imagens/IMG-20191009-WA0036.jpeg" alt="Diversos 26"></div>
+      <div class="img-protection"><img src="imagens/IMG-20200508-WA0015.jpeg" alt="Diversos 27"></div>
+      <div class="img-protection"><img src="imagens/IMG-20200519-WA0031.jpg" alt="Diversos 28"></div>
 
       <div class="contador-fotos">
         📸 Total de fotos: 28
