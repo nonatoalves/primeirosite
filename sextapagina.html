@@ -55,104 +55,214 @@
       transform: scale(1.05);
     }
 
+    /* Botão PROJETOS DIVERSOS em destaque */
+    .projeto-lista button.diversos {
+      background: linear-gradient(135deg, #e65100, #f57c00);
+      font-weight: bold;
+    }
+
+    .projeto-lista button.diversos:hover {
+      background: linear-gradient(135deg, #bf360c, #e65100);
+    }
+
+    .projeto-galeria {
+      display: none;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+      justify-content: center;
+    }
+
+    .projeto-galeria h2 {
+      width: 100%;
+      text-align: center;
+      color: #004d40;
+    }
+
+    .projeto-galeria.diversos h2 {
+      color: #e65100;
+    }
+
+    .projeto-galeria img {
+      width: 100%;
+      max-width: 280px;
+      height: 200px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .img-protection {
+      position: relative;
+      display: inline-block;
+    }
+
+    .img-protection::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+    }
+
+    .contador-fotos {
+      width: 100%;
+      text-align: center;
+      color: #888;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background-color: #e0e0e0;
+      font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 600px) {
+      .projeto-lista {
+        flex-direction: column;
+        align-items: center;
+      }
+      .projeto-lista button {
+        width: 90%;
+      }
+      .projeto-galeria img {
+        max-width: 100%;
+        height: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🛠️ Projetos DIY</h1>
+    <p>Veja abaixo alguns dos projetos que construí com as próprias mãos!</p>
+  </header>
+
+  <main>
+    <!-- Lista de Projetos -->
+    <div class="projeto-lista">
+      <button onclick="mostrarGaleria('aquario')">🐠 Aquário</button>
+      <button onclick="mostrarGaleria('cnc')">⚙️ CNC Caseira</button>
+      <button onclick="mostrarGaleria('parapeito')">🏠 Parapeito</button>
+      <button onclick="mostrarGaleria('casa-san-martin')">🏡 Casa San Martin</button>
+      <button onclick="mostrarGaleria('ceramica-na-laje')">🧱 Cerâmica na Laje</button>
+      <button onclick="mostrarGaleria('escada-de-luxo')">✨ Escada de Luxo</button>
+      <button onclick="mostrarGaleria('escada-da-laje')">🪜 Escada da Laje</button>
+      <button onclick="mostrarGaleria('casa-de-surubim')">🏠 Casa de Surubim</button>
+      <button onclick="mostrarGaleria('bancos-de-madeira')">🪑 Bancos de Madeira</button>
+      <button onclick="mostrarGaleria('guarda-roupas')">👔 Guarda Roupas</button>
+      
+      <!-- NOVO BOTÃO: PROJETOS DIVERSOS -->
+      <button onclick="mostrarGaleria('projetos-diversos')" class="diversos">📸 PROJETOS DIVERSOS</button>
+    </div>
+
     <!-- ========================================== -->
-<!-- GALERIA PROJETOS DIVERSOS (DO GOOGLE DRIVE) -->
-<!-- ========================================== -->
-<div id="projetos-diversos" class="projeto-galeria diversos">
-  <h2>📸 PROJETOS DIVERSOS</h2>
-  <p style="width:100%; text-align:center; color:#666; margin-bottom:1rem;">
-    Fotos diversas de projetos e trabalhos variados
-  </p>
+    <!-- GALERIA PROJETOS DIVERSOS (IMAGENS LOCAIS) -->
+    <!-- ========================================== -->
+    <div id="projetos-diversos" class="projeto-galeria diversos">
+      <h2>📸 PROJETOS DIVERSOS</h2>
+      <p style="width:100%; text-align:center; color:#666; margin-bottom:1rem;">
+        Fotos diversas de projetos e trabalhos variados
+      </p>
 
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1fHPyL7_KsWCcQ6GIAjP94Gpocspt0mcE" alt="Diversos 1">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1Z8LbfPXgeKkPUtD8-__cp2ylpsa8SLCQ" alt="Diversos 2">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1ATbkwzAp8Zqmde_Rr57EeLb5e-Jr7Q-J" alt="Diversos 3">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1bRl7RCg7KvRrXrCQfUtuFZ1mEXW-K32H" alt="Diversos 4">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1p4P_qLttZxQ2Om--OlgGRA8v_t-Q88rQ" alt="Diversos 5">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1K9KwqhaIpiWWcsHFwD3MCE4_IZYA5W4S" alt="Diversos 6">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1Hmu1gRBozAfs27-NJt8tHSnAvY5ASXGZ" alt="Diversos 7">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1zdudFsUPquLZe17vPNqjcf5aKBFC1XDL" alt="Diversos 8">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1E_pha8vuFiN2rf4BwhcoFNjbHBOAdFWd" alt="Diversos 9">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1orQNPQHPvCff7EAZNTJGYqC2FZt9V2Ft" alt="Diversos 10">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1q8lWHpG2P6ltfuia6yR1jmYIglWc3Wu6" alt="Diversos 11">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1OM7YTnBnIpV8bRx9b2yQXFVhWV-ZFxIj" alt="Diversos 12">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1FxKoSFgIokF4P64-GgBhCPlWJJjYGoya" alt="Diversos 13">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1t8njJ_PbVgqgd4tbmhYOe9TyiChro0DI" alt="Diversos 14">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1Xe2mAF_mqxFZGqM1qmhA-r316HX2stXS" alt="Diversos 15">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=16qatWz0sVfCpwjSWi_54Es9qX_41J9ul" alt="Diversos 16">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1efpt-C-UPsRdRVfjmyRgTpGnsV5FjZFQ" alt="Diversos 17">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1ex19wkPnFH282Mytd-2VHRYVHPmfdhNB" alt="Diversos 18">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=19tdiEsIChIyVGLu5bkJkhChWDxniKTWp" alt="Diversos 19">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1hZVidJqq4Y5yU3SE7g5UFZzG5VaW5Cas" alt="Diversos 20">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1Q0nUHyvL0oqe-8P_upljUZt8UKOMrzVe" alt="Diversos 21">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1HVW7duje5qlhjvuEI8mlqF_HXV3MIp8b" alt="Diversos 22">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1qBJGQR_s21URQtJgfgw1ZxdhMZc95rly" alt="Diversos 23">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1dTyeMjJyzxO3vcuw_ywJSE07dBn2lMDU" alt="Diversos 24">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1v8tTws7MadMKqf09A68WjEQ0OJCbF3GD" alt="Diversos 25">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1e9_GTaTdZMYuwOKNQwlLKVJJYdGlhrhP" alt="Diversos 26">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1aOVY-2kRh-RPE-KHdFfT8u2wE5zzF8HF" alt="Diversos 27">
-  </div>
-  <div class="img-protection">
-    <img src="https://drive.google.com/uc?export=view&id=1hA2FD7DNPqffd0yWA8Wp2nwoeK2HIpZ-" alt="Diversos 28">
-  </div>
+      <div class="img-protection">
+        <img src="imagens/20220805_162251.jpg" alt="Diversos 1">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20230123_173933.jpg" alt="Diversos 2">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20230124_192350.jpg" alt="Diversos 3">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20230125_180406.jpg" alt="Diversos 4">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20230125_200019.jpg" alt="Diversos 5">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20250331_141606.jpg" alt="Diversos 6">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20250331_141617.jpg" alt="Diversos 7">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20250513_132408.jpg" alt="Diversos 8">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20250513_132412.jpg" alt="Diversos 9">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20250513_175752.jpg" alt="Diversos 10">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20250513_194140.jpg" alt="Diversos 11">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20250513_194148.jpg" alt="Diversos 12">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20250602_162013.jpg" alt="Diversos 13">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20250602_172255.jpg" alt="Diversos 14">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20250602_172313.jpg" alt="Diversos 15">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/20250602_174102.jpg" alt="Diversos 16">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG_20190620_154518003_HDR.jpg" alt="Diversos 17">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG_20190620_154733742.jpg" alt="Diversos 18">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG_20191010_153741160.jpg" alt="Diversos 19">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG_20200212_201132591.jpg" alt="Diversos 20">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG_20200212_203050157.jpg" alt="Diversos 21">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG_20200517_130525779.jpg" alt="Diversos 22">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG_20201209_212949061.jpg" alt="Diversos 23">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG_20210919_095042492_HDR.jpg" alt="Diversos 24">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG_20211028_093742871.jpg" alt="Diversos 25">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG-20191009-WA0036.jpeg" alt="Diversos 26">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG-20200508-WA0015.jpeg" alt="Diversos 27">
+      </div>
+      <div class="img-protection">
+        <img src="imagens/IMG-20200519-WA0031.jpg" alt="Diversos 28">
+      </div>
 
-  <div class="contador-fotos">
-    📸 Total de fotos: 28
-  </div>
-</div>    <!-- ========================================== -->
+      <div class="contador-fotos">
+        📸 Total de fotos: 28
+      </div>
+    </div>
+
+    <!-- ========================================== -->
     <!-- DEMAIS GALERIAS (MANTIDAS IGUAIS)          -->
     <!-- ========================================== -->
 
