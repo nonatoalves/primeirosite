@@ -1,4 +1,5 @@
-from flask import Flask, render_template_string, request, jsonify
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import requests
 import re
 from bs4 import BeautifulSoup
@@ -6,6 +7,8 @@ import json
 from datetime import datetime
 
 app = Flask(__name__)
+CORS(app, origins=['https://nonatoalves.com.br', 'https://www.nonatoalves.com.br', 'https://nonatoalves.netlify.app'])
+
 
 class TJPEAuditoria:
     def __init__(self):
