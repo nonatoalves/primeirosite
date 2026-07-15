@@ -9,7 +9,6 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app, origins=['https://nonatoalves.com.br', 'https://www.nonatoalves.com.br', 'https://nonatoalves.netlify.app'])
 
-
 class TJPEAuditoria:
     def __init__(self):
         self.session = requests.Session()
@@ -69,50 +68,96 @@ class TJPEAuditoria:
         if not tabela:
             return dados
         
-        colunas = ['Nome', 'Cargo', 'Lotação', 'Remuneracao_Paradigma', 'Vantagens_Pessoais', 
-                   'Subsidio_Funcao', 'Indenizacoes', 'Vantagens_Eventuais', 'Gratificacoes',
-                   'Previdencia', 'Imposto_Renda', 'Descontos_Diversos', 'Retencao_Teto',
-                   'Rendimento_Liquido', 'Remuneracao_Origem', 'Diarias']
-        
+        # Extrair todas as linhas da tabela
         for linha in tabela.find_all('tr'):
             if 'rich-table-header' in linha.get('class', []):
                 continue
+            
             celulas = linha.find_all('td')
-            if not celulas:
+            if len(celulas) < 3:
                 continue
             
-            linha_dados = {}
-            for i, celula in enumerate(celulas):
-                if i == 9 or i == 14:
-                    continue
-                if i < 9:
-                    col_idx = i
-                elif i > 9 and i < 14:
-                    col_idx = i - 1
-                elif i > 14:
-                    col_idx = i - 2
-                else:
-                    continue
-                if col_idx >= len(colunas):
-                    continue
-                
-                link = celula.find('a')
-                texto = link.get_text(strip=True) if link else celula.get_text(strip=True)
-                
-                if 'R$' in texto:
-                    try:
-                        valor = texto.replace('R$', '').replace('.', '').replace(',', '.').strip()
-                        linha_dados[colunas[col_idx]] = float(valor) if valor else 0.0
-                    except:
-                        linha_dados[colunas[col_idx]] = texto
-                else:
-                    linha_dados[colunas[col_idx]] = texto
+            # Pegar os valores diretamente pelas posições
+            nome_servidor = self._limpar_texto(celulas[0].get_text(strip=True))
             
-            if linha_dados.get('Nome'):
-                linha_dados['Mês'] = mes
-                linha_dados['Ano'] = ano
-                dados.append(linha_dados)
+            if not nome_servidor:
+                continue
+            
+            # COLUNAS CORRETAS:
+            # 0 = Nome
+            # 1 = Cargo
+            # 2 = Lotação
+            # 15 = Rendimento Líquido (Rendimento Líquido (12))
+            
+            cargo = self._limpar_texto(celulas[1].get_text(strip=True)) if len(celulas) > 1 else ''
+            lotacao = self._limpar_texto(celulas[2].get_text(strip=True)) if len(celulas) > 2 else ''
+            
+            # Tentar encontrar o Rendimento Líquido
+            # Primeiro tentar a coluna 15 (padrão)
+            rendimento = 0
+            if len(celulas) > 15:
+                rendimento = self._converter_valor(celulas[15].get_text(strip=True))
+            
+            # Se coluna 15 estiver zerada, tentar outras colunas
+            if rendimento == 0 and len(celulas) > 14:
+                # Tentar coluna 14 (Total de Descontos)
+                rendimento = self._converter_valor(celulas[14].get_text(strip=True))
+            
+            if rendimento == 0 and len(celulas) > 16:
+                # Tentar coluna 16 (Remuneração Origem)
+                rendimento = self._converter_valor(celulas[16].get_text(strip=True))
+            
+            # Se ainda estiver zerado, procurar em todas as colunas por um valor > 0
+            if rendimento == 0:
+                for i, celula in enumerate(celulas):
+                    if i in [0, 1, 2, 9, 14]:  # Pular colunas que não são valores
+                        continue
+                    valor = self._converter_valor(celula.get_text(strip=True))
+                    if valor > 0:
+                        rendimento = valor
+                        break
+            
+            # Dividir por 100 para corrigir o formato (ex: 8970653 -> 89706.53)
+            rendimento = rendimento / 100
+            
+            dados.append({
+                'Nome': nome_servidor,
+                'Cargo': cargo,
+                'Lotação': lotacao,
+                'Rendimento_Liquido': rendimento,
+                'Mês': mes,
+                'Ano': ano
+            })
+        
         return dados
+    
+    def _limpar_texto(self, texto):
+        """Remove tags HTML e caracteres especiais"""
+        import re
+        texto = re.sub(r'<[^>]+>', '', texto)
+        texto = texto.replace('&ordf;', 'º')
+        texto = texto.replace('&ordm;', 'º')
+        texto = texto.replace('&ccedil;', 'ç')
+        texto = texto.replace('&atilde;', 'ã')
+        texto = texto.replace('&otilde;', 'õ')
+        texto = texto.replace('&aacute;', 'á')
+        texto = texto.replace('&eacute;', 'é')
+        texto = texto.replace('&iacute;', 'í')
+        texto = texto.replace('&oacute;', 'ó')
+        texto = texto.replace('&uacute;', 'ú')
+        return texto.strip()
+    
+    def _converter_valor(self, texto):
+        """Converte R$ 10.201,54 para float"""
+        try:
+            # Remove R$ e espaços
+            texto = texto.replace('R$', '').replace('r$', '').strip()
+            texto = texto.replace('.', '').replace(',', '.')
+            if texto and texto != '0.00' and texto != '0':
+                return float(texto)
+            return 0
+        except:
+            return 0
     
     def consultar_todos_servidores(self, ano='2026'):
         todos = []
@@ -139,17 +184,17 @@ class TJPEAuditoria:
                 servidores[chave] = {
                     'Nome': d['Nome'],
                     'Cargo': d['Cargo'],
-                    'Lotação': d['Lotação'],
+                    'Lotacao': d['Lotação'],
                     'meses': {}
                 }
-            servidores[chave]['meses'][d['Mês']] = d['Rendimento_Liquido'] / 100
+            servidores[chave]['meses'][d['Mês']] = d['Rendimento_Liquido']
         
         resultado = []
         for chave, s in servidores.items():
             linha = {
                 'Nome': s['Nome'],
                 'Cargo': s['Cargo'],
-                'Lotação': s['Lotação']
+                'Lotacao': s['Lotacao']
             }
             total = 0
             for mes in self.meses:
