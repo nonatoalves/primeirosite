@@ -98,13 +98,12 @@ class TJPEAuditoria:
             if len(celulas) > 15:
                 rendimento = self._converter_valor(celulas[15].get_text(strip=True))
             
-            # Se coluna 15 estiver zerada, tentar outras colunas
+            # Se coluna 15 estiver zerada, tentar coluna 14 (Total de Descontos)
             if rendimento == 0 and len(celulas) > 14:
-                # Tentar coluna 14 (Total de Descontos)
                 rendimento = self._converter_valor(celulas[14].get_text(strip=True))
             
+            # Se ainda estiver zerado, tentar coluna 16 (Remuneração Origem)
             if rendimento == 0 and len(celulas) > 16:
-                # Tentar coluna 16 (Remuneração Origem)
                 rendimento = self._converter_valor(celulas[16].get_text(strip=True))
             
             # Se ainda estiver zerado, procurar em todas as colunas por um valor > 0
@@ -117,8 +116,8 @@ class TJPEAuditoria:
                         rendimento = valor
                         break
             
-            # Dividir por 100 para corrigir o formato (ex: 8970653 -> 89706.53)
-            rendimento = rendimento / 100
+            # NÃO DIVIDIR POR 100 - o valor já vem correto do HTML
+            # O valor extraído já está no formato correto (ex: 10201.54)
             
             dados.append({
                 'Nome': nome_servidor,
@@ -135,6 +134,7 @@ class TJPEAuditoria:
         """Remove tags HTML e caracteres especiais"""
         import re
         texto = re.sub(r'<[^>]+>', '', texto)
+        # Corrigir caracteres especiais
         texto = texto.replace('&ordf;', 'º')
         texto = texto.replace('&ordm;', 'º')
         texto = texto.replace('&ccedil;', 'ç')
@@ -145,6 +145,11 @@ class TJPEAuditoria:
         texto = texto.replace('&iacute;', 'í')
         texto = texto.replace('&oacute;', 'ó')
         texto = texto.replace('&uacute;', 'ú')
+        texto = texto.replace('&acirc;', 'â')
+        texto = texto.replace('&ecirc;', 'ê')
+        texto = texto.replace('&ocirc;', 'ô')
+        texto = texto.replace('&ucirc;', 'û')
+        texto = texto.replace('&nbsp;', ' ')
         return texto.strip()
     
     def _converter_valor(self, texto):
@@ -152,6 +157,7 @@ class TJPEAuditoria:
         try:
             # Remove R$ e espaços
             texto = texto.replace('R$', '').replace('r$', '').strip()
+            # Remove pontos de milhar e substitui vírgula por ponto
             texto = texto.replace('.', '').replace(',', '.')
             if texto and texto != '0.00' and texto != '0':
                 return float(texto)
