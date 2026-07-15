@@ -1,285 +1,466 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import requests
-import re
-from bs4 import BeautifulSoup
-import json
-from datetime import datetime
-import concurrent.futures
-
-app = Flask(__name__)
-CORS(app, origins=['https://nonatoalves.com.br', 'https://www.nonatoalves.com.br', 'https://nonatoalves.netlify.app'])
-
-class TJPEAuditoria:
-    def __init__(self):
-        self.session = requests.Session()
-        # REDUZIR TIMEOUT PARA RESPOSTA MAIS RÁPIDA
-        self.session.timeout = 15
-        self.base_url = "https://www.tjpe.jus.br/consultasalario"
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Origin': 'https://www.tjpe.jus.br',
-            'Referer': 'https://www.tjpe.jus.br/consultasalario/xhtml/manterConsultaSalario/consultaSalario.xhtml'
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auditoria TJPE - Salários</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #fff; 
+            min-height: 100vh;
+            padding: 20px;
         }
-        self.viewstate = None
-        self.meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
-                      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-        self._cache_viewstate = None
-        self._cache_timestamp = None
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        h1 { 
+            color: #f5a623; 
+            border-bottom: 2px solid rgba(245,166,35,0.3);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        h1 span { color: #fff; }
         
-    def _get_viewstate(self):
-        """Obtém ViewState com cache para evitar múltiplas requisições"""
-        # Cache por 5 minutos
-        if self._cache_viewstate and self._cache_timestamp:
-            if (datetime.now() - self._cache_timestamp).seconds < 300:
-                self.viewstate = self._cache_viewstate
-                return True
+        .voltar {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #8ecae6;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .voltar:hover { color: #fff; }
         
-        try:
-            url = f"{self.base_url}/xhtml/manterConsultaSalario/consultaSalario.xhtml"
-            response = self.session.get(url, headers=self.headers, timeout=10)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            v = soup.find('input', {'name': 'javax.faces.ViewState'})
-            if v:
-                self.viewstate = v.get('value')
-                self._cache_viewstate = self.viewstate
-                self._cache_timestamp = datetime.now()
-                return True
-            return False
-        except:
-            return False
-    
-    def consultar_mes(self, mes, ano='2026', nome=''):
-        """Consulta um mês específico com timeout reduzido"""
-        if not self._get_viewstate():
-            return []
-        try:
-            url = f"{self.base_url}/xhtml/manterConsultaSalario/consultaSalario.xhtml"
-            payload = {
-                'j_id22': 'j_id22',
-                'j_id22:j_id32comboboxField': mes,
-                'j_id22:j_id32': mes,
-                'j_id22:j_id46comboboxField': ano,
-                'j_id22:j_id46': ano,
-                'j_id22:nome': nome,
-                'j_id22:j_id51': 'Pesquisar',
-                'javax.faces.ViewState': self.viewstate
-            }
-            # TIMEOUT REDUZIDO PARA 15 SEGUNDOS
-            response = self.session.post(url, data=payload, headers=self.headers, timeout=15)
-            soup = BeautifulSoup(response.text, 'html.parser')
-            return self._extrair_dados(soup, mes, ano)
-        except requests.Timeout:
-            print(f"⏱️ Timeout ao consultar {mes}")
-            return []
-        except Exception as e:
-            print(f"❌ Erro ao consultar {mes}: {e}")
-            return []
-    
-    def _extrair_dados(self, soup, mes, ano):
-        """Extrai dados da tabela de forma otimizada"""
-        dados = []
-        tabela = soup.find('table', {'id': 'j_id22:j_id49'})
-        if not tabela:
-            tabela = soup.find('table', class_='rich-table')
-        if not tabela:
-            return dados
+        .loading { 
+            display: none; 
+            text-align: center; 
+            padding: 30px; 
+        }
+        .loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #f5a623;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        # Extrair todas as linhas da tabela
-        for linha in tabela.find_all('tr'):
-            if 'rich-table-header' in linha.get('class', []):
-                continue
-            
-            celulas = linha.find_all('td')
-            if len(celulas) < 3:
-                continue
-            
-            # Pegar os valores diretamente pelas posições
-            nome_servidor = self._limpar_texto(celulas[0].get_text(strip=True))
-            
-            if not nome_servidor:
-                continue
-            
-            cargo = self._limpar_texto(celulas[1].get_text(strip=True)) if len(celulas) > 1 else ''
-            lotacao = self._limpar_texto(celulas[2].get_text(strip=True)) if len(celulas) > 2 else ''
-            
-            # Otimizar: tentar apenas coluna 15 primeiro (mais comum)
-            rendimento = 0
-            if len(celulas) > 15:
-                rendimento = self._converter_valor(celulas[15].get_text(strip=True))
-            
-            # Fallback rápido
-            if rendimento == 0 and len(celulas) > 14:
-                rendimento = self._converter_valor(celulas[14].get_text(strip=True))
-            
-            dados.append({
-                'Nome': nome_servidor,
-                'Cargo': cargo,
-                'Lotação': lotacao,
-                'Rendimento_Liquido': rendimento,
-                'Mês': mes,
-                'Ano': ano
-            })
+        .filtros {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            align-items: end;
+        }
+        .filtros label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #8ecae6;
+            display: block;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .filtros input, .filtros select {
+            padding: 10px 14px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-size: 14px;
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+            outline: none;
+            transition: border 0.3s;
+            min-width: 200px;
+        }
+        .filtros input::placeholder { color: rgba(255,255,255,0.4); }
+        .filtros input:focus, .filtros select:focus { border-color: #f5a623; }
+        .filtros select option { background: #1a1a2e; color: #fff; }
         
-        return dados
-    
-    def _limpar_texto(self, texto):
-        """Remove tags HTML e caracteres especiais de forma otimizada"""
-        # Otimizado: usar replace em vez de regex para melhor performance
-        texto = texto.replace('&ordf;', 'º').replace('&ordm;', 'º')
-        texto = texto.replace('&ccedil;', 'ç').replace('&atilde;', 'ã')
-        texto = texto.replace('&otilde;', 'õ').replace('&aacute;', 'á')
-        texto = texto.replace('&eacute;', 'é').replace('&iacute;', 'í')
-        texto = texto.replace('&oacute;', 'ó').replace('&uacute;', 'ú')
-        texto = texto.replace('&acirc;', 'â').replace('&ecirc;', 'ê')
-        texto = texto.replace('&ocirc;', 'ô').replace('&ucirc;', 'û')
-        texto = texto.replace('&nbsp;', ' ').replace('&amp;', '&')
-        texto = texto.replace('&lt;', '<').replace('&gt;', '>')
-        return texto.strip()
-    
-    def _converter_valor(self, texto):
-        """Converte R$ 10.201,54 para float de forma otimizada"""
-        try:
-            # Otimizado: remove apenas o necessário
-            if 'R$' in texto:
-                texto = texto.replace('R$', '').replace('r$', '').strip()
-                texto = texto.replace('.', '').replace(',', '.')
-                if texto and texto != '0.00' and texto != '0':
-                    return float(texto)
-            return 0
-        except:
-            return 0
-    
-    def consultar_todos_servidores(self, ano='2026'):
-        """Consulta todos os meses em paralelo para maior velocidade"""
-        todos = []
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .btn-primary { background: #f5a623; color: #1a1a2e; }
+        .btn-primary:hover { background: #f7c35a; transform: translateY(-2px); }
+        .btn-danger { background: #e74c3c; color: #fff; }
+        .btn-danger:hover { background: #c0392b; transform: translateY(-2px); }
         
-        # Usar ThreadPoolExecutor para consultar meses em paralelo
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-            # Criar lista de tarefas
-            futures = []
-            for mes in self.meses:
-                future = executor.submit(self.consultar_mes, mes, ano, '')
-                futures.append((mes, future))
-            
-            # Coletar resultados
-            for mes, future in futures:
-                try:
-                    dados = future.result(timeout=20)
-                    if dados:
-                        todos.extend(dados)
-                        print(f"✅ {mes}: {len(dados)} registros")
-                except concurrent.futures.TimeoutError:
-                    print(f"⏱️ Timeout em {mes}")
-                except Exception as e:
-                    print(f"❌ Erro em {mes}: {e}")
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat {
+            background: rgba(255,255,255,0.05);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 3px solid #f5a623;
+        }
+        .stat .label { font-size: 11px; color: #8ecae6; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat .value { font-size: 22px; font-weight: 700; color: #fff; margin-top: 4px; }
         
-        return todos
-    
-    def consultar_por_nome(self, nome, ano='2026'):
-        """Consulta meses em paralelo para busca por nome"""
-        todos = []
+        .table-wrap {
+            overflow-x: auto;
+            max-height: 550px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead { background: rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 10; }
+        th {
+            padding: 12px 14px;
+            text-align: left;
+            font-weight: 600;
+            color: #8ecae6;
+            border-bottom: 2px solid rgba(255,255,255,0.05);
+            white-space: nowrap;
+            background: rgba(26,26,46,0.95);
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            color: rgba(255,255,255,0.9);
+        }
+        tr:hover { background: rgba(255,255,255,0.03); }
+        .money { font-weight: 600; color: #2ecc71; font-family: monospace; }
+        .total-col {
+            font-weight: 700;
+            background: rgba(39,174,96,0.15);
+            color: #2ecc71;
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+        .badge {
+            background: rgba(255,255,255,0.05);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #8ecae6;
+        }
+        .empty { text-align: center; padding: 40px; color: rgba(255,255,255,0.4); }
+        .empty .icon { font-size: 40px; margin-bottom: 10px; }
+        .info {
+            background: rgba(142,202,230,0.08);
+            padding: 12px 18px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 14px;
+            color: #8ecae6;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            border: 1px solid rgba(142,202,230,0.05);
+        }
+        .info .status-ok { color: #2ecc71; }
+        .info .status-error { color: #e74c3c; }
         
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-            futures = []
-            for mes in self.meses:
-                future = executor.submit(self.consultar_mes, mes, ano, nome)
-                futures.append((mes, future))
-            
-            for mes, future in futures:
-                try:
-                    dados = future.result(timeout=20)
-                    if dados:
-                        todos.extend(dados)
-                        print(f"✅ {mes}: {len(dados)} registros para '{nome}'")
-                except concurrent.futures.TimeoutError:
-                    print(f"⏱️ Timeout em {mes}")
-                except Exception as e:
-                    print(f"❌ Erro em {mes}: {e}")
-        
-        return todos
-    
-    def processar_pivot(self, dados):
-        """Transforma dados em formato Pivot (um servidor por linha)"""
-        servidores = {}
-        for d in dados:
-            chave = d['Nome'] + '|' + d['Cargo'] + '|' + d['Lotação']
-            if chave not in servidores:
-                servidores[chave] = {
-                    'Nome': d['Nome'],
-                    'Cargo': d['Cargo'],
-                    'Lotacao': d['Lotação'],
-                    'meses': {}
-                }
-            servidores[chave]['meses'][d['Mês']] = d['Rendimento_Liquido']
-        
-        resultado = []
-        for chave, s in servidores.items():
-            linha = {
-                'Nome': s['Nome'],
-                'Cargo': s['Cargo'],
-                'Lotacao': s['Lotacao']
-            }
-            total = 0
-            for mes in self.meses:
-                valor = s['meses'].get(mes, 0)
-                linha[mes] = round(valor, 2)
-                total += valor
-            linha['Total'] = round(total, 2)
-            resultado.append(linha)
-        
-        return resultado
+        @media (max-width: 768px) {
+            .filtros { flex-direction: column; }
+            .filtros input { min-width: 100%; }
+            .btn { width: 100%; justify-content: center; }
+            .stats { grid-template-columns: 1fr 1fr; }
+            .container { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
 
+<div class="container">
+    <a href="index.html" class="voltar">⬅ Voltar ao menu principal</a>
+    
+    <h1>⚖️ TJPE <span>Auditoria Salarial</span></h1>
 
-@app.route('/')
-def index():
-    return jsonify({
-        'status': 'online',
-        'mensagem': 'API do TJPE - Auditoria de Rendimentos',
-        'endpoints': {
-            '/buscar': 'POST - Enviar nome, ano e mes',
-            '/health': 'GET - Verificar status'
+    <div class="info">
+        <span id="statusBackend">📡 Verificando conexão com o backend...</span>
+        <span>🔍 Dados do Portal da Transparência</span>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="color: rgba(255,255,255,0.6);">Consultando o portal do TJPE... (pode levar até 60 segundos)</p>
+    </div>
+
+    <div class="filtros">
+        <div>
+            <label>👤 Nome</label>
+            <input type="text" id="nomeBusca" placeholder="Deixe em branco para TODOS">
+        </div>
+        <div>
+            <label>📅 Ano</label>
+            <select id="anoBusca">
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+            </select>
+        </div>
+        <div>
+            <label>📅 Mês</label>
+            <select id="mesBusca">
+                <option value="todos">Todos</option>
+                <option value="Janeiro">Janeiro</option>
+                <option value="Fevereiro">Fevereiro</option>
+                <option value="Março">Março</option>
+                <option value="Abril">Abril</option>
+                <option value="Maio">Maio</option>
+                <option value="Junho">Junho</option>
+                <option value="Julho">Julho</option>
+                <option value="Agosto">Agosto</option>
+                <option value="Setembro">Setembro</option>
+                <option value="Outubro">Outubro</option>
+                <option value="Novembro">Novembro</option>
+                <option value="Dezembro">Dezembro</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn btn-primary" onclick="buscar()">🔍 Buscar</button>
+            <button class="btn btn-danger" onclick="limpar()">🗑️ Limpar</button>
+        </div>
+        <div style="margin-left:auto;">
+            <span class="badge" id="totalBadge">0 servidores</span>
+        </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th style="min-width:180px;">Nome</th>
+                    <th style="min-width:150px;">Cargo</th>
+                    <th style="min-width:130px;">Lotação</th>
+                    <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th>
+                    <th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th>
+                    <th>Set</th><th>Out</th><th>Nov</th><th>Dez</th>
+                    <th style="min-width:90px;background:rgba(39,174,96,0.15);color:#2ecc71;">Total</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaCorpo">
+                <tr><td colspan="16" class="empty">
+                    <div class="icon">🔍</div>
+                    <div>Preencha os campos e clique em "Buscar"</div>
+                    <div style="font-size:13px;color:rgba(255,255,255,0.3);">Deixe o nome em branco para buscar TODOS</div>
+                </td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURAÇÃO - URL DO BACKEND NO RENDER
+// ============================================================
+const API_URL = 'https://tjpe-backend.onrender.com';
+
+var meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+var timeoutId = null;
+
+// ============================================================
+// VERIFICAR CONEXÃO COM O BACKEND
+// ============================================================
+function verificarBackend() {
+    fetch(API_URL + '/health', { timeout: 5000 })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('statusBackend').innerHTML = '✅ <span class="status-ok">Backend conectado</span>';
+        })
+        .catch(error => {
+            document.getElementById('statusBackend').innerHTML = '⚠️ <span class="status-error">Backend indisponível</span>';
+        });
+}
+
+// ============================================================
+// BUSCAR DADOS
+// ============================================================
+function buscar() {
+    // Cancelar busca anterior se existir
+    if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+    }
+    
+    var nome = document.getElementById('nomeBusca').value.trim();
+    var ano = document.getElementById('anoBusca').value;
+    var mes = document.getElementById('mesBusca').value;
+    
+    if (!ano) {
+        alert('Selecione um ano!');
+        return;
+    }
+    
+    // Se nome estiver vazio, confirmar com o usuário (opcional)
+    if (!nome) {
+        // Buscar todos - mostrar aviso que pode demorar
+        console.log('🔍 Buscando TODOS os servidores...');
+    }
+    
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('tabelaCorpo').innerHTML = '<tr><td colspan="16" class="empty"><div class="icon">⏳</div><div>Consultando dados... (pode levar até 60 segundos)</div></td></tr>';
+    document.getElementById('stats').innerHTML = '';
+    
+    // Timeout de 60 segundos
+    const controller = new AbortController();
+    timeoutId = setTimeout(() => {
+        controller.abort();
+        timeoutId = null;
+    }, 60000);
+    
+    fetch(API_URL + '/buscar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            nome: nome,
+            ano: ano,
+            mes: mes
+        }),
+        signal: controller.signal
+    })
+    .then(response => {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+        if (!response.ok) {
+            throw new Error('HTTP error! status: ' + response.status);
+        }
+        return response.json();
+    })
+    .then(result => {
+        document.getElementById('loading').style.display = 'none';
+        if (result.success) {
+            renderizar(result.dados);
+        } else {
+            alert('Erro: ' + result.error);
         }
     })
+    .catch(error => {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+        document.getElementById('loading').style.display = 'none';
+        if (error.name === 'AbortError') {
+            document.getElementById('tabelaCorpo').innerHTML = '<tr><td colspan="16" class="empty"><div class="icon">⏰</div><div>A consulta demorou muito. Tente novamente com um nome específico.</div></td></tr>';
+        } else {
+            document.getElementById('tabelaCorpo').innerHTML = '<tr><td colspan="16" class="empty"><div class="icon">❌</div><div>Erro: ' + error.message + '</div></td></tr>';
+        }
+        console.error('❌ Erro:', error);
+    });
+}
 
-@app.route('/health')
-def health():
-    return jsonify({'status': 'ok', 'timestamp': datetime.now().isoformat()})
+// ============================================================
+// LIMPAR - FUNCIONA CORRETAMENTE
+// ============================================================
+function limpar() {
+    // Cancelar busca se estiver em andamento
+    if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+    }
+    
+    document.getElementById('nomeBusca').value = '';
+    document.getElementById('mesBusca').value = 'todos';
+    document.getElementById('anoBusca').value = '2026';
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('tabelaCorpo').innerHTML = '<tr><td colspan="16" class="empty"><div class="icon">🔍</div><div>Preencha os campos e clique em "Buscar"</div><div style="font-size:13px;color:rgba(255,255,255,0.3);">Deixe o nome em branco para buscar TODOS</div></td></tr>';
+    document.getElementById('stats').innerHTML = '';
+    document.getElementById('totalBadge').textContent = '0 servidores';
+    
+    console.log('🧹 Limpo!');
+}
 
-@app.route('/buscar', methods=['POST'])
-def buscar():
-    try:
-        data = request.get_json()
-        nome = data.get('nome', '').strip()
-        ano = data.get('ano', '2026')
-        mes_filtro = data.get('mes', 'todos')
-        
-        auditoria = TJPEAuditoria()
-        
-        if nome:
-            dados = auditoria.consultar_por_nome(nome, ano)
-        else:
-            dados = auditoria.consultar_todos_servidores(ano)
-        
-        pivot = auditoria.processar_pivot(dados)
-        
-        if mes_filtro != 'todos':
-            pivot = [s for s in pivot if s.get(mes_filtro, 0) > 0]
-        
-        return jsonify({
-            'success': True,
-            'dados': pivot,
-            'total': len(pivot)
-        })
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
+// ============================================================
+// RENDERIZAR TABELA
+// ============================================================
+function renderizar(dados) {
+    var tbody = document.getElementById('tabelaCorpo');
+    var badge = document.getElementById('totalBadge');
+    
+    if (!dados || dados.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="16" class="empty"><div class="icon">🔍</div><div>Nenhum dado encontrado</div></td></tr>';
+        badge.textContent = '0 servidores';
+        document.getElementById('stats').innerHTML = '';
+        return;
+    }
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+    var html = '', totalGeral = 0, maiorValor = 0;
+    var totalServidores = dados.length;
+    var qtdRegistros = 0;
+    
+    dados.forEach(function(s) {
+        var total = 0;
+        html += '<tr>';
+        html += '<td><strong style="color:#fff;">' + s.Nome + '</strong></td>';
+        html += '<td style="color:rgba(255,255,255,0.8);">' + s.Cargo + '</td>';
+        html += '<td style="color:rgba(255,255,255,0.8);">' + s.Lotacao + '</td>';
+        meses.forEach(function(m) {
+            var v = s[m] || 0;
+            total += v;
+            totalGeral += v;
+            if (v > 0) { 
+                html += '<td class="money">R$ ' + v.toFixed(2).replace('.',',') + '</td>'; 
+                if (v > maiorValor) maiorValor = v;
+                qtdRegistros++;
+            } else {
+                html += '<td style="color:rgba(255,255,255,0.15);">-</td>';
+            }
+        });
+        html += '<td class="total-col">R$ ' + total.toFixed(2).replace('.',',') + '</td>';
+        html += '</tr>';
+    });
+    
+    tbody.innerHTML = html;
+    badge.textContent = totalServidores + ' servidores';
+    
+    var statsHtml = '';
+    statsHtml += '<div class="stat"><div class="label">Servidores</div><div class="value">' + totalServidores + '</div></div>';
+    statsHtml += '<div class="stat"><div class="label">Registros</div><div class="value">' + qtdRegistros + '</div></div>';
+    statsHtml += '<div class="stat"><div class="label">Soma Total</div><div class="value">R$ ' + totalGeral.toFixed(2).replace('.',',') + '</div></div>';
+    statsHtml += '<div class="stat"><div class="label">Maior Valor</div><div class="value">R$ ' + maiorValor.toFixed(2).replace('.',',') + '</div></div>';
+    document.getElementById('stats').innerHTML = statsHtml;
+}
+
+// ============================================================
+// INICIAR
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    verificarBackend();
+    
+    // Enter para buscar
+    document.getElementById('nomeBusca').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            buscar();
+        }
+    });
+    document.getElementById('anoBusca').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            buscar();
+        }
+    });
+});
+</script>
+
+</body>
+</html>
