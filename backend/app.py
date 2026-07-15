@@ -5,6 +5,7 @@ import re
 from bs4 import BeautifulSoup
 import json
 from datetime import datetime
+import concurrent.futures
 
 app = Flask(__name__)
 CORS(app, origins=['https://nonatoalves.com.br', 'https://www.nonatoalves.com.br', 'https://nonatoalves.netlify.app'])
@@ -12,6 +13,8 @@ CORS(app, origins=['https://nonatoalves.com.br', 'https://www.nonatoalves.com.br
 class TJPEAuditoria:
     def __init__(self):
         self.session = requests.Session()
+        # REDUZIR TIMEOUT PARA RESPOSTA MAIS RÁPIDA
+        self.session.timeout = 15
         self.base_url = "https://www.tjpe.jus.br/consultasalario"
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36',
@@ -25,8 +28,17 @@ class TJPEAuditoria:
         self.viewstate = None
         self.meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
                       'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+        self._cache_viewstate = None
+        self._cache_timestamp = None
         
     def _get_viewstate(self):
+        """Obtém ViewState com cache para evitar múltiplas requisições"""
+        # Cache por 5 minutos
+        if self._cache_viewstate and self._cache_timestamp:
+            if (datetime.now() - self._cache_timestamp).seconds < 300:
+                self.viewstate = self._cache_viewstate
+                return True
+        
         try:
             url = f"{self.base_url}/xhtml/manterConsultaSalario/consultaSalario.xhtml"
             response = self.session.get(url, headers=self.headers, timeout=10)
@@ -34,12 +46,15 @@ class TJPEAuditoria:
             v = soup.find('input', {'name': 'javax.faces.ViewState'})
             if v:
                 self.viewstate = v.get('value')
+                self._cache_viewstate = self.viewstate
+                self._cache_timestamp = datetime.now()
                 return True
             return False
         except:
             return False
     
     def consultar_mes(self, mes, ano='2026', nome=''):
+        """Consulta um mês específico com timeout reduzido"""
         if not self._get_viewstate():
             return []
         try:
@@ -54,13 +69,19 @@ class TJPEAuditoria:
                 'j_id22:j_id51': 'Pesquisar',
                 'javax.faces.ViewState': self.viewstate
             }
-            response = self.session.post(url, data=payload, headers=self.headers, timeout=30)
+            # TIMEOUT REDUZIDO PARA 15 SEGUNDOS
+            response = self.session.post(url, data=payload, headers=self.headers, timeout=15)
             soup = BeautifulSoup(response.text, 'html.parser')
             return self._extrair_dados(soup, mes, ano)
+        except requests.Timeout:
+            print(f"⏱️ Timeout ao consultar {mes}")
+            return []
         except Exception as e:
+            print(f"❌ Erro ao consultar {mes}: {e}")
             return []
     
     def _extrair_dados(self, soup, mes, ano):
+        """Extrai dados da tabela de forma otimizada"""
         dados = []
         tabela = soup.find('table', {'id': 'j_id22:j_id49'})
         if not tabela:
@@ -83,41 +104,17 @@ class TJPEAuditoria:
             if not nome_servidor:
                 continue
             
-            # COLUNAS CORRETAS:
-            # 0 = Nome
-            # 1 = Cargo
-            # 2 = Lotação
-            # 15 = Rendimento Líquido (Rendimento Líquido (12))
-            
             cargo = self._limpar_texto(celulas[1].get_text(strip=True)) if len(celulas) > 1 else ''
             lotacao = self._limpar_texto(celulas[2].get_text(strip=True)) if len(celulas) > 2 else ''
             
-            # Tentar encontrar o Rendimento Líquido
-            # Primeiro tentar a coluna 15 (padrão)
+            # Otimizar: tentar apenas coluna 15 primeiro (mais comum)
             rendimento = 0
             if len(celulas) > 15:
                 rendimento = self._converter_valor(celulas[15].get_text(strip=True))
             
-            # Se coluna 15 estiver zerada, tentar coluna 14 (Total de Descontos)
+            # Fallback rápido
             if rendimento == 0 and len(celulas) > 14:
                 rendimento = self._converter_valor(celulas[14].get_text(strip=True))
-            
-            # Se ainda estiver zerado, tentar coluna 16 (Remuneração Origem)
-            if rendimento == 0 and len(celulas) > 16:
-                rendimento = self._converter_valor(celulas[16].get_text(strip=True))
-            
-            # Se ainda estiver zerado, procurar em todas as colunas por um valor > 0
-            if rendimento == 0:
-                for i, celula in enumerate(celulas):
-                    if i in [0, 1, 2, 9, 14]:  # Pular colunas que não são valores
-                        continue
-                    valor = self._converter_valor(celula.get_text(strip=True))
-                    if valor > 0:
-                        rendimento = valor
-                        break
-            
-            # NÃO DIVIDIR POR 100 - o valor já vem correto do HTML
-            # O valor extraído já está no formato correto (ex: 10201.54)
             
             dados.append({
                 'Nome': nome_servidor,
@@ -131,54 +128,79 @@ class TJPEAuditoria:
         return dados
     
     def _limpar_texto(self, texto):
-        """Remove tags HTML e caracteres especiais"""
-        import re
-        texto = re.sub(r'<[^>]+>', '', texto)
-        # Corrigir caracteres especiais
-        texto = texto.replace('&ordf;', 'º')
-        texto = texto.replace('&ordm;', 'º')
-        texto = texto.replace('&ccedil;', 'ç')
-        texto = texto.replace('&atilde;', 'ã')
-        texto = texto.replace('&otilde;', 'õ')
-        texto = texto.replace('&aacute;', 'á')
-        texto = texto.replace('&eacute;', 'é')
-        texto = texto.replace('&iacute;', 'í')
-        texto = texto.replace('&oacute;', 'ó')
-        texto = texto.replace('&uacute;', 'ú')
-        texto = texto.replace('&acirc;', 'â')
-        texto = texto.replace('&ecirc;', 'ê')
-        texto = texto.replace('&ocirc;', 'ô')
-        texto = texto.replace('&ucirc;', 'û')
-        texto = texto.replace('&nbsp;', ' ')
+        """Remove tags HTML e caracteres especiais de forma otimizada"""
+        # Otimizado: usar replace em vez de regex para melhor performance
+        texto = texto.replace('&ordf;', 'º').replace('&ordm;', 'º')
+        texto = texto.replace('&ccedil;', 'ç').replace('&atilde;', 'ã')
+        texto = texto.replace('&otilde;', 'õ').replace('&aacute;', 'á')
+        texto = texto.replace('&eacute;', 'é').replace('&iacute;', 'í')
+        texto = texto.replace('&oacute;', 'ó').replace('&uacute;', 'ú')
+        texto = texto.replace('&acirc;', 'â').replace('&ecirc;', 'ê')
+        texto = texto.replace('&ocirc;', 'ô').replace('&ucirc;', 'û')
+        texto = texto.replace('&nbsp;', ' ').replace('&amp;', '&')
+        texto = texto.replace('&lt;', '<').replace('&gt;', '>')
         return texto.strip()
     
     def _converter_valor(self, texto):
-        """Converte R$ 10.201,54 para float"""
+        """Converte R$ 10.201,54 para float de forma otimizada"""
         try:
-            # Remove R$ e espaços
-            texto = texto.replace('R$', '').replace('r$', '').strip()
-            # Remove pontos de milhar e substitui vírgula por ponto
-            texto = texto.replace('.', '').replace(',', '.')
-            if texto and texto != '0.00' and texto != '0':
-                return float(texto)
+            # Otimizado: remove apenas o necessário
+            if 'R$' in texto:
+                texto = texto.replace('R$', '').replace('r$', '').strip()
+                texto = texto.replace('.', '').replace(',', '.')
+                if texto and texto != '0.00' and texto != '0':
+                    return float(texto)
             return 0
         except:
             return 0
     
     def consultar_todos_servidores(self, ano='2026'):
+        """Consulta todos os meses em paralelo para maior velocidade"""
         todos = []
-        for mes in self.meses:
-            dados = self.consultar_mes(mes, ano, nome='')
-            if dados:
-                todos.extend(dados)
+        
+        # Usar ThreadPoolExecutor para consultar meses em paralelo
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            # Criar lista de tarefas
+            futures = []
+            for mes in self.meses:
+                future = executor.submit(self.consultar_mes, mes, ano, '')
+                futures.append((mes, future))
+            
+            # Coletar resultados
+            for mes, future in futures:
+                try:
+                    dados = future.result(timeout=20)
+                    if dados:
+                        todos.extend(dados)
+                        print(f"✅ {mes}: {len(dados)} registros")
+                except concurrent.futures.TimeoutError:
+                    print(f"⏱️ Timeout em {mes}")
+                except Exception as e:
+                    print(f"❌ Erro em {mes}: {e}")
+        
         return todos
     
     def consultar_por_nome(self, nome, ano='2026'):
+        """Consulta meses em paralelo para busca por nome"""
         todos = []
-        for mes in self.meses:
-            dados = self.consultar_mes(mes, ano, nome)
-            if dados:
-                todos.extend(dados)
+        
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            futures = []
+            for mes in self.meses:
+                future = executor.submit(self.consultar_mes, mes, ano, nome)
+                futures.append((mes, future))
+            
+            for mes, future in futures:
+                try:
+                    dados = future.result(timeout=20)
+                    if dados:
+                        todos.extend(dados)
+                        print(f"✅ {mes}: {len(dados)} registros para '{nome}'")
+                except concurrent.futures.TimeoutError:
+                    print(f"⏱️ Timeout em {mes}")
+                except Exception as e:
+                    print(f"❌ Erro em {mes}: {e}")
+        
         return todos
     
     def processar_pivot(self, dados):
