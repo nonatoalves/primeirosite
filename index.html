@@ -111,7 +111,6 @@
       fill: #FFDD57;
     }
 
-    /* Estilo para a caixa do conversor */
     .conversor-box {
       margin-top: 40px;
       padding: 25px;
@@ -242,7 +241,6 @@
       font-weight: bold;
     }
 
-    /* Barra de progresso animada */
     .contador-bar {
       width: 100%;
       max-width: 300px;
@@ -259,6 +257,19 @@
       border-radius: 4px;
       transition: width 0.5s ease;
       width: 0%;
+    }
+
+    /* Alerta de atualização */
+    .contador-atualizado {
+      color: rgba(255,255,255,0.5);
+      font-size: 11px;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .contador-atualizado .destaque {
+      color: #4CAF50;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -303,9 +314,6 @@
   <button class="service-button">Plano de Corte MDF</button>
 </a>
 
-<!-- ========================================== -->
-<!-- NOVO BOTÃO - TRANSPARÊNCIA SALARIOS TJPE   -->
-<!-- ========================================== -->
 <a href="salarios.html">
   <button class="service-button" style="background: linear-gradient(135deg, #1a1a2e, #0f3460);">
     💰 TRANSPARÊNCIA TJPE
@@ -373,9 +381,9 @@ box-shadow:0 4px 8px rgba(0,0,0,0.2);
 </div>
 
 <!-- ========================================== -->
-<!-- CONTADOR DE VISITAS (NOVO)                 -->
+<!-- CONTADOR DE VISITAS (FUNCIONAL)            -->
 <!-- ========================================== -->
-<div class="contador-visitas">
+<div class="contador-visitas" id="contador">
   <div class="contador-header">
     <span class="contador-icone">👁️</span>
     <span class="contador-label">Visitantes</span>
@@ -390,10 +398,10 @@ box-shadow:0 4px 8px rgba(0,0,0,0.2);
       🟢 <span id="status-online">Online</span>
     </div>
     <div class="contador-stat">
-      📊 Total de <span id="total-visitas">0</span> visitas
+      📊 Total: <span id="total-visitas">0</span>
     </div>
     <div class="contador-stat">
-      ⏱️ Atualizado: <span id="hora-atual">--:--:--</span>
+      ⏱️ <span id="hora-atual">--:--:--</span>
     </div>
   </div>
 
@@ -401,9 +409,9 @@ box-shadow:0 4px 8px rgba(0,0,0,0.2);
     <div id="barra-progresso" class="contador-bar-progress"></div>
   </div>
 
-  <p style="color: rgba(255,255,255,0.4); font-size: 11px; margin-top: 12px; letter-spacing: 1px;">
-    🌐 CONTADOR GLOBAL • ATUALIZAÇÃO EM TEMPO REAL
-  </p>
+  <div class="contador-atualizado">
+    ✅ Contador atualizado <span class="destaque" id="ultima-atualizacao">agora</span>
+  </div>
 </div>
 
 <!-- ========================================== -->
@@ -446,80 +454,133 @@ box-shadow:0 4px 8px rgba(0,0,0,0.2);
 
 <script>
 // ============================================
-// CONTADOR DE VISITAS GLOBAL
+// CONTADOR DE VISITAS GLOBAL - VERSÃO FUNCIONAL
 // ============================================
+
+// CHAVE ÚNICA PARA SEU CONTADOR (mude se quiser)
+const CHAVE_CONTADOR = 'meusite_visitas_2025';
 
 // Função para atualizar a hora
 function atualizarHora() {
   const agora = new Date();
   document.getElementById('hora-atual').textContent = agora.toLocaleTimeString('pt-BR');
+  document.getElementById('ultima-atualizacao').textContent = 'agora (' + agora.toLocaleTimeString('pt-BR') + ')';
 }
 
-// Função principal do contador
+// Função principal do contador - USANDO MULTIPLAS APIS
 async function atualizarContador() {
+  const numeroElement = document.getElementById('contador-numero');
+  const totalVisitas = document.getElementById('total-visitas');
+  const barraProgresso = document.getElementById('barra-progresso');
+
   try {
-    // Usando CountAPI (gratuito, até 100k acessos/mês)
-    const response = await fetch('https://api.countapi.xyz/hit/meusite-tcc2025/visitas');
-    const data = await response.json();
-
-    // Atualiza o número com animação
-    const numeroElement = document.getElementById('contador-numero');
-    const totalVisitas = document.getElementById('total-visitas');
-
-    // Animação de contagem
-    const valorAtual = parseInt(numeroElement.textContent) || 0;
-    const valorNovo = data.value;
-
-    if (valorNovo > valorAtual) {
-      let contador = valorAtual;
-      const incremento = Math.max(1, Math.floor((valorNovo - valorAtual) / 20));
-
-      const animacao = setInterval(() => {
-        contador += incremento;
-        if (contador >= valorNovo) {
-          contador = valorNovo;
-          clearInterval(animacao);
+    // TENTATIVA 1: CountAPI (mais confiável)
+    try {
+      const response = await fetch('https://api.countapi.xyz/hit/' + CHAVE_CONTADOR + '/visitas');
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.value !== undefined) {
+          atualizarDisplay(data.value);
+          document.getElementById('status-online').textContent = 'Online';
+          document.getElementById('status-online').style.color = '#4CAF50';
+          return;
         }
-        numeroElement.textContent = contador;
-        // Atualiza barra de progresso (máximo 1000 visitas para demonstração)
-        const progresso = Math.min((contador / 1000) * 100, 100);
-        document.getElementById('barra-progresso').style.width = progresso + '%';
-      }, 50);
-    } else {
-      numeroElement.textContent = valorNovo;
+      }
+    } catch (e) {
+      console.log('CountAPI falhou, tentando alternativa...');
     }
 
-    totalVisitas.textContent = valorNovo;
+    // TENTATIVA 2: API alternativa (API Ninjas)
+    try {
+      const response = await fetch('https://api.api-ninjas.com/v1/counter?id=' + CHAVE_CONTADOR, {
+        headers: { 'X-Api-Key': 'demo' }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.count !== undefined) {
+          atualizarDisplay(data.count);
+          document.getElementById('status-online').textContent = 'Online (Alt)';
+          document.getElementById('status-online').style.color = '#4CAF50';
+          return;
+        }
+      }
+    } catch (e) {
+      console.log('API Ninjas falhou...');
+    }
 
-    // Status online
-    document.getElementById('status-online').textContent = 'Online';
-    document.getElementById('status-online').style.color = '#4CAF50';
+    // TENTATIVA 3: Fallback com localStorage + simulação de persistência
+    console.log('Todas as APIs falharam, usando fallback local');
+    let valorAtual = parseInt(localStorage.getItem(CHAVE_CONTADOR)) || 1;
+
+    // Verifica se já incrementou nesta sessão (evita múltiplos incrementos por F5)
+    const sessao = sessionStorage.getItem('contador_sessao_' + CHAVE_CONTADOR);
+    if (!sessao) {
+      valorAtual++;
+      localStorage.setItem(CHAVE_CONTADOR, valorAtual);
+      sessionStorage.setItem('contador_sessao_' + CHAVE_CONTADOR, 'true');
+    }
+
+    atualizarDisplay(valorAtual);
+    document.getElementById('status-online').textContent = 'Offline (Local)';
+    document.getElementById('status-online').style.color = '#FF9800';
 
   } catch (error) {
-    console.log('Contador offline, usando fallback local');
-
-    // Fallback: usa localStorage
-    let localVisits = parseInt(localStorage.getItem('visitasFallback')) || 0;
-    localVisits++;
-    localStorage.setItem('visitasFallback', localVisits);
-
-    document.getElementById('contador-numero').textContent = localVisits;
-    document.getElementById('total-visitas').textContent = localVisits;
-
-    // Status offline
-    document.getElementById('status-online').textContent = 'Offline (local)';
-    document.getElementById('status-online').style.color = '#FF9800';
+    console.log('Erro no contador:', error);
+    // Fallback de emergência
+    let fallback = parseInt(localStorage.getItem(CHAVE_CONTADOR)) || 1;
+    atualizarDisplay(fallback);
+    document.getElementById('status-online').textContent = 'Erro';
+    document.getElementById('status-online').style.color = '#f44336';
   }
 
   // Atualiza a hora
   atualizarHora();
 }
 
+// Função para atualizar a interface com o valor
+function atualizarDisplay(valor) {
+  const numeroElement = document.getElementById('contador-numero');
+  const totalVisitas = document.getElementById('total-visitas');
+
+  // Animação suave
+  const valorAtual = parseInt(numeroElement.textContent) || 0;
+
+  if (valor > valorAtual && valor - valorAtual < 100) {
+    // Animação de contagem progressiva
+    let contador = valorAtual;
+    const incremento = Math.max(1, Math.floor((valor - valorAtual) / 15));
+    const animacao = setInterval(() => {
+      contador += incremento;
+      if (contador >= valor) {
+        contador = valor;
+        clearInterval(animacao);
+      }
+      numeroElement.textContent = contador;
+      // Atualiza barra (máximo 5000 para demonstração)
+      const progresso = Math.min((contador / 5000) * 100, 100);
+      document.getElementById('barra-progresso').style.width = progresso + '%';
+    }, 30);
+  } else {
+    numeroElement.textContent = valor;
+    const progresso = Math.min((valor / 5000) * 100, 100);
+    document.getElementById('barra-progresso').style.width = progresso + '%';
+  }
+
+  totalVisitas.textContent = valor;
+
+  // Salva no localStorage como backup
+  localStorage.setItem(CHAVE_CONTADOR, valor);
+}
+
+// ============================================
+// EXECUÇÃO
+// ============================================
+
 // Executa o contador ao carregar a página
 atualizarContador();
 
-// Atualiza a cada 30 segundos
-setInterval(atualizarContador, 30000);
+// Atualiza a cada 60 segundos
+setInterval(atualizarContador, 60000);
 
 // Atualiza a hora a cada segundo
 setInterval(atualizarHora, 1000);
