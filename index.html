@@ -12,6 +12,7 @@
       text-align: center;
       padding: 20px;
       margin: 0;
+      min-height: 100vh;
     }
     .container {
       max-width: 800px;
@@ -151,6 +152,114 @@
       margin-left: 8px;
       text-transform: uppercase;
     }
+
+    /* ========================================== */
+    /* ESTILO DO CONTADOR DE VISITAS              */
+    /* ========================================== */
+    .contador-visitas {
+      margin-top: 40px;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .contador-visitas:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .contador-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .contador-icone {
+      font-size: 32px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .contador-numero {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+      padding: 10px 35px;
+      border-radius: 50px;
+      color: #FFD700;
+      font-size: 38px;
+      font-weight: 900;
+      font-family: 'Courier New', monospace;
+      min-width: 100px;
+      display: inline-block;
+      text-align: center;
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      letter-spacing: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .contador-numero:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .contador-label {
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .contador-footer {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .contador-stat {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 5px 15px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .contador-stat span {
+      color: #FFD700;
+      font-weight: bold;
+    }
+
+    /* Barra de progresso animada */
+    .contador-bar {
+      width: 100%;
+      max-width: 300px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      margin: 10px auto 0;
+      overflow: hidden;
+    }
+
+    .contador-bar-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #FFD700, #FF6B00);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
   </style>
 </head>
 
@@ -264,6 +373,40 @@ box-shadow:0 4px 8px rgba(0,0,0,0.2);
 </div>
 
 <!-- ========================================== -->
+<!-- CONTADOR DE VISITAS (NOVO)                 -->
+<!-- ========================================== -->
+<div class="contador-visitas">
+  <div class="contador-header">
+    <span class="contador-icone">👁️</span>
+    <span class="contador-label">Visitantes</span>
+  </div>
+
+  <div style="margin: 15px 0;">
+    <span id="contador-numero" class="contador-numero">0</span>
+  </div>
+
+  <div class="contador-footer">
+    <div class="contador-stat">
+      🟢 <span id="status-online">Online</span>
+    </div>
+    <div class="contador-stat">
+      📊 Total de <span id="total-visitas">0</span> visitas
+    </div>
+    <div class="contador-stat">
+      ⏱️ Atualizado: <span id="hora-atual">--:--:--</span>
+    </div>
+  </div>
+
+  <div class="contador-bar">
+    <div id="barra-progresso" class="contador-bar-progress"></div>
+  </div>
+
+  <p style="color: rgba(255,255,255,0.4); font-size: 11px; margin-top: 12px; letter-spacing: 1px;">
+    🌐 CONTADOR GLOBAL • ATUALIZAÇÃO EM TEMPO REAL
+  </p>
+</div>
+
+<!-- ========================================== -->
 <!-- CALCULADORA (oculta)                       -->
 <!-- ========================================== -->
 <div id="calculadora-container" class="hidden">
@@ -302,6 +445,89 @@ box-shadow:0 4px 8px rgba(0,0,0,0.2);
 </div>
 
 <script>
+// ============================================
+// CONTADOR DE VISITAS GLOBAL
+// ============================================
+
+// Função para atualizar a hora
+function atualizarHora() {
+  const agora = new Date();
+  document.getElementById('hora-atual').textContent = agora.toLocaleTimeString('pt-BR');
+}
+
+// Função principal do contador
+async function atualizarContador() {
+  try {
+    // Usando CountAPI (gratuito, até 100k acessos/mês)
+    const response = await fetch('https://api.countapi.xyz/hit/meusite-tcc2025/visitas');
+    const data = await response.json();
+
+    // Atualiza o número com animação
+    const numeroElement = document.getElementById('contador-numero');
+    const totalVisitas = document.getElementById('total-visitas');
+
+    // Animação de contagem
+    const valorAtual = parseInt(numeroElement.textContent) || 0;
+    const valorNovo = data.value;
+
+    if (valorNovo > valorAtual) {
+      let contador = valorAtual;
+      const incremento = Math.max(1, Math.floor((valorNovo - valorAtual) / 20));
+
+      const animacao = setInterval(() => {
+        contador += incremento;
+        if (contador >= valorNovo) {
+          contador = valorNovo;
+          clearInterval(animacao);
+        }
+        numeroElement.textContent = contador;
+        // Atualiza barra de progresso (máximo 1000 visitas para demonstração)
+        const progresso = Math.min((contador / 1000) * 100, 100);
+        document.getElementById('barra-progresso').style.width = progresso + '%';
+      }, 50);
+    } else {
+      numeroElement.textContent = valorNovo;
+    }
+
+    totalVisitas.textContent = valorNovo;
+
+    // Status online
+    document.getElementById('status-online').textContent = 'Online';
+    document.getElementById('status-online').style.color = '#4CAF50';
+
+  } catch (error) {
+    console.log('Contador offline, usando fallback local');
+
+    // Fallback: usa localStorage
+    let localVisits = parseInt(localStorage.getItem('visitasFallback')) || 0;
+    localVisits++;
+    localStorage.setItem('visitasFallback', localVisits);
+
+    document.getElementById('contador-numero').textContent = localVisits;
+    document.getElementById('total-visitas').textContent = localVisits;
+
+    // Status offline
+    document.getElementById('status-online').textContent = 'Offline (local)';
+    document.getElementById('status-online').style.color = '#FF9800';
+  }
+
+  // Atualiza a hora
+  atualizarHora();
+}
+
+// Executa o contador ao carregar a página
+atualizarContador();
+
+// Atualiza a cada 30 segundos
+setInterval(atualizarContador, 30000);
+
+// Atualiza a hora a cada segundo
+setInterval(atualizarHora, 1000);
+
+// ============================================
+// FUNÇÕES DA CALCULADORA
+// ============================================
+
 function mostrarCalculadora() {
   document.getElementById('calculadora-container').classList.remove('hidden');
 }
