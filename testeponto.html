@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste de Acesso - TJPE Ponto Eletrônico</title>
+    <title>Acesso Rápido - Ponto Eletrônico TJPE</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -23,461 +23,378 @@
 
         .container {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
             width: 100%;
-            padding: 30px;
-        }
-
-        .header {
+            padding: 30px 20px;
             text-align: center;
-            margin-bottom: 30px;
         }
 
-        .header h1 {
-            color: #1a1a2e;
-            font-size: 24px;
+        .logo {
+            font-size: 60px;
             margin-bottom: 10px;
         }
 
-        .header p {
+        h1 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
             color: #666;
             font-size: 14px;
+            margin-bottom: 25px;
         }
 
-        .status-indicator {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            transition: all 0.3s ease;
-        }
-
-        .status-checking {
+        .status-box {
             background: #f0f0f0;
-            animation: pulse 1.5s infinite;
-        }
-
-        .status-success {
-            background: #d4edda;
-        }
-
-        .status-error {
-            background: #f8d7da;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .url-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            margin-bottom: 15px;
-            transition: border-color 0.3s;
-        }
-
-        .url-input:focus {
-            outline: none;
-            border-color: #0f3460;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
+            border-radius: 12px;
+            padding: 15px;
             margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            color: #555;
+            font-weight: 500;
+        }
+
+        .status-value {
+            font-weight: 600;
+        }
+
+        .status-value.success {
+            color: #28a745;
+        }
+
+        .status-value.error {
+            color: #dc3545;
+        }
+
+        .status-value.warning {
+            color: #ffc107;
         }
 
         .btn {
-            flex: 1;
-            padding: 12px;
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-decoration: none;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
-        .btn-test {
-            background: #0f3460;
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
 
-        .btn-test:hover {
-            background: #16213e;
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(15, 52, 96, 0.4);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-iframe {
-            background: #e94560;
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
         }
 
-        .btn-iframe:hover {
-            background: #c73e54;
+        .btn-success:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.4);
         }
 
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
+        .btn-outline {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
         }
 
-        .results {
-            background: #f8f9fa;
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .alert {
+            padding: 12px;
             border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .result-item:last-child {
-            border-bottom: none;
-        }
-
-        .result-label {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .result-value {
-            color: #666;
-            font-family: 'Courier New', monospace;
+            margin: 15px 0;
             font-size: 14px;
+            text-align: left;
         }
 
-        .result-value.success {
-            color: #28a745;
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
-        .result-value.error {
-            color: #dc3545;
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
-        .log-area {
-            background: #1a1a2e;
-            color: #00ff00;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-            max-height: 200px;
-            overflow-y: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            line-height: 1.6;
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
         }
 
-        .iframe-container {
-            margin-top: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            overflow: hidden;
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
         }
 
-        iframe {
-            width: 100%;
-            height: 400px;
-            border: none;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .hidden {
             display: none;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
         }
 
-        .badge-get { background: #61affe; color: white; }
-        .badge-post { background: #49cc90; color: white; }
-        .badge-options { background: #fca130; color: white; }
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            position: relative;
+            color: #999;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div class="status-indicator status-checking" id="statusIndicator">🔍</div>
-            <h1>Teste de Acesso Remoto</h1>
-            <p>Sistema de Ponto Eletrônico - TJPE</p>
-        </div>
+        <div class="logo">🏛️</div>
+        <h1>Ponto Eletrônico TJPE</h1>
+        <p class="subtitle">Acesso Rápido Externo</p>
 
-        <input 
-            type="text" 
-            id="urlInput" 
-            class="url-input" 
-            value="https://controlefrequencia.app.tjpe.jus.br/xhtml/registroPonto/pontoEletronico.xhtml"
-            placeholder="URL para testar..."
-        >
-
-        <div class="btn-group">
-            <button class="btn btn-test" onclick="testarAcessoFetch()" id="btnFetch">
-                🔍 Testar com Fetch
-            </button>
-            <button class="btn btn-iframe" onclick="testarAcessoIframe()" id="btnIframe">
-                🖼️ Testar com Iframe
-            </button>
-        </div>
-
-        <div class="results hidden" id="results">
-            <h3 style="margin-bottom: 15px; color: #1a1a2e;">📊 Resultados do Teste</h3>
-            <div class="result-item">
-                <span class="result-label">Status HTTP:</span>
-                <span class="result-value" id="httpStatus">-</span>
+        <!-- Status da Conexão -->
+        <div class="status-box" id="statusBox">
+            <div class="status-item">
+                <span class="status-label">🔍 Seu IP:</span>
+                <span class="status-value" id="seuIP">Verificando...</span>
             </div>
-            <div class="result-item">
-                <span class="result-label">Tipo de Erro:</span>
-                <span class="result-value" id="errorType">-</span>
+            <div class="status-item">
+                <span class="status-label">🌐 Servidor:</span>
+                <span class="status-value" id="statusServidor">Verificando...</span>
             </div>
-            <div class="result-item">
-                <span class="result-label">CORS:</span>
-                <span class="result-value" id="corsStatus">-</span>
-            </div>
-            <div class="result-item">
-                <span class="result-label">Tempo de Resposta:</span>
-                <span class="result-value" id="responseTime">-</span>
-            </div>
-            <div class="result-item">
-                <span class="result-label">Servidor:</span>
-                <span class="result-value" id="serverInfo">-</span>
+            <div class="status-item">
+                <span class="status-label">📡 Conexão:</span>
+                <span class="status-value" id="statusConexao">Testando...</span>
             </div>
         </div>
 
-        <div class="log-area" id="logArea">
-            <div>🟢 Console de Log - Aguardando testes...</div>
+        <!-- Mensagens de Alerta -->
+        <div id="alertBox"></div>
+
+        <!-- Botões de Ação -->
+        <a href="https://controlefrequencia.app.tjpe.jus.br/xhtml/login.xhtml" 
+           class="btn btn-primary" 
+           target="_blank"
+           id="btnAcessar">
+            🔑 ACESSAR SISTEMA DE PONTO
+        </a>
+
+        <a href="https://controlefrequencia.app.tjpe.jus.br/xhtml/registroPonto/pontoEletronico.xhtml" 
+           class="btn btn-success" 
+           target="_blank"
+           id="btnPontoDireto">
+            ⚡ PONTO ELETRÔNICO DIRETO
+        </a>
+
+        <div class="divider">
+            <span>OU</span>
         </div>
 
-        <div class="iframe-container hidden" id="iframeContainer">
-            <iframe id="testIframe" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
-        </div>
+        <button class="btn btn-outline" onclick="testarConexao()" id="btnTestar">
+            <span id="btnTestarText">🔍 TESTAR CONEXÃO NOVAMENTE</span>
+        </button>
+
+        <button class="btn btn-outline" onclick="window.open('https://controlefrequencia.app.tjpe.jus.br/xhtml/login.xhtml', '_system')">
+            📱 ABRIR NO NAVEGADOR EXTERNO
+        </button>
     </div>
 
     <script>
-        const urlInput = document.getElementById('urlInput');
-        const statusIndicator = document.getElementById('statusIndicator');
-        const results = document.getElementById('results');
-        const iframeContainer = document.getElementById('iframeContainer');
-        const logArea = document.getElementById('logArea');
-        const btnFetch = document.getElementById('btnFetch');
-        const btnIframe = document.getElementById('btnIframe');
+        // URLs do sistema
+        const URL_LOGIN = 'https://controlefrequencia.app.tjpe.jus.br/xhtml/login.xhtml';
+        const URL_PONTO = 'https://controlefrequencia.app.tjpe.jus.br/xhtml/registroPonto/pontoEletronico.xhtml';
+        
+        // Elementos da interface
+        const seuIP = document.getElementById('seuIP');
+        const statusServidor = document.getElementById('statusServidor');
+        const statusConexao = document.getElementById('statusConexao');
+        const alertBox = document.getElementById('alertBox');
+        const btnTestar = document.getElementById('btnTestar');
+        const btnTestarText = document.getElementById('btnTestarText');
 
-        function addLog(message, type = 'info') {
-            const icons = {
-                'info': '🔵',
-                'success': '🟢',
-                'error': '🔴',
-                'warning': '🟡'
-            };
-            const logEntry = document.createElement('div');
-            logEntry.textContent = `${icons[type] || '⚪'} ${new Date().toLocaleTimeString()} - ${message}`;
-            logArea.appendChild(logEntry);
-            logArea.scrollTop = logArea.scrollHeight;
-        }
-
-        function updateStatus(type) {
-            statusIndicator.className = 'status-indicator';
-            switch(type) {
-                case 'checking':
-                    statusIndicator.classList.add('status-checking');
-                    statusIndicator.textContent = '🔍';
-                    break;
-                case 'success':
-                    statusIndicator.classList.add('status-success');
-                    statusIndicator.textContent = '✅';
-                    break;
-                case 'error':
-                    statusIndicator.classList.add('status-error');
-                    statusIndicator.textContent = '❌';
-                    break;
-            }
-        }
-
-        async function testarAcessoFetch() {
-            const url = urlInput.value;
-            
-            // Reset UI
-            results.classList.remove('hidden');
-            iframeContainer.classList.add('hidden');
-            updateStatus('checking');
-            btnFetch.disabled = true;
-            btnIframe.disabled = true;
-            
-            addLog(`Iniciando teste para: ${url}`, 'info');
-            addLog('Método: Fetch API (XMLHttpRequest)', 'info');
-
-            const startTime = performance.now();
-            
+        // Função para obter o IP do usuário
+        async function obterMeuIP() {
             try {
-                // Tentativa 1: Fetch simples
-                addLog('Tentando requisição fetch simples...', 'warning');
-                const response = await fetch(url, {
-                    method: 'GET',
-                    mode: 'no-cors', // Isso permite que a requisição seja feita, mas não teremos acesso à resposta
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                    }
-                });
-                
-                const endTime = performance.now();
-                const duration = (endTime - startTime).toFixed(2);
-                
-                document.getElementById('responseTime').textContent = `${duration} ms`;
-                
-                if (response.type === 'opaque') {
-                    // Resposta opaca (no-cors) - não sabemos o status real
-                    addLog('Resposta opaca recebida (no-cors mode)', 'warning');
-                    document.getElementById('httpStatus').textContent = 'Desconhecido (opaque)';
-                    document.getElementById('httpStatus').className = 'result-value warning';
-                    
-                    // Tentar com XMLHttpRequest para ver o status real
-                    addLog('Tentando XMLHttpRequest para ver status real...', 'info');
-                    testarComXHR(url, startTime);
-                    
-                } else {
-                    document.getElementById('httpStatus').textContent = response.status;
-                    document.getElementById('httpStatus').className = 'result-value success';
-                    updateStatus('success');
-                    addLog(`✅ Acesso permitido! Status: ${response.status}`, 'success');
-                }
-                
-                document.getElementById('corsStatus').textContent = 'Bloqueado (CORS policy)';
-                document.getElementById('corsStatus').className = 'result-value error';
-                
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
             } catch (error) {
-                const endTime = performance.now();
-                const duration = (endTime - startTime).toFixed(2);
-                
-                document.getElementById('responseTime').textContent = `${duration} ms`;
-                document.getElementById('httpStatus').textContent = 'Erro';
-                document.getElementById('httpStatus').className = 'result-value error';
-                document.getElementById('errorType').textContent = error.message;
-                
-                updateStatus('error');
-                addLog(`❌ Erro: ${error.message}`, 'error');
-                
-                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                    addLog('Possível bloqueio de rede ou CORS', 'error');
-                }
-            } finally {
-                btnFetch.disabled = false;
-                btnIframe.disabled = false;
+                return 'Não detectado';
             }
         }
 
-        function testarComXHR(url, startTime) {
-            const xhr = new XMLHttpRequest();
+        // Função para testar a conexão com o servidor
+        async function testarConexao() {
+            // Desabilita botão durante o teste
+            btnTestar.disabled = true;
+            btnTestarText.innerHTML = '<span class="loader"></span> TESTANDO...';
             
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    const endTime = performance.now();
-                    const duration = (endTime - startTime).toFixed(2);
-                    
-                    document.getElementById('responseTime').textContent = `${duration} ms`;
-                    document.getElementById('httpStatus').textContent = xhr.status;
-                    
-                    if (xhr.status === 200) {
-                        document.getElementById('httpStatus').className = 'result-value success';
-                        updateStatus('success');
-                        addLog(`✅ Acesso permitido via XHR! Status: ${xhr.status}`, 'success');
-                    } else if (xhr.status === 403) {
-                        document.getElementById('httpStatus').className = 'result-value error';
-                        updateStatus('error');
-                        addLog('🚫 Erro 403 Forbidden - Acesso bloqueado!', 'error');
-                        document.getElementById('errorType').textContent = '403 Forbidden - IP bloqueado ou autenticação necessária';
-                        addLog('Causa provável: Restrição de IP externo', 'warning');
-                    } else if (xhr.status === 0) {
-                        document.getElementById('httpStatus').className = 'result-value error';
-                        updateStatus('error');
-                        addLog('Status 0 - Erro de rede ou CORS', 'error');
-                    } else {
-                        document.getElementById('httpStatus').className = 'result-value error';
-                        updateStatus('error');
-                        addLog(`Status inesperado: ${xhr.status}`, 'warning');
-                    }
+            // Reseta status
+            seuIP.textContent = 'Verificando...';
+            seuIP.className = 'status-value';
+            statusServidor.textContent = 'Verificando...';
+            statusServidor.className = 'status-value';
+            statusConexao.textContent = 'Testando...';
+            statusConexao.className = 'status-value';
+            alertBox.innerHTML = '';
+
+            // Obtém IP
+            const ip = await obterMeuIP();
+            seuIP.textContent = ip;
+            
+            // Verifica se está na faixa do TJPE
+            const faixaTJPE = '177.221.33';
+            const estaNaRedeTJPE = ip.startsWith(faixaTJPE);
+            
+            if (estaNaRedeTJPE) {
+                seuIP.className = 'status-value success';
+                alertBox.innerHTML = `
+                    <div class="alert alert-success">
+                        ✅ <strong>IP Autorizado!</strong> Você está na rede do TJPE (${faixaTJPE}.x)
+                    </div>
+                `;
+            } else {
+                seuIP.className = 'status-value warning';
+                alertBox.innerHTML = `
+                    <div class="alert alert-warning">
+                        ⚠️ <strong>IP Externo!</strong> Seu IP não é da rede TJPE. 
+                        Conecte-se à VPN para acessar o sistema.
+                    </div>
+                `;
+            }
+
+            // Testa acesso ao servidor
+            try {
+                const startTime = performance.now();
+                const response = await fetch(URL_LOGIN, {
+                    method: 'GET',
+                    mode: 'no-cors',
+                    cache: 'no-cache'
+                });
+                const endTime = performance.now();
+                const duration = (endTime - startTime).toFixed(0);
+
+                statusServidor.textContent = 'Online';
+                statusServidor.className = 'status-value success';
+
+                if (estaNaRedeTJPE) {
+                    statusConexao.textContent = `Acesso Permitido (${duration}ms)`;
+                    statusConexao.className = 'status-value success';
+                } else {
+                    statusConexao.textContent = 'Verifique VPN';
+                    statusConexao.className = 'status-value warning';
                 }
-            };
-            
-            xhr.onerror = function() {
-                updateStatus('error');
-                addLog('❌ Erro de rede na requisição XHR', 'error');
-            };
-            
-            xhr.open('GET', url, true);
-            xhr.setRequestHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
-            xhr.send();
+            } catch (error) {
+                statusServidor.textContent = 'Offline/Erro';
+                statusServidor.className = 'status-value error';
+                statusConexao.textContent = 'Falha na conexão';
+                statusConexao.className = 'status-value error';
+            }
+
+            // Reabilita botão
+            btnTestar.disabled = false;
+            btnTestarText.textContent = '🔍 TESTAR CONEXÃO NOVAMENTE';
         }
 
-        function testarAcessoIframe() {
-            const url = urlInput.value;
+        // Função para abrir no navegador externo (mobile)
+        function abrirNavegadorExterno(url) {
+            // Tenta abrir no navegador do sistema
+            window.open(url, '_system');
             
-            // Reset UI
-            results.classList.add('hidden');
-            iframeContainer.classList.remove('hidden');
-            updateStatus('checking');
-            
-            addLog(`Carregando URL em iframe: ${url}`, 'info');
-            addLog('Nota: Iframe pode ser bloqueado por headers X-Frame-Options', 'warning');
-            
-            const iframe = document.getElementById('testIframe');
-            iframe.src = url;
-            
-            // Verificar se o iframe carregou
-            iframe.onload = function() {
-                try {
-                    // Tentar acessar o conteúdo do iframe (vai falhar se for cross-origin)
-                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                    if (iframeDoc) {
-                        updateStatus('success');
-                        addLog('✅ Iframe carregado com sucesso! Acesso permitido.', 'success');
-                    }
-                } catch (e) {
-                    updateStatus('error');
-                    addLog('❌ Não foi possível acessar o conteúdo do iframe (cross-origin)', 'error');
-                    addLog('O iframe pode ter sido bloqueado por X-Frame-Options ou Content-Security-Policy', 'warning');
-                }
-            };
-            
-            iframe.onerror = function() {
-                updateStatus('error');
-                addLog('❌ Erro ao carregar iframe', 'error');
-            };
-            
-            btnFetch.disabled = false;
-            btnIframe.disabled = false;
+            // Fallback: abre em nova janela
+            setTimeout(() => {
+                window.open(url, '_blank');
+            }, 500);
         }
 
-        // Teste inicial automático
+        // Testa automaticamente ao carregar
         window.addEventListener('load', () => {
-            addLog('🟢 Sistema de teste iniciado', 'success');
-            addLog('URL alvo: ' + urlInput.value, 'info');
-            addLog('Clique em "Testar com Fetch" para iniciar a verificação', 'info');
+            testarConexao();
+            
+            // Se o IP estiver na faixa do TJPE, redireciona automaticamente
+            setTimeout(async () => {
+                const ip = await obterMeuIP();
+                if (ip.startsWith('177.221.33')) {
+                    // Redireciona para o ponto eletrônico
+                    window.location.href = URL_PONTO;
+                }
+            }, 2000);
         });
+
+        // Detecta se está em um iframe e oferece para abrir diretamente
+        if (window.self !== window.top) {
+            alertBox.innerHTML += `
+                <div class="alert alert-warning">
+                    📱 <strong>Detectado em Iframe!</strong> 
+                    <a href="${URL_LOGIN}" target="_blank" style="color: #856404; font-weight: bold;">
+                        Clique aqui para abrir diretamente
+                    </a>
+                </div>
+            `;
+        }
     </script>
 </body>
 </html>
