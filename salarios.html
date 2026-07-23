@@ -73,7 +73,6 @@
             border-color: #8ecae6;
         }
 
-        /* LOADING */
         .loading {
             display: none;
             text-align: center;
@@ -94,7 +93,6 @@
             }
         }
 
-        /* FILTROS */
         .filtros {
             display: flex;
             flex-wrap: wrap;
@@ -203,7 +201,6 @@
             white-space: nowrap;
         }
 
-        /* STATUS */
         .status-bar {
             display: flex;
             justify-content: space-between;
@@ -227,7 +224,6 @@
             color: #f5a623;
         }
 
-        /* STATS CARDS */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -263,7 +259,6 @@
             margin-left: 6px;
         }
 
-        /* TABELA */
         .table-wrap {
             overflow-x: auto;
             max-height: 580px;
@@ -326,6 +321,11 @@
             color: #b8c9e0;
             font-size: 12px;
         }
+        .ano-col {
+            color: #f5a623;
+            font-weight: 600;
+            text-align: center;
+        }
         .empty {
             text-align: center;
             padding: 50px 20px;
@@ -336,7 +336,6 @@
             margin-bottom: 12px;
         }
 
-        /* SCROLL */
         .table-wrap::-webkit-scrollbar {
             width: 5px;
             height: 5px;
@@ -349,7 +348,6 @@
             border-radius: 10px;
         }
 
-        /* ALERTA */
         .alerta {
             background: rgba(245, 166, 35, 0.08);
             border: 1px solid rgba(245, 166, 35, 0.15);
@@ -434,7 +432,6 @@
             <p style="color: rgba(255,255,255,0.5);">Carregando dados do TJPE...</p>
         </div>
 
-        <!-- FILTROS -->
         <div class="filtros">
             <div class="grupo">
                 <label>👤 Nome</label>
@@ -466,20 +463,19 @@
                 <button class="btn btn-primary" id="btnBuscar" onclick="buscar()">🔍 Buscar</button>
                 <button class="btn btn-danger" onclick="limparTudo()">✕ Limpar</button>
             </div>
-            <span class="badge-total" id="totalBadge">0 servidores</span>
+            <span class="badge-total" id="totalBadge">0 registros</span>
         </div>
 
-        <!-- STATS -->
         <div class="stats-grid" id="statsGrid"></div>
 
-        <!-- TABELA -->
         <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
                         <th style="min-width:180px;">Nome</th>
                         <th style="min-width:140px;">Cargo</th>
-                        <th style="min-width:140px;">Lotação</th>
+                        <th style="min-width:140px;">Lotaçao</th>
+                        <th style="min-width:70px; color:#f5a623;">Ano</th>
                         <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th>
                         <th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th>
                         <th>Set</th><th>Out</th><th>Nov</th><th>Dez</th>
@@ -487,7 +483,7 @@
                     </tr>
                 </thead>
                 <tbody id="tabelaCorpo">
-                    <tr><td colspan="16" class="empty">
+                    <tr><td colspan="17" class="empty">
                         <div class="icon">🔍</div>
                         <div>Preencha os campos e clique em <strong>Buscar</strong></div>
                         <div style="font-size:13px; color:rgba(255,255,255,0.2);">Selecione <strong>Todos os anos</strong> e informe um nome para consulta completa</div>
@@ -498,29 +494,21 @@
     </div>
 
     <script>
-        // ============================================================
-        // CONFIGURAÇÃO
-        // ============================================================
         const API_URL = 'https://tjpe-backend.onrender.com';
         const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
             'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
         ];
 
-        // ============================================================
-        // POPULAR ANOS (2012 até ano atual + "Todos os anos")
-        // ============================================================
         function popularAnos() {
             const sel = document.getElementById('anoBusca');
             const anoAtual = new Date().getFullYear();
 
-            // Opção "Todos os anos"
             const optTodos = document.createElement('option');
             optTodos.value = 'todos';
             optTodos.textContent = '📊 Todos os anos';
             optTodos.className = 'todos-anos';
             sel.appendChild(optTodos);
 
-            // Anos de 2012 até atual
             for (let a = anoAtual; a >= 2012; a--) {
                 const opt = document.createElement('option');
                 opt.value = a;
@@ -531,9 +519,6 @@
         }
         popularAnos();
 
-        // ============================================================
-        // VERIFICAR BACKEND
-        // ============================================================
         function verificarBackend() {
             fetch(API_URL + '/health')
                 .then(r => r.json())
@@ -546,16 +531,10 @@
         }
         verificarBackend();
 
-        // ============================================================
-        // MOSTRAR/OCULTAR LOADING
-        // ============================================================
         function setLoading(ativo) {
             document.getElementById('loading').style.display = ativo ? 'block' : 'none';
         }
 
-        // ============================================================
-        // VALIDAR SE PODE BUSCAR TODOS OS ANOS
-        // ============================================================
         function validarTodosAnos() {
             const ano = document.getElementById('anoBusca').value;
             const nome = document.getElementById('nomeBusca').value.trim();
@@ -579,21 +558,14 @@
             }
         }
 
-        // ============================================================
-        // EVENTOS PARA VALIDAR
-        // ============================================================
         document.getElementById('anoBusca').addEventListener('change', validarTodosAnos);
         document.getElementById('nomeBusca').addEventListener('input', validarTodosAnos);
 
-        // ============================================================
-        // BUSCAR
-        // ============================================================
         function buscar() {
             const nome = document.getElementById('nomeBusca').value.trim();
             const ano = document.getElementById('anoBusca').value;
             const mes = document.getElementById('mesBusca').value;
 
-            // Validação
             if (ano === 'todos' && nome === '') {
                 alert('Para consultar TODOS OS ANOS, informe um nome específico.');
                 return;
@@ -622,7 +594,7 @@
                 .then(res => {
                     setLoading(false);
                     if (res.success) {
-                        renderizar(res.dados);
+                        renderizar(res.dados, ano);
                     } else {
                         alert('Erro: ' + res.error);
                         mostrarVazio('Erro ao carregar dados');
@@ -635,9 +607,6 @@
                 });
         }
 
-        // ============================================================
-        // BUSCAR TODOS OS ANOS (para um nome específico)
-        // ============================================================
         function buscarTodosAnos(nome, mes) {
             const anoAtual = new Date().getFullYear();
             document.getElementById('infoAno').textContent = '📅 Todos os anos (2012–' + anoAtual + ') para: ' + nome;
@@ -653,7 +622,13 @@
                         body: JSON.stringify({ nome, ano: String(a), mes })
                     })
                     .then(r => r.json())
-                    .then(res => res.success ? res.dados : [])
+                    .then(res => {
+                        if (res.success && res.dados) {
+                            // Adicionar o ano a cada registro
+                            return res.dados.map(item => ({ ...item, _ano: a }));
+                        }
+                        return [];
+                    })
                     .catch(() => [])
                 );
             }
@@ -673,36 +648,9 @@
                         return;
                     }
 
-                    // Agrupar por servidor (Nome + Cargo + Lotação) e somar valores por mês
-                    const mapa = new Map();
-                    todos.forEach(item => {
-                        const chave = item.Nome + '|' + item.Cargo + '|' + item.Lotacao;
-                        if (!mapa.has(chave)) {
-                            mapa.set(chave, {
-                                Nome: item.Nome,
-                                Cargo: item.Cargo,
-                                Lotacao: item.Lotacao,
-                                meses: {}
-                            });
-                        }
-                        const reg = mapa.get(chave);
-                        MESES.forEach(m => {
-                            if (item[m] && item[m] > 0) {
-                                reg.meses[m] = (reg.meses[m] || 0) + item[m];
-                            }
-                        });
-                    });
-
-                    const consolidado = [];
-                    mapa.forEach((val) => {
-                        const obj = { Nome: val.Nome, Cargo: val.Cargo, Lotacao: val.Lotacao };
-                        MESES.forEach(m => {
-                            obj[m] = val.meses[m] || 0;
-                        });
-                        consolidado.push(obj);
-                    });
-
-                    renderizar(consolidado);
+                    // Ordenar por ano (mais recente primeiro)
+                    todos.sort((a, b) => b._ano - a._ano);
+                    renderizar(todos, 'todos');
                 })
                 .catch(err => {
                     setLoading(false);
@@ -711,10 +659,7 @@
                 });
         }
 
-        // ============================================================
-        // RENDERIZAR
-        // ============================================================
-        function renderizar(dados) {
+        function renderizar(dados, anoSelecionado) {
             const tbody = document.getElementById('tabelaCorpo');
             const badge = document.getElementById('totalBadge');
 
@@ -727,14 +672,17 @@
             let totalGeral = 0;
             let maiorValor = 0;
             let totalRegistros = 0;
-            const servidores = dados.length;
+            const totalLinhas = dados.length;
 
             dados.forEach(s => {
                 let total = 0;
+                const ano = s._ano || anoSelecionado || '—';
+                
                 html += '<tr>';
                 html += '<td class="nome-col">' + s.Nome + '</td>';
                 html += '<td class="cargo-col">' + s.Cargo + '</td>';
                 html += '<td class="cargo-col">' + s.Lotacao + '</td>';
+                html += '<td class="ano-col">' + ano + '</td>';
 
                 MESES.forEach(m => {
                     const v = s[m] || 0;
@@ -754,24 +702,21 @@
             });
 
             tbody.innerHTML = html;
-            badge.textContent = servidores + ' servidores';
+            badge.textContent = totalLinhas + ' registros';
 
             const statsGrid = document.getElementById('statsGrid');
             statsGrid.innerHTML = `
-                <div class="stat-card"><div class="label">Servidores</div><div class="value">${servidores}</div></div>
-                <div class="stat-card"><div class="label">Registros (mês/ano)</div><div class="value">${totalRegistros}</div></div>
+                <div class="stat-card"><div class="label">Registros</div><div class="value">${totalLinhas}</div></div>
+                <div class="stat-card"><div class="label">Valores registrados</div><div class="value">${totalRegistros}</div></div>
                 <div class="stat-card"><div class="label">Soma total</div><div class="value">R$ ${totalGeral.toFixed(2).replace('.', ',')}</div></div>
                 <div class="stat-card"><div class="label">Maior valor</div><div class="value">R$ ${maiorValor.toFixed(2).replace('.', ',')}</div></div>
             `;
         }
 
-        // ============================================================
-        // UTILITÁRIOS
-        // ============================================================
         function mostrarVazio(msg) {
             document.getElementById('tabelaCorpo').innerHTML =
-                `<tr><td colspan="16" class="empty"><div class="icon">📭</div><div>${msg}</div></td></tr>`;
-            document.getElementById('totalBadge').textContent = '0 servidores';
+                `<tr><td colspan="17" class="empty"><div class="icon">📭</div><div>${msg}</div></td></tr>`;
+            document.getElementById('totalBadge').textContent = '0 registros';
             limparStats();
         }
 
@@ -788,12 +733,9 @@
             document.getElementById('btnBuscar').disabled = false;
             mostrarVazio('Preencha os campos e clique em Buscar');
             document.getElementById('infoAno').textContent = '📅 Ano: —';
-            document.getElementById('totalBadge').textContent = '0 servidores';
+            document.getElementById('totalBadge').textContent = '0 registros';
         }
 
-        // ============================================================
-        // ENTER PARA BUSCAR
-        // ============================================================
         document.getElementById('nomeBusca').addEventListener('keydown', e => {
             if (e.key === 'Enter') buscar();
         });
@@ -804,7 +746,6 @@
             if (e.key === 'Enter') buscar();
         });
 
-        // Validação inicial
         validarTodosAnos();
     </script>
 
