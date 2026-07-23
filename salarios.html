@@ -5,415 +5,747 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Auditoria TJPE - Salários</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-            color: #fff; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #0c0c1a, #141428, #1a1a3e);
+            color: #e8edf5;
             min-height: 100vh;
             padding: 20px;
         }
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
-            background: rgba(255,255,255,0.08);
-            border-radius: 16px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(18, 22, 40, 0.85);
+            backdrop-filter: blur(14px);
+            border-radius: 24px;
+            padding: 28px 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        h1 { 
-            color: #f5a623; 
-            border-bottom: 2px solid rgba(245,166,35,0.3);
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-            font-size: 24px;
+        h1 {
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            border-bottom: 2px solid rgba(245, 166, 35, 0.25);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        h1 span { color: #fff; }
-        
+        h1 span {
+            color: #f5a623;
+            font-weight: 600;
+        }
+        h1 small {
+            font-size: 14px;
+            font-weight: 400;
+            color: #8ecae6;
+            margin-left: auto;
+            background: rgba(142, 202, 230, 0.08);
+            padding: 6px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(142, 202, 230, 0.1);
+        }
         .voltar {
-            display: inline-block;
-            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
             color: #8ecae6;
             text-decoration: none;
             font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+            background: rgba(142, 202, 230, 0.06);
+            padding: 6px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(142, 202, 230, 0.08);
         }
-        .voltar:hover { color: #fff; }
-        
-        .loading { 
-            display: none; 
-            text-align: center; 
-            padding: 30px; 
+        .voltar:hover {
+            color: #fff;
+            background: rgba(142, 202, 230, 0.15);
+            border-color: #8ecae6;
         }
-        .loading .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.1);
+
+        /* LOADING */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 10px;
+        }
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 4px solid rgba(255, 255, 255, 0.05);
             border-top: 4px solid #f5a623;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 15px;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto 16px;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* FILTROS */
         .filtros {
             display: flex;
-            gap: 12px;
             flex-wrap: wrap;
-            margin-bottom: 20px;
-            align-items: end;
+            gap: 14px 18px;
+            margin-bottom: 22px;
+            align-items: flex-end;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 18px 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
-        .filtros label {
-            font-size: 12px;
+        .filtros .grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1 0 140px;
+            min-width: 130px;
+        }
+        .filtros .grupo label {
+            font-size: 11px;
             font-weight: 600;
-            color: #8ecae6;
-            display: block;
-            margin-bottom: 3px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
+            color: #8ecae6;
         }
-        .filtros input, .filtros select {
+        .filtros input,
+        .filtros select {
             padding: 10px 14px;
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            font-size: 14px;
-            background: rgba(255,255,255,0.06);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.35);
             color: #fff;
+            font-size: 14px;
             outline: none;
-            transition: border 0.3s;
-            min-width: 200px;
+            transition: 0.25s;
+            width: 100%;
         }
-        .filtros input::placeholder { color: rgba(255,255,255,0.4); }
-        .filtros input:focus, .filtros select:focus { border-color: #f5a623; }
-        .filtros select option { background: #1a1a2e; color: #fff; }
-        
+        .filtros input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        .filtros input:focus,
+        .filtros select:focus {
+            border-color: #f5a623;
+            box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.15);
+        }
+        .filtros select option {
+            background: #141428;
+            color: #fff;
+        }
+
+        .botoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
         .btn {
-            padding: 10px 24px;
+            padding: 10px 22px;
             border: none;
-            border-radius: 10px;
+            border-radius: 30px;
             font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-        .btn-primary { background: #f5a623; color: #1a1a2e; }
-        .btn-primary:hover { background: #f7c35a; transform: translateY(-2px); }
-        .btn-success { background: #27ae60; color: #fff; }
-        .btn-success:hover { background: #2ecc71; transform: translateY(-2px); }
-        .btn-danger { background: #e74c3c; color: #fff; }
-        .btn-danger:hover { background: #c0392b; transform: translateY(-2px); }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .stat {
-            background: rgba(255,255,255,0.05);
-            padding: 15px 20px;
-            border-radius: 10px;
-            border-left: 3px solid #f5a623;
-        }
-        .stat .label { font-size: 11px; color: #8ecae6; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat .value { font-size: 22px; font-weight: 700; color: #fff; margin-top: 4px; }
-        
-        .table-wrap {
-            overflow-x: auto;
-            max-height: 550px;
-            overflow-y: auto;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        thead { background: rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 10; }
-        th {
-            padding: 12px 14px;
-            text-align: left;
-            font-weight: 600;
-            color: #8ecae6;
-            border-bottom: 2px solid rgba(255,255,255,0.05);
-            white-space: nowrap;
-            background: rgba(26,26,46,0.95);
-        }
-        td {
-            padding: 10px 14px;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            color: rgba(255,255,255,0.9);
-        }
-        tr:hover { background: rgba(255,255,255,0.03); }
-        .money { font-weight: 600; color: #2ecc71; font-family: monospace; }
-        .total-col {
-            font-weight: 700;
-            background: rgba(39,174,96,0.15);
-            color: #2ecc71;
-            padding: 3px 10px;
-            border-radius: 4px;
-        }
-        .badge {
-            background: rgba(255,255,255,0.05);
-            padding: 4px 14px;
-            border-radius: 20px;
             font-size: 13px;
-            color: #8ecae6;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
         }
-        .empty { text-align: center; padding: 40px; color: rgba(255,255,255,0.4); }
-        .empty .icon { font-size: 40px; margin-bottom: 10px; }
-        .info {
-            background: rgba(142,202,230,0.08);
-            padding: 12px 18px;
-            border-radius: 10px;
-            margin-bottom: 18px;
-            font-size: 14px;
+        .btn-primary {
+            background: #f5a623;
+            color: #0c0c1a;
+        }
+        .btn-primary:hover {
+            background: #f7c35a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 166, 35, 0.25);
+        }
+        .btn-success {
+            background: #1f8b4c;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.25);
+        }
+        .btn-danger {
+            background: #b03a2e;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #e74c3c;
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent;
             color: #8ecae6;
+            border: 1px solid rgba(142, 202, 230, 0.2);
+        }
+        .btn-outline:hover {
+            background: rgba(142, 202, 230, 0.08);
+            border-color: #8ecae6;
+        }
+
+        .badge-total {
+            background: rgba(245, 166, 35, 0.12);
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            color: #f5a623;
+            border: 1px solid rgba(245, 166, 35, 0.1);
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        /* STATUS */
+        .status-bar {
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 10px;
-            border: 1px solid rgba(142,202,230,0.05);
+            gap: 8px 20px;
+            background: rgba(142, 202, 230, 0.04);
+            padding: 12px 18px;
+            border-radius: 14px;
+            margin-bottom: 22px;
+            font-size: 13px;
+            border: 1px solid rgba(142, 202, 230, 0.04);
+            color: #a0bcd6;
         }
-        .info .status-ok { color: #2ecc71; }
-        .info .status-error { color: #e74c3c; }
-        
+        .status-ok {
+            color: #4cdb7b;
+        }
+        .status-error {
+            color: #f06a5e;
+        }
+
+        /* STATS CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 18px 20px;
+            border-radius: 16px;
+            border-left: 4px solid #f5a623;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .stat-card .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #8ecae6;
+            font-weight: 500;
+        }
+        .stat-card .value {
+            font-size: 26px;
+            font-weight: 700;
+            margin-top: 6px;
+            color: #fff;
+            font-family: 'Segoe UI', monospace;
+        }
+        .stat-card .value small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #8ecae6;
+            margin-left: 6px;
+        }
+
+        /* TABELA */
+        .table-wrap {
+            overflow-x: auto;
+            max-height: 580px;
+            overflow-y: auto;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(0, 0, 0, 0.15);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: #0f0f24;
+        }
+        th {
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #8ecae6;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+            background: #0f0f24;
+        }
+        td {
+            padding: 11px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.025);
+            color: rgba(255, 255, 255, 0.85);
+            vertical-align: middle;
+        }
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .money {
+            font-weight: 600;
+            color: #4cdb7b;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+        .total-col {
+            font-weight: 700;
+            background: rgba(39, 174, 96, 0.10);
+            color: #4cdb7b;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .nome-col {
+            font-weight: 600;
+            color: #fff;
+        }
+        .cargo-col {
+            color: #b8c9e0;
+            font-size: 12px;
+        }
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: rgba(255, 255, 255, 0.25);
+        }
+        .empty .icon {
+            font-size: 44px;
+            margin-bottom: 12px;
+        }
+
+        /* SCROLL */
+        .table-wrap::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .table-wrap::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .table-wrap::-webkit-scrollbar-thumb {
+            background: rgba(245, 166, 35, 0.3);
+            border-radius: 10px;
+        }
+
         @media (max-width: 768px) {
-            .filtros { flex-direction: column; }
-            .filtros input { min-width: 100%; }
-            .btn { width: 100%; justify-content: center; }
-            .stats { grid-template-columns: 1fr 1fr; }
-            .container { padding: 15px; }
+            .container {
+                padding: 16px;
+            }
+            .filtros {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filtros .grupo {
+                flex: 1 1 auto;
+                min-width: 100%;
+            }
+            .botoes {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .btn {
+                flex: 1 1 auto;
+                justify-content: center;
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+            .badge-total {
+                margin-left: 0;
+                text-align: center;
+                width: 100%;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stat-card .value {
+                font-size: 20px;
+            }
+            h1 {
+                font-size: 20px;
+                flex-wrap: wrap;
+            }
+            h1 small {
+                font-size: 11px;
+                margin-left: 0;
+                padding: 4px 12px;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <a href="index.html" class="voltar">⬅ Voltar ao menu principal</a>
-    
-    <h1>⚖️ TJPE <span>Auditoria Salarial</span></h1>
+    <div class="container">
 
-    <div class="info">
-        <span id="statusBackend">📡 Verificando conexão com o backend...</span>
-        <span>🔍 Dados do Portal da Transparência</span>
+        <a href="index.html" class="voltar">← Voltar ao menu principal</a>
+
+        <h1>
+            ⚖️ <span>TJPE</span> Auditoria Salarial
+            <small>Portal da Transparência</small>
+        </h1>
+
+        <div class="status-bar" id="statusBar">
+            <span id="statusBackend">📡 Verificando conexão...</span>
+            <span id="infoAno">📅 Ano: —</span>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="color: rgba(255,255,255,0.5);">Carregando dados do TJPE...</p>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filtros">
+            <div class="grupo">
+                <label>👤 Nome (opcional)</label>
+                <input type="text" id="nomeBusca" placeholder="Deixe em branco para TODOS">
+            </div>
+            <div class="grupo">
+                <label>📅 Ano</label>
+                <select id="anoBusca"></select>
+            </div>
+            <div class="grupo">
+                <label>📆 Mês</label>
+                <select id="mesBusca">
+                    <option value="todos">Todos os meses</option>
+                    <option value="Janeiro">Janeiro</option>
+                    <option value="Fevereiro">Fevereiro</option>
+                    <option value="Março">Março</option>
+                    <option value="Abril">Abril</option>
+                    <option value="Maio">Maio</option>
+                    <option value="Junho">Junho</option>
+                    <option value="Julho">Julho</option>
+                    <option value="Agosto">Agosto</option>
+                    <option value="Setembro">Setembro</option>
+                    <option value="Outubro">Outubro</option>
+                    <option value="Novembro">Novembro</option>
+                    <option value="Dezembro">Dezembro</option>
+                </select>
+            </div>
+            <div class="botoes">
+                <button class="btn btn-primary" onclick="buscar()">🔍 Buscar</button>
+                <button class="btn btn-success" onclick="buscarTodosAnos()">📊 Todos os anos</button>
+                <button class="btn btn-danger" onclick="limparTudo()">✕ Limpar</button>
+            </div>
+            <span class="badge-total" id="totalBadge">0 servidores</span>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <!-- TABELA -->
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="min-width:180px;">Nome</th>
+                        <th style="min-width:140px;">Cargo</th>
+                        <th style="min-width:140px;">Lotação</th>
+                        <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th>
+                        <th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th>
+                        <th>Set</th><th>Out</th><th>Nov</th><th>Dez</th>
+                        <th style="min-width:100px; background:rgba(39,174,96,0.08); color:#4cdb7b;">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaCorpo">
+                    <tr><td colspan="16" class="empty">
+                        <div class="icon">🔍</div>
+                        <div>Preencha os campos e clique em <strong>Buscar</strong></div>
+                        <div style="font-size:13px; color:rgba(255,255,255,0.2);">ou use <strong>Todos os anos</strong> para uma visão completa</div>
+                    </td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p style="color: rgba(255,255,255,0.6);">Consultando o portal do TJPE...</p>
-    </div>
+    <script>
+        // ============================================================
+        // CONFIGURAÇÃO
+        // ============================================================
+        const API_URL = 'https://tjpe-backend.onrender.com';
+        const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ];
 
-    <div class="filtros">
-        <div>
-            <label>👤 Nome</label>
-            <input type="text" id="nomeBusca" placeholder="Deixe em branco para TODOS">
-        </div>
-        <div>
-            <label>📅 Ano</label>
-            <select id="anoBusca">
-                <option value="2026">2026</option>
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-                <option value="2022">2022</option>
-                <option value="2021">2021</option>
-                <option value="2020">2020</option>
-                 <option value="2019">2019</option>
-                <option value="2018">2018</option>
-                <option value="2017">2017</option>
-                <option value="2016">2016</option>
-                <option value="2015">2015</option>
-                <option value="2014">2014</option>
-                <option value="2013">2013</option>
-                <option value="2012">2012</option>
-            </select>
-        </div>
-        <div>
-            <label>📅 Mês</label>
-            <select id="mesBusca">
-                <option value="todos">Todos</option>
-                <option value="Janeiro">Janeiro</option>
-                <option value="Fevereiro">Fevereiro</option>
-                <option value="Março">Março</option>
-                <option value="Abril">Abril</option>
-                <option value="Maio">Maio</option>
-                <option value="Junho">Junho</option>
-                <option value="Julho">Julho</option>
-                <option value="Agosto">Agosto</option>
-                <option value="Setembro">Setembro</option>
-                <option value="Outubro">Outubro</option>
-                <option value="Novembro">Novembro</option>
-                <option value="Dezembro">Dezembro</option>
-            </select>
-        </div>
-        <div>
-            <button class="btn btn-primary" onclick="buscar()">🔍 Buscar</button>
-            <button class="btn btn-success" onclick="buscarTodos()">📋 Todos</button>
-            <button class="btn btn-danger" onclick="limpar()">🗑️ Limpar</button>
-        </div>
-        <div style="margin-left:auto;">
-            <span class="badge" id="totalBadge">0 servidores</span>
-        </div>
-    </div>
-
-    <div class="stats" id="stats"></div>
-
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th style="min-width:180px;">Nome</th>
-                    <th style="min-width:150px;">Cargo</th>
-                    <th style="min-width:130px;">Lotação</th>
-                    <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th>
-                    <th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th>
-                    <th>Set</th><th>Out</th><th>Nov</th><th>Dez</th>
-                    <th style="min-width:90px;background:rgba(39,174,96,0.15);color:#2ecc71;">Total</th>
-                </tr>
-            </thead>
-            <tbody id="tabelaCorpo">
-                <tr><td colspan="16" class="empty">
-                    <div class="icon">🔍</div>
-                    <div>Preencha os campos e clique em "Buscar"</div>
-                    <div style="font-size:13px;color:rgba(255,255,255,0.3);">Deixe o nome em branco para buscar TODOS</div>
-                </td></tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<script>
-// ============================================================
-// CONFIGURAÇÃO - URL DO BACKEND NO RENDER
-// ============================================================
-const API_URL = 'https://tjpe-backend.onrender.com'; 
-
-var meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-
-// ============================================================
-// VERIFICAR CONEXÃO COM O BACKEND
-// ============================================================
-function verificarBackend() {
-    fetch(API_URL + '/health')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('statusBackend').innerHTML = '✅ <span class="status-ok">Backend conectado</span>';
-        })
-        .catch(error => {
-            document.getElementById('statusBackend').innerHTML = '⚠️ <span class="status-error">Backend indisponível</span>';
-        });
-}
-
-// ============================================================
-// BUSCAR DADOS
-// ============================================================
-function buscar() {
-    var nome = document.getElementById('nomeBusca').value.trim();
-    var ano = document.getElementById('anoBusca').value;
-    var mes = document.getElementById('mesBusca').value;
-    
-    if (!ano) {
-        alert('Selecione um ano!');
-        return;
-    }
-    
-    document.getElementById('loading').style.display = 'block';
-    document.getElementById('tabelaCorpo').innerHTML = '<tr><td colspan="16" class="empty"><div class="icon">⏳</div><div>Consultando dados...</div></td></tr>';
-    document.getElementById('stats').innerHTML = '';
-    
-    console.log('🚀 Enviando requisição para:', API_URL + '/buscar');
-    console.log('📦 Dados:', { nome: nome, ano: ano, mes: mes });
-    
-    fetch(API_URL + '/buscar', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            nome: nome,
-            ano: ano,
-            mes: mes
-        })
-    })
-    .then(response => {
-        console.log('📡 Status da resposta:', response.status);
-        if (!response.ok) {
-            throw new Error('HTTP error! status: ' + response.status);
-        }
-        return response.json();
-    })
-    .then(result => {
-        console.log('📊 Resultado:', result);
-        document.getElementById('loading').style.display = 'none';
-        if (result.success) {
-            renderizar(result.dados);
-        } else {
-            alert('Erro: ' + result.error);
-        }
-    })
-    .catch(error => {
-        console.error('❌ Erro detalhado:', error);
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('tabelaCorpo').innerHTML = '<tr><td colspan="16" class="empty"><div class="icon">❌</div><div>Erro: ' + error.message + '</div><div style="font-size:13px;color:rgba(255,255,255,0.3);">Verifique o console (F12) para mais detalhes</div></td></tr>';
-    });
-}
-// ============================================================
-// RENDERIZAR TABELA
-// ============================================================
-function renderizar(dados) {
-    var tbody = document.getElementById('tabelaCorpo');
-    var badge = document.getElementById('totalBadge');
-    
-    if (!dados || dados.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="16" class="empty"><div class="icon">🔍</div><div>Nenhum dado encontrado</div></td></tr>';
-        badge.textContent = '0 servidores';
-        document.getElementById('stats').innerHTML = '';
-        return;
-    }
-
-    var html = '', totalGeral = 0, maiorValor = 0;
-    var totalServidores = dados.length;
-    var qtdRegistros = 0;
-    
-    dados.forEach(function(s) {
-        var total = 0;
-        html += '<tr>';
-        html += '<td><strong style="color:#fff;">' + s.Nome + '</strong></td>';
-        html += '<td style="color:rgba(255,255,255,0.8);">' + s.Cargo + '</td>';
-        html += '<td style="color:rgba(255,255,255,0.8);">' + s.Lotacao + '</td>';
-        meses.forEach(function(m) {
-            var v = s[m] || 0;
-            total += v;
-            totalGeral += v;
-            if (v > 0) { 
-                html += '<td class="money">R$ ' + v.toFixed(2).replace('.',',') + '</td>'; 
-                if (v > maiorValor) maiorValor = v;
-                qtdRegistros++;
-            } else {
-                html += '<td style="color:rgba(255,255,255,0.15);">-</td>';
+        // ============================================================
+        // POPULAR ANOS (2012 até ano atual)
+        // ============================================================
+        function popularAnos() {
+            const sel = document.getElementById('anoBusca');
+            const anoAtual = new Date().getFullYear();
+            for (let a = 2012; a <= anoAtual; a++) {
+                const opt = document.createElement('option');
+                opt.value = a;
+                opt.textContent = a;
+                sel.appendChild(opt);
             }
-        });
-        html += '<td class="total-col">R$ ' + total.toFixed(2).replace('.',',') + '</td>';
-        html += '</tr>';
-    });
-    
-    tbody.innerHTML = html;
-    badge.textContent = totalServidores + ' servidores';
-    
-    var statsHtml = '';
-    statsHtml += '<div class="stat"><div class="label">Servidores</div><div class="value">' + totalServidores + '</div></div>';
-    statsHtml += '<div class="stat"><div class="label">Registros</div><div class="value">' + qtdRegistros + '</div></div>';
-    statsHtml += '<div class="stat"><div class="label">Soma Total</div><div class="value">R$ ' + totalGeral.toFixed(2).replace('.',',') + '</div></div>';
-    statsHtml += '<div class="stat"><div class="label">Maior Valor</div><div class="value">R$ ' + maiorValor.toFixed(2).replace('.',',') + '</div></div>';
-    document.getElementById('stats').innerHTML = statsHtml;
-}
+            sel.value = anoAtual;
+        }
+        popularAnos();
 
-// ============================================================
-// INICIAR
-// ============================================================
-document.addEventListener('DOMContentLoaded', function() {
-    verificarBackend();
-});
-</script>
+        // ============================================================
+        // VERIFICAR BACKEND
+        // ============================================================
+        function verificarBackend() {
+            fetch(API_URL + '/health')
+                .then(r => r.json())
+                .then(() => {
+                    document.getElementById('statusBackend').innerHTML = '✅ <span class="status-ok">Backend conectado</span>';
+                })
+                .catch(() => {
+                    document.getElementById('statusBackend').innerHTML = '⚠️ <span class="status-error">Backend indisponível</span>';
+                });
+        }
+        verificarBackend();
+
+        // ============================================================
+        // MOSTRAR/OCULTAR LOADING
+        // ============================================================
+        function setLoading(ativo) {
+            document.getElementById('loading').style.display = ativo ? 'block' : 'none';
+        }
+
+        // ============================================================
+        // BUSCAR (um ano específico)
+        // ============================================================
+        function buscar() {
+            const nome = document.getElementById('nomeBusca').value.trim();
+            const ano = document.getElementById('anoBusca').value;
+            const mes = document.getElementById('mesBusca').value;
+
+            if (!ano) { alert('Selecione um ano!'); return; }
+
+            document.getElementById('infoAno').textContent = '📅 Ano: ' + ano + (mes !== 'todos' ? ' - ' + mes : '');
+            setLoading(true);
+            limparStats();
+
+            fetch(API_URL + '/buscar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, ano, mes })
+                })
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.json();
+                })
+                .then(res => {
+                    setLoading(false);
+                    if (res.success) {
+                        renderizar(res.dados);
+                    } else {
+                        alert('Erro: ' + res.error);
+                        mostrarVazio('Erro ao carregar dados');
+                    }
+                })
+                .catch(err => {
+                    setLoading(false);
+                    console.error(err);
+                    mostrarVazio('Erro: ' + err.message);
+                });
+        }
+
+        // ============================================================
+        // BUSCAR TODOS OS ANOS (2012 até atual)
+        // ============================================================
+        function buscarTodosAnos() {
+            const nome = document.getElementById('nomeBusca').value.trim();
+            const mes = document.getElementById('mesBusca').value;
+            const anoAtual = new Date().getFullYear();
+
+            document.getElementById('infoAno').textContent = '📅 Todos os anos (2012–' + anoAtual + ')';
+            setLoading(true);
+            limparStats();
+
+            // Busca ano a ano e junta os resultados
+            const promises = [];
+            for (let a = 2012; a <= anoAtual; a++) {
+                promises.push(
+                    fetch(API_URL + '/buscar', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nome, ano: String(a), mes })
+                    })
+                    .then(r => r.json())
+                    .then(res => res.success ? res.dados : [])
+                    .catch(() => [])
+                );
+            }
+
+            Promise.all(promises)
+                .then(resultados => {
+                    setLoading(false);
+                    // Juntar todos os resultados
+                    let todos = [];
+                    resultados.forEach(arr => {
+                        if (Array.isArray(arr)) {
+                            // Mesclar por nome? Vamos concatenar, pois cada ano trás dados diferentes.
+                            // Mas para evitar duplicatas de servidor no mesmo ano, mantemos todos.
+                            todos = todos.concat(arr);
+                        }
+                    });
+
+                    if (todos.length === 0) {
+                        mostrarVazio('Nenhum dado encontrado para todos os anos');
+                        return;
+                    }
+
+                    // Agrupar por servidor (Nome + Cargo + Lotação) e somar valores por mês
+                    const mapa = new Map();
+                    todos.forEach(item => {
+                        const chave = item.Nome + '|' + item.Cargo + '|' + item.Lotacao;
+                        if (!mapa.has(chave)) {
+                            mapa.set(chave, {
+                                Nome: item.Nome,
+                                Cargo: item.Cargo,
+                                Lotacao: item.Lotacao,
+                                meses: {}
+                            });
+                        }
+                        const reg = mapa.get(chave);
+                        MESES.forEach(m => {
+                            if (item[m] && item[m] > 0) {
+                                reg.meses[m] = (reg.meses[m] || 0) + item[m];
+                            }
+                        });
+                    });
+
+                    // Converter para array
+                    const consolidado = [];
+                    mapa.forEach((val, chave) => {
+                        const obj = { Nome: val.Nome, Cargo: val.Cargo, Lotacao: val.Lotacao };
+                        MESES.forEach(m => {
+                            obj[m] = val.meses[m] || 0;
+                        });
+                        consolidado.push(obj);
+                    });
+
+                    renderizar(consolidado);
+                })
+                .catch(err => {
+                    setLoading(false);
+                    console.error(err);
+                    mostrarVazio('Erro ao buscar todos os anos');
+                });
+        }
+
+        // ============================================================
+        // RENDERIZAR
+        // ============================================================
+        function renderizar(dados) {
+            const tbody = document.getElementById('tabelaCorpo');
+            const badge = document.getElementById('totalBadge');
+
+            if (!dados || dados.length === 0) {
+                mostrarVazio('Nenhum dado encontrado');
+                return;
+            }
+
+            let html = '';
+            let totalGeral = 0;
+            let maiorValor = 0;
+            let totalRegistros = 0;
+            const servidores = dados.length;
+
+            dados.forEach(s => {
+                let total = 0;
+                html += '<tr>';
+                html += '<td class="nome-col">' + s.Nome + '</td>';
+                html += '<td class="cargo-col">' + s.Cargo + '</td>';
+                html += '<td class="cargo-col">' + s.Lotacao + '</td>';
+
+                MESES.forEach(m => {
+                    const v = s[m] || 0;
+                    total += v;
+                    totalGeral += v;
+                    if (v > 0) {
+                        totalRegistros++;
+                        if (v > maiorValor) maiorValor = v;
+                        html += '<td class="money">R$ ' + v.toFixed(2).replace('.', ',') + '</td>';
+                    } else {
+                        html += '<td style="color:rgba(255,255,255,0.12);">—</td>';
+                    }
+                });
+
+                html += '<td class="total-col">R$ ' + total.toFixed(2).replace('.', ',') + '</td>';
+                html += '</tr>';
+            });
+
+            tbody.innerHTML = html;
+            badge.textContent = servidores + ' servidores';
+
+            // Stats
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-card"><div class="label">Servidores</div><div class="value">${servidores}</div></div>
+                <div class="stat-card"><div class="label">Registros (mês/ano)</div><div class="value">${totalRegistros}</div></div>
+                <div class="stat-card"><div class="label">Soma total</div><div class="value">R$ ${totalGeral.toFixed(2).replace('.', ',')}</div></div>
+                <div class="stat-card"><div class="label">Maior valor</div><div class="value">R$ ${maiorValor.toFixed(2).replace('.', ',')}</div></div>
+            `;
+        }
+
+        // ============================================================
+        // UTILITÁRIOS
+        // ============================================================
+        function mostrarVazio(msg) {
+            document.getElementById('tabelaCorpo').innerHTML =
+                `<tr><td colspan="16" class="empty"><div class="icon">📭</div><div>${msg}</div></td></tr>`;
+            document.getElementById('totalBadge').textContent = '0 servidores';
+            limparStats();
+        }
+
+        function limparStats() {
+            document.getElementById('statsGrid').innerHTML = '';
+        }
+
+        function limparTudo() {
+            document.getElementById('nomeBusca').value = '';
+            document.getElementById('mesBusca').value = 'todos';
+            const anoAtual = new Date().getFullYear();
+            document.getElementById('anoBusca').value = anoAtual;
+            mostrarVazio('Preencha os campos e clique em Buscar');
+            document.getElementById('infoAno').textContent = '📅 Ano: —';
+            document.getElementById('totalBadge').textContent = '0 servidores';
+        }
+
+        // ============================================================
+        // ENTER PARA BUSCAR
+        // ============================================================
+        document.getElementById('nomeBusca').addEventListener('keydown', e => {
+            if (e.key === 'Enter') buscar();
+        });
+        document.getElementById('anoBusca').addEventListener('keydown', e => {
+            if (e.key === 'Enter') buscar();
+        });
+        document.getElementById('mesBusca').addEventListener('keydown', e => {
+            if (e.key === 'Enter') buscar();
+        });
+    </script>
 
 </body>
 </html>
