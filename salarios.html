@@ -37,6 +37,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-wrap: wrap;
         }
         h1 span {
             color: #f5a623;
@@ -189,6 +190,25 @@
             background: #e74c3c;
             transform: translateY(-2px);
         }
+        .btn-ranking {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: #fff;
+        }
+        .btn-ranking:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+        }
+        .btn-ranking.ativo {
+            background: linear-gradient(135deg, #fd79a8, #e17055);
+        }
+        .btn-magico {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            color: #fff;
+        }
+        .btn-magico:hover {
+            transform: translateY(-2px) rotate(-2deg);
+            box-shadow: 0 6px 20px rgba(0, 206, 201, 0.3);
+        }
 
         .badge-total {
             background: rgba(245, 166, 35, 0.12);
@@ -251,12 +271,6 @@
             margin-top: 6px;
             color: #fff;
             font-family: 'Segoe UI', monospace;
-        }
-        .stat-card .value small {
-            font-size: 16px;
-            font-weight: 400;
-            color: #8ecae6;
-            margin-left: 6px;
         }
 
         .table-wrap {
@@ -336,16 +350,21 @@
             margin-bottom: 12px;
         }
 
-        .table-wrap::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+        .trofeu {
+            font-size: 20px;
+            margin-right: 6px;
         }
-        .table-wrap::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.02);
+        .trofeu-ouro {
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
         }
-        .table-wrap::-webkit-scrollbar-thumb {
-            background: rgba(245, 166, 35, 0.3);
-            border-radius: 10px;
+        .trofeu-prata {
+            color: #c0c0c0;
+            text-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
+        }
+        .trofeu-bronze {
+            color: #cd7f32;
+            text-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
         }
 
         .alerta {
@@ -360,6 +379,18 @@
         }
         .alerta.ativo {
             display: block;
+        }
+
+        .modo-indicador {
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(108, 92, 231, 0.2);
+            color: #a29bfe;
+            border: 1px solid rgba(108, 92, 231, 0.2);
+            margin-left: 10px;
         }
 
         @media (max-width: 768px) {
@@ -416,6 +447,7 @@
         <h1>
             ⚖️ <span>TJPE</span> Auditoria Salarial
             <small>Portal da Transparência</small>
+            <span class="modo-indicador" id="modoIndicador">📊 Modo: Consulta</span>
         </h1>
 
         <div class="status-bar" id="statusBar">
@@ -461,6 +493,8 @@
             </div>
             <div class="botoes">
                 <button class="btn btn-primary" id="btnBuscar" onclick="buscar()">🔍 Buscar</button>
+                <button class="btn btn-ranking" id="btnRanking" onclick="toggleRanking()">🏆 Ranking/Ano</button>
+                <button class="btn btn-magico" id="btnMagico" onclick="ordenarRanking()" style="display:none;">✨ Mágico ⭐</button>
                 <button class="btn btn-danger" onclick="limparTudo()">✕ Limpar</button>
             </div>
             <span class="badge-total" id="totalBadge">0 registros</span>
@@ -486,7 +520,7 @@
                     <tr><td colspan="17" class="empty">
                         <div class="icon">🔍</div>
                         <div>Preencha os campos e clique em <strong>Buscar</strong></div>
-                        <div style="font-size:13px; color:rgba(255,255,255,0.2);">Selecione <strong>Todos os anos</strong> e informe um nome para consulta completa</div>
+                        <div style="font-size:13px; color:rgba(255,255,255,0.2);">Ou use <strong>🏆 Ranking/Ano</strong> para ver todos os servidores</div>
                     </td></tr>
                 </tbody>
             </table>
@@ -498,6 +532,10 @@
         const MESES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
             'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
         ];
+
+        let dadosAtuais = [];
+        let modoRanking = false;
+        let rankingOrdenado = false;
 
         function popularAnos() {
             const sel = document.getElementById('anoBusca');
@@ -561,7 +599,204 @@
         document.getElementById('anoBusca').addEventListener('change', validarTodosAnos);
         document.getElementById('nomeBusca').addEventListener('input', validarTodosAnos);
 
+        // ============================================================
+        // MODO RANKING
+        // ============================================================
+        function toggleRanking() {
+            modoRanking = !modoRanking;
+            const btn = document.getElementById('btnRanking');
+            const btnMagico = document.getElementById('btnMagico');
+            const indicador = document.getElementById('modoIndicador');
+
+            if (modoRanking) {
+                btn.classList.add('ativo');
+                btn.innerHTML = '🏆 Ranking Ativo';
+                btnMagico.style.display = 'inline-flex';
+                indicador.textContent = '🏆 Modo: Ranking';
+                indicador.style.background = 'rgba(108, 92, 231, 0.3)';
+                indicador.style.color = '#a29bfe';
+                buscarRanking();
+            } else {
+                btn.classList.remove('ativo');
+                btn.innerHTML = '🏆 Ranking/Ano';
+                btnMagico.style.display = 'none';
+                indicador.textContent = '📊 Modo: Consulta';
+                indicador.style.background = 'rgba(255,255,255,0.05)';
+                indicador.style.color = '#8ecae6';
+                limparTudo();
+            }
+        }
+
+        function buscarRanking() {
+            const ano = document.getElementById('anoBusca').value;
+            
+            if (ano === 'todos') {
+                alert('No modo Ranking, selecione um ano específico.');
+                modoRanking = false;
+                document.getElementById('btnRanking').classList.remove('ativo');
+                document.getElementById('btnRanking').innerHTML = '🏆 Ranking/Ano';
+                document.getElementById('btnMagico').style.display = 'none';
+                return;
+            }
+
+            if (!ano) {
+                alert('Selecione um ano!');
+                return;
+            }
+
+            document.getElementById('infoAno').textContent = '📅 Ranking - Ano: ' + ano;
+            setLoading(true);
+            limparStats();
+            rankingOrdenado = false;
+
+            fetch(API_URL + '/buscar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome: '', ano: ano, mes: 'todos' })
+                })
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.json();
+                })
+                .then(res => {
+                    setLoading(false);
+                    if (res.success && res.dados) {
+                        dadosAtuais = res.dados.map(item => ({
+                            ...item,
+                            _ano: parseInt(ano)
+                        }));
+                        // Ordenar por total decrescente por padrão
+                        dadosAtuais.sort((a, b) => calcularTotal(b) - calcularTotal(a));
+                        renderizarRanking(dadosAtuais);
+                    } else {
+                        alert('Erro: ' + (res.error || 'Dados não encontrados'));
+                        mostrarVazio('Nenhum dado encontrado para o ranking');
+                    }
+                })
+                .catch(err => {
+                    setLoading(false);
+                    console.error(err);
+                    mostrarVazio('Erro: ' + err.message);
+                });
+        }
+
+        function calcularTotal(servidor) {
+            let total = 0;
+            MESES.forEach(m => {
+                total += servidor[m] || 0;
+            });
+            return total;
+        }
+
+        function ordenarRanking() {
+            if (!dadosAtuais || dadosAtuais.length === 0) {
+                alert('Nenhum dado para ordenar. Execute o Ranking primeiro.');
+                return;
+            }
+
+            rankingOrdenado = !rankingOrdenado;
+            const btn = document.getElementById('btnMagico');
+
+            if (rankingOrdenado) {
+                // Ordenar do maior para o menor
+                dadosAtuais.sort((a, b) => calcularTotal(b) - calcularTotal(a));
+                btn.innerHTML = '✨ Mágico ⬆️';
+                btn.style.background = 'linear-gradient(135deg, #fd79a8, #e17055)';
+            } else {
+                // Voltar para ordem original (como veio do backend)
+                dadosAtuais.sort((a, b) => {
+                    // Tenta manter a ordem original baseada no nome
+                    return a.Nome.localeCompare(b.Nome);
+                });
+                btn.innerHTML = '✨ Mágico ⭐';
+                btn.style.background = 'linear-gradient(135deg, #00b894, #00cec9)';
+            }
+
+            renderizarRanking(dadosAtuais);
+        }
+
+        function renderizarRanking(dados) {
+            const tbody = document.getElementById('tabelaCorpo');
+            const badge = document.getElementById('totalBadge');
+
+            if (!dados || dados.length === 0) {
+                mostrarVazio('Nenhum dado encontrado');
+                return;
+            }
+
+            let html = '';
+            let totalGeral = 0;
+            let maiorValor = 0;
+            let totalRegistros = 0;
+            const totalLinhas = dados.length;
+
+            // Ordenar por total para definir os tops
+            const sorted = [...dados].sort((a, b) => calcularTotal(b) - calcularTotal(a));
+
+            dados.forEach((s, index) => {
+                let total = 0;
+                const ano = s._ano || '—';
+                
+                // Verifica se está no top 3
+                let trofeu = '';
+                const posicao = sorted.indexOf(s);
+                if (posicao === 0 && sorted.length > 0) {
+                    trofeu = '<span class="trofeu trofeu-ouro">🏆</span>';
+                } else if (posicao === 1 && sorted.length > 1) {
+                    trofeu = '<span class="trofeu trofeu-prata">🥈</span>';
+                } else if (posicao === 2 && sorted.length > 2) {
+                    trofeu = '<span class="trofeu trofeu-bronze">🥉</span>';
+                }
+
+                html += '<tr>';
+                html += '<td class="nome-col">' + trofeu + ' ' + s.Nome + '</td>';
+                html += '<td class="cargo-col">' + s.Cargo + '</td>';
+                html += '<td class="cargo-col">' + s.Lotacao + '</td>';
+                html += '<td class="ano-col">' + ano + '</td>';
+
+                MESES.forEach(m => {
+                    const v = s[m] || 0;
+                    total += v;
+                    totalGeral += v;
+                    if (v > 0) {
+                        totalRegistros++;
+                        if (v > maiorValor) maiorValor = v;
+                        html += '<td class="money">R$ ' + v.toFixed(2).replace('.', ',') + '</td>';
+                    } else {
+                        html += '<td style="color:rgba(255,255,255,0.12);">—</td>';
+                    }
+                });
+
+                html += '<td class="total-col">R$ ' + total.toFixed(2).replace('.', ',') + '</td>';
+                html += '</tr>';
+            });
+
+            tbody.innerHTML = html;
+            badge.textContent = totalLinhas + ' servidores';
+
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-card"><div class="label">👥 Servidores</div><div class="value">${totalLinhas}</div></div>
+                <div class="stat-card"><div class="label">💰 Valores registrados</div><div class="value">${totalRegistros}</div></div>
+                <div class="stat-card"><div class="label">📊 Soma total</div><div class="value">R$ ${totalGeral.toFixed(2).replace('.', ',')}</div></div>
+                <div class="stat-card" style="border-left-color: #a29bfe;"><div class="label">🏆 Maior valor</div><div class="value">R$ ${maiorValor.toFixed(2).replace('.', ',')}</div></div>
+            `;
+        }
+
+        // ============================================================
+        // MODO CONSULTA NORMAL
+        // ============================================================
         function buscar() {
+            if (modoRanking) {
+                modoRanking = false;
+                document.getElementById('btnRanking').classList.remove('ativo');
+                document.getElementById('btnRanking').innerHTML = '🏆 Ranking/Ano';
+                document.getElementById('btnMagico').style.display = 'none';
+                document.getElementById('modoIndicador').textContent = '📊 Modo: Consulta';
+                document.getElementById('modoIndicador').style.background = 'rgba(255,255,255,0.05)';
+                document.getElementById('modoIndicador').style.color = '#8ecae6';
+            }
+
             const nome = document.getElementById('nomeBusca').value.trim();
             const ano = document.getElementById('anoBusca').value;
             const mes = document.getElementById('mesBusca').value;
@@ -581,6 +816,7 @@
             document.getElementById('infoAno').textContent = '📅 Ano: ' + ano + (mes !== 'todos' ? ' - ' + mes : '');
             setLoading(true);
             limparStats();
+            dadosAtuais = [];
 
             fetch(API_URL + '/buscar', {
                     method: 'POST',
@@ -594,7 +830,8 @@
                 .then(res => {
                     setLoading(false);
                     if (res.success) {
-                        renderizar(res.dados, ano);
+                        dadosAtuais = res.dados;
+                        renderizar(dadosAtuais, ano);
                     } else {
                         alert('Erro: ' + res.error);
                         mostrarVazio('Erro ao carregar dados');
@@ -624,7 +861,6 @@
                     .then(r => r.json())
                     .then(res => {
                         if (res.success && res.dados) {
-                            // Adicionar o ano a cada registro
                             return res.dados.map(item => ({ ...item, _ano: a }));
                         }
                         return [];
@@ -648,8 +884,8 @@
                         return;
                     }
 
-                    // Ordenar por ano (mais recente primeiro)
                     todos.sort((a, b) => b._ano - a._ano);
+                    dadosAtuais = todos;
                     renderizar(todos, 'todos');
                 })
                 .catch(err => {
@@ -677,7 +913,7 @@
             dados.forEach(s => {
                 let total = 0;
                 const ano = s._ano || anoSelecionado || '—';
-                
+
                 html += '<tr>';
                 html += '<td class="nome-col">' + s.Nome + '</td>';
                 html += '<td class="cargo-col">' + s.Cargo + '</td>';
@@ -734,6 +970,8 @@
             mostrarVazio('Preencha os campos e clique em Buscar');
             document.getElementById('infoAno').textContent = '📅 Ano: —';
             document.getElementById('totalBadge').textContent = '0 registros';
+            dadosAtuais = [];
+            rankingOrdenado = false;
         }
 
         document.getElementById('nomeBusca').addEventListener('keydown', e => {
