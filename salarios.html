@@ -362,13 +362,6 @@
             display: block;
         }
 
-        .search-hint {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.3);
-            margin-top: 4px;
-            font-style: italic;
-        }
-
         @media (max-width: 768px) {
             .container {
                 padding: 16px;
@@ -431,7 +424,7 @@
         </div>
 
         <div class="alerta" id="alerta">
-            ⚠️ Para consultar <strong>TODOS OS ANOS</strong>, informe um nome ou unidade no campo acima.
+            ⚠️ Para consultar <strong>TODOS OS ANOS</strong>, informe um nome específico no campo acima.
         </div>
 
         <div class="loading" id="loading">
@@ -442,12 +435,7 @@
         <div class="filtros">
             <div class="grupo">
                 <label>👤 Nome</label>
-                <input type="text" id="nomeBusca" placeholder="Digite um nome">
-            </div>
-            <div class="grupo">
-                <label>🏢 Unidade / Lotação</label>
-                <input type="text" id="unidadeBusca" placeholder="Ex: 1ª Vara, Juizado, Recife, etc">
-                <span class="search-hint">Busca por nome da vara, juizado ou cidade</span>
+                <input type="text" id="nomeBusca" placeholder="Digite um nome para todos os anos">
             </div>
             <div class="grupo">
                 <label>📅 Ano</label>
@@ -486,7 +474,7 @@
                     <tr>
                         <th style="min-width:180px;">Nome</th>
                         <th style="min-width:140px;">Cargo</th>
-                        <th style="min-width:180px;">Lotação</th>
+                        <th style="min-width:140px;">Lotaçao</th>
                         <th style="min-width:70px; color:#f5a623;">Ano</th>
                         <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th>
                         <th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th>
@@ -498,7 +486,7 @@
                     <tr><td colspan="17" class="empty">
                         <div class="icon">🔍</div>
                         <div>Preencha os campos e clique em <strong>Buscar</strong></div>
-                        <div style="font-size:13px; color:rgba(255,255,255,0.2);">Selecione <strong>Todos os anos</strong> e informe um nome ou unidade para consulta completa</div>
+                        <div style="font-size:13px; color:rgba(255,255,255,0.2);">Selecione <strong>Todos os anos</strong> e informe um nome para consulta completa</div>
                     </td></tr>
                 </tbody>
             </table>
@@ -550,12 +538,11 @@
         function validarTodosAnos() {
             const ano = document.getElementById('anoBusca').value;
             const nome = document.getElementById('nomeBusca').value.trim();
-            const unidade = document.getElementById('unidadeBusca').value.trim();
             const alerta = document.getElementById('alerta');
             const btn = document.getElementById('btnBuscar');
 
             if (ano === 'todos') {
-                if (nome === '' && unidade === '') {
+                if (nome === '') {
                     alerta.classList.add('ativo');
                     btn.disabled = true;
                     return false;
@@ -573,94 +560,32 @@
 
         document.getElementById('anoBusca').addEventListener('change', validarTodosAnos);
         document.getElementById('nomeBusca').addEventListener('input', validarTodosAnos);
-        document.getElementById('unidadeBusca').addEventListener('input', validarTodosAnos);
-
-        // Função para filtrar por unidade localmente
-        function filtrarPorUnidade(dados, unidadeBusca) {
-            if (!unidadeBusca || unidadeBusca === '') return dados;
-            
-            const termo = unidadeBusca.toLowerCase().trim();
-            return dados.filter(item => {
-                const lotacao = (item.Lotacao || '').toLowerCase();
-                return lotacao.includes(termo);
-            });
-        }
 
         function buscar() {
             const nome = document.getElementById('nomeBusca').value.trim();
-            const unidade = document.getElementById('unidadeBusca').value.trim();
             const ano = document.getElementById('anoBusca').value;
             const mes = document.getElementById('mesBusca').value;
 
-            if (ano === 'todos' && nome === '' && unidade === '') {
-                alert('Para consultar TODOS OS ANOS, informe um nome ou uma unidade.');
+            if (ano === 'todos' && nome === '') {
+                alert('Para consultar TODOS OS ANOS, informe um nome específico.');
                 return;
             }
 
-            const params = {
-                ano: ano,
-                mes: mes
-            };
+            if (ano === 'todos') {
+                buscarTodosAnos(nome, mes);
+                return;
+            }
 
-            if (nome) params.nome = nome;
+            if (!ano) { alert('Selecione um ano!'); return; }
 
-            let infoTexto = '📅 ' + (ano === 'todos' ? 'Todos os anos' : 'Ano: ' + ano) + 
-                (mes !== 'todos' ? ' - ' + mes : '') +
-                (nome ? ' | Nome: ' + nome : '') +
-                (unidade ? ' | Unidade: ' + unidade : '');
-
-            document.getElementById('infoAno').textContent = infoTexto;
-
+            document.getElementById('infoAno').textContent = '📅 Ano: ' + ano + (mes !== 'todos' ? ' - ' + mes : '');
             setLoading(true);
             limparStats();
 
-            // Se o usuário quer buscar por unidade, precisamos buscar os dados primeiro e filtrar localmente
-            if (unidade) {
-                // Buscar todos os dados do ano/mês selecionado sem filtro de unidade
-                const buscaParams = { ano: ano, mes: mes };
-                if (nome) buscaParams.nome = nome;
-
-                if (ano === 'todos') {
-                    buscarTodosAnosComFiltroUnidade(buscaParams, unidade);
-                    return;
-                }
-
-                fetch(API_URL + '/buscar', {
+            fetch(API_URL + '/buscar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(buscaParams)
-                })
-                .then(r => {
-                    if (!r.ok) throw new Error('HTTP ' + r.status);
-                    return r.json();
-                })
-                .then(res => {
-                    setLoading(false);
-                    if (res.success) {
-                        // Filtrar por unidade localmente
-                        const dadosFiltrados = filtrarPorUnidade(res.dados, unidade);
-                        renderizar(dadosFiltrados, ano);
-                    } else {
-                        alert('Erro: ' + res.error);
-                        mostrarVazio('Erro ao carregar dados');
-                    }
-                })
-                .catch(err => {
-                    setLoading(false);
-                    console.error(err);
-                    mostrarVazio('Erro: ' + err.message);
-                });
-            } else {
-                // Busca normal (por nome ou todos)
-                if (ano === 'todos') {
-                    buscarTodosAnos(params);
-                    return;
-                }
-
-                fetch(API_URL + '/buscar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(params)
+                    body: JSON.stringify({ nome, ano, mes })
                 })
                 .then(r => {
                     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -680,81 +605,26 @@
                     console.error(err);
                     mostrarVazio('Erro: ' + err.message);
                 });
-            }
         }
 
-        function buscarTodosAnosComFiltroUnidade(params, unidade) {
+        function buscarTodosAnos(nome, mes) {
             const anoAtual = new Date().getFullYear();
+            document.getElementById('infoAno').textContent = '📅 Todos os anos (2012–' + anoAtual + ') para: ' + nome;
             setLoading(true);
             limparStats();
 
             const promises = [];
             for (let a = 2012; a <= anoAtual; a++) {
-                const p = { ...params, ano: String(a) };
                 promises.push(
                     fetch(API_URL + '/buscar', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(p)
+                        body: JSON.stringify({ nome, ano: String(a), mes })
                     })
                     .then(r => r.json())
                     .then(res => {
                         if (res.success && res.dados) {
-                            return res.dados.map(item => ({ ...item, _ano: a }));
-                        }
-                        return [];
-                    })
-                    .catch(() => [])
-                );
-            }
-
-            Promise.all(promises)
-                .then(resultados => {
-                    setLoading(false);
-                    let todos = [];
-                    resultados.forEach(arr => {
-                        if (Array.isArray(arr)) {
-                            todos = todos.concat(arr);
-                        }
-                    });
-
-                    // Filtrar por unidade localmente
-                    todos = filtrarPorUnidade(todos, unidade);
-
-                    if (todos.length === 0) {
-                        let msg = 'Nenhum dado encontrado para a unidade: ' + unidade;
-                        if (params.nome) msg += ' com nome: ' + params.nome;
-                        mostrarVazio(msg);
-                        return;
-                    }
-
-                    todos.sort((a, b) => b._ano - a._ano);
-                    renderizar(todos, 'todos');
-                })
-                .catch(err => {
-                    setLoading(false);
-                    console.error(err);
-                    mostrarVazio('Erro ao buscar todos os anos');
-                });
-        }
-
-        function buscarTodosAnos(params) {
-            const anoAtual = new Date().getFullYear();
-            setLoading(true);
-            limparStats();
-
-            const promises = [];
-            for (let a = 2012; a <= anoAtual; a++) {
-                const p = { ...params, ano: String(a) };
-                promises.push(
-                    fetch(API_URL + '/buscar', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(p)
-                    })
-                    .then(r => r.json())
-                    .then(res => {
-                        if (res.success && res.dados) {
+                            // Adicionar o ano a cada registro
                             return res.dados.map(item => ({ ...item, _ano: a }));
                         }
                         return [];
@@ -774,12 +644,11 @@
                     });
 
                     if (todos.length === 0) {
-                        let msg = 'Nenhum dado encontrado';
-                        if (params.nome) msg += ' para ' + params.nome;
-                        mostrarVazio(msg);
+                        mostrarVazio('Nenhum dado encontrado para ' + nome + ' em todos os anos');
                         return;
                     }
 
+                    // Ordenar por ano (mais recente primeiro)
                     todos.sort((a, b) => b._ano - a._ano);
                     renderizar(todos, 'todos');
                 })
@@ -810,9 +679,9 @@
                 const ano = s._ano || anoSelecionado || '—';
                 
                 html += '<tr>';
-                html += '<td class="nome-col">' + (s.Nome || '—') + '</td>';
-                html += '<td class="cargo-col">' + (s.Cargo || '—') + '</td>';
-                html += '<td class="cargo-col" style="color:#8ecae6;">' + (s.Lotacao || '—') + '</td>';
+                html += '<td class="nome-col">' + s.Nome + '</td>';
+                html += '<td class="cargo-col">' + s.Cargo + '</td>';
+                html += '<td class="cargo-col">' + s.Lotacao + '</td>';
                 html += '<td class="ano-col">' + ano + '</td>';
 
                 MESES.forEach(m => {
@@ -857,7 +726,6 @@
 
         function limparTudo() {
             document.getElementById('nomeBusca').value = '';
-            document.getElementById('unidadeBusca').value = '';
             document.getElementById('mesBusca').value = 'todos';
             const anoAtual = new Date().getFullYear();
             document.getElementById('anoBusca').value = anoAtual;
@@ -869,9 +737,6 @@
         }
 
         document.getElementById('nomeBusca').addEventListener('keydown', e => {
-            if (e.key === 'Enter') buscar();
-        });
-        document.getElementById('unidadeBusca').addEventListener('keydown', e => {
             if (e.key === 'Enter') buscar();
         });
         document.getElementById('anoBusca').addEventListener('keydown', e => {
