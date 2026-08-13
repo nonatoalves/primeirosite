@@ -446,8 +446,8 @@
             </div>
             <div class="grupo">
                 <label>🏢 Unidade / Lotação</label>
-                <input type="text" id="unidadeBusca" placeholder="Ex: GAP, DPU, etc">
-                <span class="search-hint">Busca por unidade (GAP, DPU, Auditoria...)</span>
+                <input type="text" id="unidadeBusca" placeholder="Ex: 1ª Vara, Juizado, Recife, etc">
+                <span class="search-hint">Busca por nome da vara, juizado ou cidade</span>
             </div>
             <div class="grupo">
                 <label>📅 Ano</label>
@@ -486,7 +486,7 @@
                     <tr>
                         <th style="min-width:180px;">Nome</th>
                         <th style="min-width:140px;">Cargo</th>
-                        <th style="min-width:140px;">Lotaçao</th>
+                        <th style="min-width:180px;">Lotação</th>
                         <th style="min-width:70px; color:#f5a623;">Ano</th>
                         <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th>
                         <th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th>
@@ -575,6 +575,17 @@
         document.getElementById('nomeBusca').addEventListener('input', validarTodosAnos);
         document.getElementById('unidadeBusca').addEventListener('input', validarTodosAnos);
 
+        // Função para filtrar por unidade localmente
+        function filtrarPorUnidade(dados, unidadeBusca) {
+            if (!unidadeBusca || unidadeBusca === '') return dados;
+            
+            const termo = unidadeBusca.toLowerCase().trim();
+            return dados.filter(item => {
+                const lotacao = (item.Lotacao || '').toLowerCase();
+                return lotacao.includes(termo);
+            });
+        }
+
         function buscar() {
             const nome = document.getElementById('nomeBusca').value.trim();
             const unidade = document.getElementById('unidadeBusca').value.trim();
@@ -592,23 +603,61 @@
             };
 
             if (nome) params.nome = nome;
-            if (unidade) params.unidade = unidade;
 
-            document.getElementById('infoAno').textContent = '📅 ' + 
-                (ano === 'todos' ? 'Todos os anos' : 'Ano: ' + ano) + 
+            let infoTexto = '📅 ' + (ano === 'todos' ? 'Todos os anos' : 'Ano: ' + ano) + 
                 (mes !== 'todos' ? ' - ' + mes : '') +
                 (nome ? ' | Nome: ' + nome : '') +
                 (unidade ? ' | Unidade: ' + unidade : '');
 
+            document.getElementById('infoAno').textContent = infoTexto;
+
             setLoading(true);
             limparStats();
 
-            if (ano === 'todos') {
-                buscarTodosAnos(params);
-                return;
-            }
+            // Se o usuário quer buscar por unidade, precisamos buscar os dados primeiro e filtrar localmente
+            if (unidade) {
+                // Buscar todos os dados do ano/mês selecionado sem filtro de unidade
+                const buscaParams = { ano: ano, mes: mes };
+                if (nome) buscaParams.nome = nome;
 
-            fetch(API_URL + '/buscar', {
+                if (ano === 'todos') {
+                    buscarTodosAnosComFiltroUnidade(buscaParams, unidade);
+                    return;
+                }
+
+                fetch(API_URL + '/buscar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(buscaParams)
+                })
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.json();
+                })
+                .then(res => {
+                    setLoading(false);
+                    if (res.success) {
+                        // Filtrar por unidade localmente
+                        const dadosFiltrados = filtrarPorUnidade(res.dados, unidade);
+                        renderizar(dadosFiltrados, ano);
+                    } else {
+                        alert('Erro: ' + res.error);
+                        mostrarVazio('Erro ao carregar dados');
+                    }
+                })
+                .catch(err => {
+                    setLoading(false);
+                    console.error(err);
+                    mostrarVazio('Erro: ' + err.message);
+                });
+            } else {
+                // Busca normal (por nome ou todos)
+                if (ano === 'todos') {
+                    buscarTodosAnos(params);
+                    return;
+                }
+
+                fetch(API_URL + '/buscar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(params)
@@ -630,6 +679,62 @@
                     setLoading(false);
                     console.error(err);
                     mostrarVazio('Erro: ' + err.message);
+                });
+            }
+        }
+
+        function buscarTodosAnosComFiltroUnidade(params, unidade) {
+            const anoAtual = new Date().getFullYear();
+            setLoading(true);
+            limparStats();
+
+            const promises = [];
+            for (let a = 2012; a <= anoAtual; a++) {
+                const p = { ...params, ano: String(a) };
+                promises.push(
+                    fetch(API_URL + '/buscar', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(p)
+                    })
+                    .then(r => r.json())
+                    .then(res => {
+                        if (res.success && res.dados) {
+                            return res.dados.map(item => ({ ...item, _ano: a }));
+                        }
+                        return [];
+                    })
+                    .catch(() => [])
+                );
+            }
+
+            Promise.all(promises)
+                .then(resultados => {
+                    setLoading(false);
+                    let todos = [];
+                    resultados.forEach(arr => {
+                        if (Array.isArray(arr)) {
+                            todos = todos.concat(arr);
+                        }
+                    });
+
+                    // Filtrar por unidade localmente
+                    todos = filtrarPorUnidade(todos, unidade);
+
+                    if (todos.length === 0) {
+                        let msg = 'Nenhum dado encontrado para a unidade: ' + unidade;
+                        if (params.nome) msg += ' com nome: ' + params.nome;
+                        mostrarVazio(msg);
+                        return;
+                    }
+
+                    todos.sort((a, b) => b._ano - a._ano);
+                    renderizar(todos, 'todos');
+                })
+                .catch(err => {
+                    setLoading(false);
+                    console.error(err);
+                    mostrarVazio('Erro ao buscar todos os anos');
                 });
         }
 
@@ -671,7 +776,6 @@
                     if (todos.length === 0) {
                         let msg = 'Nenhum dado encontrado';
                         if (params.nome) msg += ' para ' + params.nome;
-                        if (params.unidade) msg += ' na unidade ' + params.unidade;
                         mostrarVazio(msg);
                         return;
                     }
@@ -708,7 +812,7 @@
                 html += '<tr>';
                 html += '<td class="nome-col">' + (s.Nome || '—') + '</td>';
                 html += '<td class="cargo-col">' + (s.Cargo || '—') + '</td>';
-                html += '<td class="cargo-col">' + (s.Lotacao || '—') + '</td>';
+                html += '<td class="cargo-col" style="color:#8ecae6;">' + (s.Lotacao || '—') + '</td>';
                 html += '<td class="ano-col">' + ano + '</td>';
 
                 MESES.forEach(m => {
